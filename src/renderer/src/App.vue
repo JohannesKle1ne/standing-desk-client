@@ -1,11 +1,11 @@
 <script setup>
 import Versions from './components/Versions.vue'
-
-console.log('Hello World')
+import MqttClient from './components/MqttClient.vue'
 </script>
 
 <template>
-  <Versions></Versions>
+  <MqttClient></MqttClient>
+  <!-- <Versions></Versions>
 
   <svg class="hero-logo" viewBox="0 0 900 300">
     <use xlink:href="./assets/icons.svg#electron" />
@@ -91,7 +91,7 @@ console.log('Hello World')
         </p>
       </article>
     </div>
-  </div>
+  </div> -->
 </template>
 
 <style lang="less">
