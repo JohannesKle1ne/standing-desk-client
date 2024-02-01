@@ -1,16 +1,29 @@
-import { app, shell, BrowserWindow, Tray, Menu } from 'electron'
+import { app, shell, BrowserWindow, Tray, Menu, screen } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+
 const path = require('path')
 
 let tray
 
 function createWindow() {
+  const { width, height } = screen.getPrimaryDisplay().workAreaSize
+
+  const windowWidth = 800
+  const windowHeight = 400
+
+  // Calculate the position for the bottom right corner
+  const x = width - windowWidth - 50 // Adjust the value based on your window width
+  const y = height - windowHeight - 50 // Adjust the value based on your window height
+
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 1200,
-    height: 670,
+    frame: false,
+    width: windowWidth,
+    height: windowHeight,
+    x,
+    y,
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
@@ -18,6 +31,12 @@ function createWindow() {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
     }
+  })
+
+  mainWindow.on('blur', (e) => {
+    // Prevent the window from actually closing
+    e.preventDefault()
+    // mainWindow.hide()
   })
 
   mainWindow.on('close', (event) => {
