@@ -33,7 +33,7 @@ export default {
     const connect = () => {
       if (!client.value) {
         connectStatus.value = 'Connecting...'
-        client.value = mqtt.connect(mosquittoUrl)
+        client.value = mqtt.connect(url, options)
         client.value.on('connect', () => {
           console.log('connected')
           connectStatus.value = 'Connected'
@@ -69,6 +69,15 @@ export default {
             text.value = text.value + '\n' + currentTime
           }
 
+          const maxLineBreaks = 10
+          // Ensure text contains a maximum of 10 line breaks
+          const lines = text.value.split('\n')
+          if (lines.length > maxLineBreaks) {
+            // Remove time substrings at the beginning of the text
+            const filteredLines = lines.slice(lines.length - maxLineBreaks)
+            text.value = filteredLines.join('\n')
+          }
+
           payload.value = newPayload
         })
       }
@@ -78,8 +87,9 @@ export default {
       const now = new Date()
       const hours = now.getHours().toString().padStart(2, '0')
       const minutes = now.getMinutes().toString().padStart(2, '0')
+      const seconds = now.getSeconds().toString().padStart(2, '0')
 
-      return `${hours}:${minutes}`
+      return `${hours}:${minutes}:${seconds}`
     }
 
     onMounted(() => {})
