@@ -1,0 +1,57 @@
+ssh johannes@192.168.178.69
+
+cd Documents/Code
+
+v12.22.12 -> working socket library (current version works aswell)
+
+
+C:\Users\jojok\Documents\Uni\Master\Semester_3\PWP\Exercise4\mosquitto-broker
+mosquitto -v -c test.conf
+
+sudo poweroff
+
+
+
+________________
+
+Learnings:
+- Zugang zu Server ist nur mit key file auf PC zugänglich
+- Datenbank und Server sollen auf uni Server laufen
+- Broker läut auf Server und alle Tische verbinden sind dorthin
+- Mein Tisch sendet nurup/down. Logik wird im keypad gemacht.
+
+
+Todos:
+
+- compare MQTT to Socket Connection (sind nachrichten verschlüsselt?)
+- get motionsensor running with configuration (Distance, Accuracy)
+- Think about status status LEDS 
+- create Captive portal (with library)
+- frontend: Look into "Dropbox like" application
+ -> c# new NotifyIcon
+ -> pystray could be platform independant
+
+
+Learnings motionsensor:
+
+sensitivity potentiometer: shortest distance (3 meter) when turned to 10:00 o'clock (7:00-10:00 no detection at all) -> the minimum distance of 3 meters is probalby to short!
+
+delay potentiometer: if delay increased the sensor keeps up the detection signal a longer period. 
+So the python library will find motion a lot of times after motion was detected.-> short delay seems to be more useful
+
+Non-repeatable Trigger: After detecting motion and triggering the output high, the sensor will automatically switch to a low state after the delay time is over, 
+regardless of any ongoing motion in its sensing range.
+
+Repeatable Trigger: If there is continuous motion in the sensor's range, the output will remain high. 
+The delay time will be extended automatically for each subsequent motion event, starting from the last event.
+
+
+Next: Create a repository where you commit these notes and code!
+
+Todos Donnerstag:
+- find alternative motion sensor
+- think about how a server monitor could look like
+- build a dropbox like interface for elektron app
+
+Findings:
+- how about putting the sonsor to the floor so only feet movement is detected?
