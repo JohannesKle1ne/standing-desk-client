@@ -58,6 +58,19 @@
       </svg>
     </div>
   </div>
+  <div
+    style="
+      margin-left: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: start;
+      width: 100%;
+      color: white;
+      font-size: 12px;
+    "
+  >
+    {{ errorMessage }}
+  </div>
   <!--   <h3>{{ url }}</h3>
  -->
   <!--  <button @click="connect" style="color: black">Connect</button>
@@ -87,6 +100,10 @@
 .rounded-button:hover {
   transform: scale(1.1);
 }
+.rounded-button:focus {
+  outline: none; /* Removes the default focus outline */
+  /* Add any other styles you want to remove for the focused state */
+}
 </style>
 
 <script>
@@ -109,6 +126,7 @@ export default {
     const text = ref('')
     const payload = ref({})
     const connectStatus = ref(0)
+    const errorMessage = ref('')
 
     setInterval(() => {
       const topic = 'your/topic'
@@ -124,6 +142,7 @@ export default {
     }, 5000)
 
     const handleClick = () => {
+      errorMessage.value = ''
       console.log(connectStatus.value)
       if (connectStatus.value === 2) {
         disconnect()
@@ -163,8 +182,11 @@ export default {
       })
       client.value.on('error', (err) => {
         console.log('error')
+        console.log('Connection error: ', err.message)
+        console.log('Connection error: ', err.code)
+        console.log('Connection error: ', err.stack)
+        errorMessage.value = err.message
 
-        console.error('Connection error: ', err)
         client.value.end()
       })
 
@@ -215,7 +237,8 @@ export default {
       handleClick,
       connectStatus,
       text,
-      payload
+      payload,
+      errorMessage
     }
   }
 }
