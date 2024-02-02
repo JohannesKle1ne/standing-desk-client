@@ -57,3 +57,31 @@ Findings:
 - how about putting the sonsor to the floor so only feet movement is detected?
 - there is an open source version of HiveMQ that can be run on a private server
 - there is a very usul "reconnectPeriod: 1000" in node mqtt
+- shut down PI: sudo poweroff
+- reboot PI: sudo reboot
+- tutorial for PI: sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
+- Wenn Iphone für Hotspot benutzen -> kompatibilität maximieren ON
+- Achtung: die Ip adressen variieren natürlich wenn sich pi und client in neuen netzwerk befinden
+- Die Syntax in /wpa_supplicant.conf ist wichtig (Anführungszeichen, Spaces)
+-> Letzte Funktionierende Version:
+
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+country=DE
+
+network={
+        ssid="Soul7"
+        psk="52868737320352956218"
+        key_mgmt=WPA-PSK
+}
+
+network={
+        ssid="iPhoneJohannes"
+        psk="12121212"
+}
+
+TODOS morgen:
+Do the following tasks from nodejs within electron:
+- try to connect to PI (specific topic with response)
+- if not connected try to reach pi over ssh (repeat this process)
+- when connected with ssh set wifi credentials on pi -> then reboot and check mqtt again
