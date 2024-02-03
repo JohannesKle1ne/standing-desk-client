@@ -81,7 +81,7 @@ network={
 }
 
 
-TODOS morgen (19.05):
+TODOS morgen (03.02):
 Do the following tasks from nodejs within electron:
 - try to connect to PI (specific topic with response)
 - if not connected try to reach pi over ssh (repeat this process)
@@ -92,8 +92,10 @@ Findings:
 - to connect to pi AP: ssh johannes@10.0.0.5
 - do not try any connection attemps before pi has fully booted otherwise pi crashes
 - changing the autohotspot file was leading to faild wifi connection (better don't touch it)
+- added webserver.py and mqtt_client.py to rc.local to start them on boot
+- on the long run creating a cron job for autohotspot will be good
 
-TODOS morgen:
+TODOS morgen (04.02):
 - create input fields for wifi credentails
 - test AP once again by deleting current wifi credentails and sending new
 - test if it works with IPhone hotsport (can be used for demo!)
