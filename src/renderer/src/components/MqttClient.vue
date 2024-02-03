@@ -1,6 +1,6 @@
 <template>
   <div style="display: flex; align-items: center; width: 100%">
-    <h3 style="margin: 10px">Standing desk client</h3>
+    <h3 style="margin: 10px">MQTT</h3>
     <span style="flex-grow: 1"></span>
     <button @click="handleClick" class="rounded-button">
       {{ connectStatus === 2 ? 'disconnect' : 'connect' }}
@@ -58,6 +58,11 @@
       </svg>
     </div>
   </div>
+  <div style="display: flex; align-items: center; width: 100%">
+    <h3 style="margin: 10px">AP pi zero</h3>
+    <span style="flex-grow: 1"></span>
+    <button @click="connectToPi" class="rounded-button">connect to pi</button>
+  </div>
   <div
     style="
       margin-left: 10px;
@@ -109,6 +114,7 @@
 <script>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import mqtt from 'mqtt'
+import axios from 'axios'
 
 const options = {
   protocol: 'wss',
@@ -224,6 +230,39 @@ export default {
       return `${hours}:${minutes}:${seconds}`
     }
 
+    const connectToPi = async () => {
+      const fileContent = `
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+country=DE
+
+network={
+   ssid="Soul7"
+   psk="52868737320352956218"
+   key_mgmt=WPA-PSK
+}`
+
+      //10.0.0.5
+      //192.168.178.69
+      try {
+        const response = await axios.post('http://192.168.178.69/update_wifi', {
+          wpaSupplicant: fileContent
+        })
+        console.log(response.data)
+      } catch (error) {
+        console.error('Error getting data:', error)
+      }
+    }
+
+    const rebootPi = async () => {
+      try {
+        const response = await axios.post('http://192.168.178.69/reboot')
+        console.log(response.data)
+      } catch (error) {
+        console.error('Error getting data:', error)
+      }
+    }
+
     onMounted(() => {})
 
     onBeforeUnmount(() => {
@@ -238,7 +277,8 @@ export default {
       connectStatus,
       text,
       payload,
-      errorMessage
+      errorMessage,
+      connectToPi
     }
   }
 }

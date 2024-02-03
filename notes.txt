@@ -80,8 +80,30 @@ network={
         psk="12121212"
 }
 
-TODOS morgen:
+
+TODOS morgen (19.05):
 Do the following tasks from nodejs within electron:
 - try to connect to PI (specific topic with response)
 - if not connected try to reach pi over ssh (repeat this process)
 - when connected with ssh set wifi credentials on pi -> then reboot and check mqtt again
+
+Findings:
+- Pi needs at least 2 min to startup!
+- to connect to pi AP: ssh johannes@10.0.0.5
+- do not try any connection attemps before pi has fully booted otherwise pi crashes
+- changing the autohotspot file was leading to faild wifi connection (better don't touch it)
+
+TODOS morgen:
+- create input fields for wifi credentails
+- test AP once again by deleting current wifi credentails and sending new
+- test if it works with IPhone hotsport (can be used for demo!)
+- Goal: be able to present: 
+1. Electron client that start from .exe and created system tray
+2. Electron client connecting to broker
+3. Electron client that connects to PI in AP mode
+4. Electron client that sets the correct wifi credentails
+5. pi in AP mode 
+6. pi in Mqtt mode
+- If time: create status LED for "AP mode", "Internet Connection mode" and "Mqtt mode"
+
+
