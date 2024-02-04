@@ -118,5 +118,11 @@ sudo python /home/johannes/Documents/Code/mqtt_client.py
 1. Connection process works (above poython files are called on startup, cron timer calls hotspot script every minute)
 2. Without he need of ssh wifi van be configured using the electron client
 
+TODOS Next Time:
+- webserver endpoint for get wpa_supplicant
+- mqtt handler for get wpa_supplicant, reboot and poweroff
+- think about a good convention for mqtt topics and messages
+- cleanup Vue (add tailwind, add components for buttons and spinners, use <script setup>)
+
 
 
