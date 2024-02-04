@@ -108,4 +108,15 @@ TODOS morgen (04.02):
 6. pi in Mqtt mode
 - If time: create status LED for "AP mode", "Internet Connection mode" and "Mqtt mode"
 
+Finding:
+- Added cron timer to check for wifi every minute
+- electron build command for windows: npm run build:win (must be run as administrator)
+- To manually start the scripts:
+sudo python /home/johannes/Documents/Code/webserver.py
+sudo python /home/johannes/Documents/Code/mqtt_client.py
+- Goals reached:
+1. Connection process works (above poython files are called on startup, cron timer calls hotspot script every minute)
+2. Without he need of ssh wifi van be configured using the electron client
+
+
 

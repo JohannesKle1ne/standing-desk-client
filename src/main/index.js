@@ -11,7 +11,7 @@ function createWindow() {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize
 
   const windowWidth = 800
-  const windowHeight = 400
+  const windowHeight = 600
 
   // Calculate the position for the bottom right corner
   const x = width - windowWidth - 50 // Adjust the value based on your window width

@@ -58,10 +58,27 @@
       </svg>
     </div>
   </div>
-  <div style="display: flex; align-items: center; width: 100%">
-    <h3 style="margin: 10px">AP pi zero</h3>
+  <div v-if="piLocalIp" style="display: flex; align-items: center; width: 100%">
+    <h3 style="margin: 10px">Local network</h3>
     <span style="flex-grow: 1"></span>
-    <button @click="connectToPi" class="rounded-button">connect to pi</button>
+    <button @click="updatePiWifi" class="rounded-button">update pi wifi</button>
+  </div>
+  <div v-if="piLocalIp" style="display: flex; align-items: center; width: 100%">
+    <h3 style="margin: 10px">Local network</h3>
+    <span style="flex-grow: 1"></span>
+    <button @click="connectPiWifi" class="rounded-button">connect pi to given wifi</button>
+  </div>
+  <div style="display: flex; align-items: center; width: 100%">
+    <h3 style="margin: 10px">Access point network</h3>
+    <span style="flex-grow: 1"></span>
+    <button @click="updatePiWifiAccessPoint" class="rounded-button">update pi wifi</button>
+  </div>
+  <div style="display: flex; align-items: center; width: 100%">
+    <h3 style="margin: 10px">Access point network</h3>
+    <span style="flex-grow: 1"></span>
+    <button @click="connectPiWifiAccessPoint" class="rounded-button">
+      connect pi to given wifi
+    </button>
   </div>
   <div style="display: flex; align-items: center; width: 100%">
     <label for="ssid">SSID:</label>
@@ -140,8 +157,9 @@ export default {
     const payload = ref({})
     const connectStatus = ref(0)
     const errorMessage = ref('')
-    const ssid = ref('iPhoneJohannes')
-    const password = ref('12121212')
+    const ssid = ref('Soul7')
+    const password = ref('52868737320352956218')
+    const piLocalIp = ref(null)
 
     setInterval(() => {
       const topic = 'your/topic'
@@ -174,6 +192,7 @@ export default {
 
     const connect = () => {
       connectStatus.value = 1
+      piLocalIp.value = null
       client.value = mqtt.connect(url, options)
       client.value.on('connect', () => {
         console.log('connected')
@@ -219,6 +238,15 @@ export default {
           text.value = `${text.value}\n${currentTime} ${topic.toString()} ${message.toString()}`
         }
 
+        const isIPAddress = (str) => {
+          const ipv4Regex = /^(\d{1,3}\.){3}(\d{1,3})$/
+          const ipv6Regex = /^([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$/
+          return ipv4Regex.test(str) || ipv6Regex.test(str)
+        }
+        if (isIPAddress(message.toString())) {
+          piLocalIp.value = message.toString()
+        }
+
         const maxLineBreaks = 10
         // Ensure text contains a maximum of 10 line breaks
         const lines = text.value.split('\n')
@@ -239,7 +267,28 @@ export default {
       return `${hours}:${minutes}:${seconds}`
     }
 
-    const connectToPi = async () => {
+    const updatePiWifi = async () => {
+      const fileContent = `
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+country=DE
+
+network={
+   ssid="${ssid.value}"
+   psk="${password.value}"
+   key_mgmt=WPA-PSK
+}`
+      try {
+        const response = await axios.post(`http://${piLocalIp.value}/update_wifi`, {
+          wpaSupplicant: fileContent
+        })
+        console.log(response.data)
+      } catch (error) {
+        console.error('Error getting data:', error)
+      }
+    }
+
+    const updatePiWifiAccessPoint = async () => {
       const fileContent = `
 ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
 update_config=1
@@ -254,9 +303,27 @@ network={
       //10.0.0.5
       //192.168.178.69
       try {
-        const response = await axios.post('http://192.168.178.69/update_wifi', {
+        const response = await axios.post('http://10.0.0.5/update_wifi', {
           wpaSupplicant: fileContent
         })
+        console.log(response.data)
+      } catch (error) {
+        console.error('Error getting data:', error)
+      }
+    }
+
+    const connectPiWifi = async () => {
+      try {
+        const response = await axios.post(`http://${piLocalIp.value}/connect_wifi`)
+        console.log(response.data)
+      } catch (error) {
+        console.error('Error getting data:', error)
+      }
+    }
+
+    const connectPiWifiAccessPoint = async () => {
+      try {
+        const response = await axios.post('http://10.0.0.5/connect_wifi')
         console.log(response.data)
       } catch (error) {
         console.error('Error getting data:', error)
@@ -287,9 +354,13 @@ network={
       text,
       payload,
       errorMessage,
-      connectToPi,
+      updatePiWifi,
+      updatePiWifiAccessPoint,
+      connectPiWifi,
+      connectPiWifiAccessPoint,
       ssid,
-      password
+      password,
+      piLocalIp
     }
   }
 }
