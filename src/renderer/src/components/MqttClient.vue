@@ -63,6 +63,13 @@
     <span style="flex-grow: 1"></span>
     <button @click="connectToPi" class="rounded-button">connect to pi</button>
   </div>
+  <div style="display: flex; align-items: center; width: 100%">
+    <label for="ssid">SSID:</label>
+    <input v-model="ssid" id="ssid" />
+
+    <label for="password">Password:</label>
+    <input v-model="password" id="password" />
+  </div>
   <div
     style="
       margin-left: 10px;
@@ -133,6 +140,8 @@ export default {
     const payload = ref({})
     const connectStatus = ref(0)
     const errorMessage = ref('')
+    const ssid = ref('iPhoneJohannes')
+    const password = ref('12121212')
 
     setInterval(() => {
       const topic = 'your/topic'
@@ -237,8 +246,8 @@ update_config=1
 country=DE
 
 network={
-   ssid="Soul7"
-   psk="52868737320352956218"
+   ssid="${ssid.value}"
+   psk="${password.value}"
    key_mgmt=WPA-PSK
 }`
 
@@ -278,7 +287,9 @@ network={
       text,
       payload,
       errorMessage,
-      connectToPi
+      connectToPi,
+      ssid,
+      password
     }
   }
 }
