@@ -54,6 +54,8 @@ Todos Donnerstag:
 - build a dropbox like interface for elektron app
 
 Findings:
+- fritzbox: http://169.254.1.1/
+- raspberry pi AP library: https://www.raspberryconnect.com/projects/65-raspberrypi-hotspot-accesspoints/158-raspberry-pi-auto-wifi-hotspot-switch-direct-connection
 - how about putting the sonsor to the floor so only feet movement is detected?
 - there is an open source version of HiveMQ that can be run on a private server
 - there is a very usul "reconnectPeriod: 1000" in node mqtt
@@ -110,7 +112,10 @@ TODOS morgen (04.02):
 
 Finding:
 - Added cron timer to check for wifi every minute
-- electron build command for windows: npm run build:win (must be run as administrator)
+- electron build command for windows: 
+        1. Windows+X -> powershell as admin (must be run as administrator)
+        2. cd C:\Users\jojok\Documents\Projects\electron-standing-desk-vuejs-vite\standing-desk-client
+        3. npm run build:win
 - To manually start the scripts:
 sudo python /home/johannes/Documents/Code/webserver.py
 sudo python /home/johannes/Documents/Code/mqtt_client.py
@@ -126,3 +131,24 @@ TODOS Next Time:
 
 
 
+TODO:
+- try to get analog data from sensor
+- last slide wich question that are open
+- uist konference
+- anmeldung? March till August
+- Latex? -> Mail! jojo.kleine@gmx.de
+- Server login? -> Slack (projects/desks path)
+- Rainer first room on the right
+
+HCUM
+wearedoingresearch.
+
+Findings:
+- Sensibility: range 11:00 - 16:00 -> no differnece detected
+- when the potentiometer "look a each other" we have a high sensibility and the signal is on for 10 seconds
+- This is the correct Pin Assignment: https://pinout.xyz/pinout/pin3_gpio2/
+- motion sensor is ON or OFF (not possible to get any momement specific data)
+- Distance sensor:  https://draeger-it.blog/raspberry-pi-zero-2-w-mit-ultraschall-abstandssensor-hc-sr04/
+-> Problem: chair is like person
+- Wave sensor: https://www.kaufland.de/product/469211330/?kwd=&source=pla&sid=46468412&gad_source=4&gclid=CjwKCAiA_aGuBhACEiwAly57MVAB9JzQNhFAztuSpnhN_l3MX_mTDaciyq3bj8OAYaEmIdtR51h6RBoCwNcQAvD_BwE 
+-> Looks like it can detect the presence of a person (14,50 €)

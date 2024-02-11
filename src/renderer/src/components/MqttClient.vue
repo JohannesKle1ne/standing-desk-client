@@ -58,12 +58,12 @@
       </svg>
     </div>
   </div>
-  <div v-if="piLocalIp" style="display: flex; align-items: center; width: 100%">
+  <div v-if="piLocalIp && false" style="display: flex; align-items: center; width: 100%">
     <h3 style="margin: 10px">Local network</h3>
     <span style="flex-grow: 1"></span>
     <button @click="updatePiWifi" class="rounded-button">update pi wifi</button>
   </div>
-  <div v-if="piLocalIp" style="display: flex; align-items: center; width: 100%">
+  <div v-if="piLocalIp && false" style="display: flex; align-items: center; width: 100%">
     <h3 style="margin: 10px">Local network</h3>
     <span style="flex-grow: 1"></span>
     <button @click="connectPiWifi" class="rounded-button">connect pi to given wifi</button>
@@ -161,7 +161,7 @@ export default {
     const password = ref('52868737320352956218')
     const piLocalIp = ref(null)
 
-    setInterval(() => {
+    /*  setInterval(() => {
       const topic = 'your/topic'
       const message = 'Hello, MQTT!'
       if (!client.value || !client.value.connected) return
@@ -172,7 +172,7 @@ export default {
           console.log(`Message "${message}" published to topic "${topic}"`)
         }
       })
-    }, 5000)
+    }, 5000) */
 
     const handleClick = () => {
       errorMessage.value = ''
@@ -206,6 +206,15 @@ export default {
           }
           console.log('Subscribe successful')
         })
+        const topic = 'echo'
+        const message = 'Echo to me!'
+        client.value.publish(topic, message, (err) => {
+          if (err) {
+            console.error('Error publishing message:', err)
+          } else {
+            console.log(`Message "${message}" published to topic "${topic}"`)
+          }
+        })
       })
       client.value.on('end', () => {
         connectStatus.value = 0
@@ -238,13 +247,21 @@ export default {
           text.value = `${text.value}\n${currentTime} ${topic.toString()} ${message.toString()}`
         }
 
-        const isIPAddress = (str) => {
-          const ipv4Regex = /^(\d{1,3}\.){3}(\d{1,3})$/
-          const ipv6Regex = /^([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$/
-          return ipv4Regex.test(str) || ipv6Regex.test(str)
+        const extractIPAddress = (message) => {
+          const ipv4Match = message.match(/\b(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\b/)
+          const ipv6Match = message.match(/\b([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}\b/)
+
+          if (ipv4Match) {
+            return ipv4Match[0]
+          } else if (ipv6Match) {
+            return ipv6Match[0]
+          }
+
+          return null // Return null if no match is found
         }
-        if (isIPAddress(message.toString())) {
-          piLocalIp.value = message.toString()
+        const ipAddress = extractIPAddress(message.toString())
+        if (ipAddress !== null) {
+          piLocalIp.value = ipAddress
         }
 
         const maxLineBreaks = 10
