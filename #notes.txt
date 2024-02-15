@@ -1,0 +1,38 @@
+ssh johannes@192.168.178.69
+ssh johannes@10.0.0.5
+
+cd Documents/Code
+
+v12.22.12 -> working socket library (current version works aswell)
+
+
+C:\Users\jojok\Documents\Uni\Master\Semester_3\PWP\Exercise4\mosquitto-broker
+mosquitto -v -c test.conf
+
+sudo poweroff
+
+- fritzbox: http://169.254.1.1/
+- raspberry pi AP library: https://www.raspberryconnect.com/projects/65-raspberrypi-hotspot-accesspoints/158-raspberry-pi-auto-wifi-hotspot-switch-direct-connection
+
+
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+country=DE
+
+network={
+        ssid="Soul7"
+        psk="52868737320352956218"
+        key_mgmt=WPA-PSK
+}
+
+network={
+        ssid="iPhoneJohannes"
+        psk="12121212"
+}
+
+HCUM
+wearedoingresearch.
+
+sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
+
+sudo nano Documents/Code/mqtt_client.py

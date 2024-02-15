@@ -10,8 +10,6 @@ mosquitto -v -c test.conf
 
 sudo poweroff
 
-
-
 ________________
 
 Learnings:
@@ -140,9 +138,6 @@ TODO:
 - Server login? -> Slack (projects/desks path)
 - Rainer first room on the right
 
-HCUM
-wearedoingresearch.
-
 Findings:
 - Sensibility: range 11:00 - 16:00 -> no differnece detected
 - when the potentiometer "look a each other" we have a high sensibility and the signal is on for 10 seconds
@@ -152,3 +147,4 @@ Findings:
 -> Problem: chair is like person
 - Wave sensor: https://www.kaufland.de/product/469211330/?kwd=&source=pla&sid=46468412&gad_source=4&gclid=CjwKCAiA_aGuBhACEiwAly57MVAB9JzQNhFAztuSpnhN_l3MX_mTDaciyq3bj8OAYaEmIdtR51h6RBoCwNcQAvD_BwE 
 -> Looks like it can detect the presence of a person (14,50 €)
+

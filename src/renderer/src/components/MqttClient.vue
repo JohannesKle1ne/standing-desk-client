@@ -58,6 +58,11 @@
       </svg>
     </div>
   </div>
+  <div style="display: flex; align-items: center; width: 100%">
+    <h3 style="margin: 10px">Get Logs</h3>
+    <span style="flex-grow: 1"></span>
+    <button @click="getLogs" class="rounded-button">get Logs</button>
+  </div>
   <div v-if="piLocalIp && false" style="display: flex; align-items: center; width: 100%">
     <h3 style="margin: 10px">Local network</h3>
     <span style="flex-grow: 1"></span>
@@ -240,7 +245,7 @@ export default {
       })
 
       client.value.on('message', (topic, message) => {
-        console.log('mesage')
+        console.log('recieved: ' + message.toString())
 
         const currentTime = getCurrentTime()
         if (!text.value.endsWith(currentTime)) {
@@ -347,13 +352,17 @@ network={
       }
     }
 
-    const rebootPi = async () => {
-      try {
-        const response = await axios.post('http://192.168.178.69/reboot')
-        console.log(response.data)
-      } catch (error) {
-        console.error('Error getting data:', error)
-      }
+    const getLogs = async () => {
+      const topic = 'get logs'
+      const message = 'logs!'
+      if (!client.value || !client.value.connected) return
+      client.value.publish(topic, message, (err) => {
+        if (err) {
+          console.error('Error publishing message:', err)
+        } else {
+          console.log(`Sent: "${message}"`)
+        }
+      })
     }
 
     onMounted(() => {})
@@ -374,6 +383,7 @@ network={
       updatePiWifi,
       updatePiWifiAccessPoint,
       connectPiWifi,
+      getLogs,
       connectPiWifiAccessPoint,
       ssid,
       password,
