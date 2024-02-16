@@ -1,0 +1,26 @@
+
+
+RQ: How should an autonomous standing desk behave to encourage users to increase standing time without causing frustration?
+
+Study:
+- between-subjects (different groups of participants -> different independent variable)
+- Participants were randomly assigned to one of three experimental conditions
+- in-the-wild study
+- 1 week baseline
+- 2 weeks with condition
+- research through design
+- pre-study questionnaire that records demographics and qualitative information about how they typically use their standing desks
+- post-study    
+- exit interview (when moved up, when moved down? personality of desk?)
+- usage of standing desk at work as participants prerequisite
+
+Result:
+- participants appriciented when the desk movend when they were away. The they feld it was easy to accept the new position
+
+
+
+Ideas:
+- the desk goes up and down by it's own. The participant decides how long he/she wants to stand each day by setting it in the configuration.
+- meassure "time to down"
+- indepandant variables: motionsensor, motionsensor position, mousetracker, behavior learning system
+- still unsure if withing subjects or repeated meassure
