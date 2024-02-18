@@ -145,8 +145,18 @@ Findings:
 - motion sensor is ON or OFF (not possible to get any momement specific data)
 - Distance sensor:  https://draeger-it.blog/raspberry-pi-zero-2-w-mit-ultraschall-abstandssensor-hc-sr04/
 -> Problem: chair is like person
-- Wave sensor: https://www.kaufland.de/product/469211330/?kwd=&source=pla&sid=46468412&gad_source=4&gclid=CjwKCAiA_aGuBhACEiwAly57MVAB9JzQNhFAztuSpnhN_l3MX_mTDaciyq3bj8OAYaEmIdtR51h6RBoCwNcQAvD_BwE 
+- Radar sensors: 
+        1. HLK-LD2410: https://www.hlktech.net/index.php?id=988
+                - very popular but mostly used with home assistant (does not work with batterie says this guy https://www.youtube.com/watch?v=s-GzUTyIH9c)
+                - could not find raspberry pi tutorial, therefore could be hard to implement
+                - this is a tutorailfor micropython: https://github.com/shabaz123/LD2410/blob/main/ld2410.py. Could be challaging to use it with pi zero
+                - maybe connect to a home assistant sensor via python on raspberry pi? 
+        2. Seeed Studio 24GHz: https://www.kaufland.de/product/469211330/?kwd&source=pla&sid=46468412&gad_source=4&gclid=CjwKCAiA_aGuBhACEiwAly57MVAB9JzQNhFAztuSpnhN_l3MX_mTDaciyq3bj8OAYaEmIdtR51h6RBoCwNcQAvD_BwE
+                - similar but more expensive
+                - also could not find raspberry pi scripts to connet
+
 -> Looks like it can detect the presence of a person (14,50 €)
+- WaveSensor: je höher die frequnez desto langsamer der sensor. Wenn kurze frequnez -> schnells
 
 
 Next Meeting Luke:
@@ -154,4 +164,5 @@ Next Meeting Luke:
 - previous study questionaires
 - Ask about collision detection
 - Figure 8 in Paper. Is it true that manual and interval were actually liked more?
+- how did you handle the case when people watched a zoom meting and did not use their mouse?
 

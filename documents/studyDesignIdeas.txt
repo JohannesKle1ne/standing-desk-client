@@ -21,6 +21,24 @@ Result:
 
 Ideas:
 - the desk goes up and down by it's own. The participant decides how long he/she wants to stand each day by setting it in the configuration.
+-> theoretically no buttonpress needed
+
+- Mode: user can define exact times for the des to move
+- Mode: the user only sets daily duration. Timing is handled by the desk
+- Mode: Learn from the "time to down" and "time to up" from the user to set the fitting length
+
+- Combining motion sensor with screen tracker should cover all activieties at the desk
+
+- Research question: How must a table be designed to create a personal connection to the user?
+- Research question: how can gamification be applied to an automatic standing desk?
+
+- what metrics could be used (quantitaitve data)?
+    1. total amount of standing time (if high -> good)
+    2. time to down (if high -> good)
+    3. manual sit stand transitions (if low -> good)
+    4. standing hours estimation (if low -> good)
+    5. desk height over time (can be compared with other metrics)
+
 - meassure "time to down"
 - indepandant variables: motionsensor, motionsensor position, mousetracker, behavior learning system
 - still unsure if withing subjects or repeated meassure
