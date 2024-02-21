@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Motion Timestamps Visualization</title>
+    <style>
+      .motion-detector-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-left: 200px;
+      }
+      .motion-detected {
+        width: 100px;
+        height: 12px;
+        font-size: 12px;
+        background-color: #4caf50; /* Green background */
+      }
+    </style>
+  </head>
+  <body>
+    <script src="motionLogs.js"></script>
+
+    <span style="position: fixed; top: 0; left: 0; padding: 10px"
+      >9:41, 11:30, 11:57, 13:15 (lunch), 15:05 (coffe), 16:02, 16:14, 17:18, 18:35, 19:10</span
+    >
+
+    <div id="motionDetectorContainer" class="motion-detector-container"></div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        let timestamps = window.motionLogs || []
+
+        const timestampRegex = /\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d+/
+
+        timestamps = timestamps.map((log) => {
+          const match = log.match(timestampRegex)
+          return match ? match[0] : null
+        })
+
+        const motionDetectorContainer = document.getElementById('motionDetectorContainer')
+
+        timestamps.forEach((timestamp, index, array) => {
+          const currentTime = new Date(timestamp).getTime()
+          let previousTime = currentTime
+          if (index > 0) {
+            previousTime = new Date(array[index - 1]).getTime()
+          }
+          const timeDifference = currentTime - previousTime // Difference in milliseconds
+          const secondsDifference = Math.floor(timeDifference / 1000) // Convert to seconds
+
+          // Create div for this timestamp
+          const motionDiv = document.createElement('div')
+          motionDiv.classList.add('motion-detected')
+          // Use the seconds difference to calculate a margin
+          motionDiv.style.marginTop = `${secondsDifference / 20}px` // Adjust this value as needed
+
+          // Create a text node with the formatted timestamp
+          const formattedTimestamp = new Date(timestamp).toLocaleTimeString([], { hour12: false })
+          const timestampTextNode = document.createTextNode(formattedTimestamp)
+
+          // Append the text node to the motion div
+          motionDiv.appendChild(timestampTextNode)
+
+          // Append the motion div to the container
+          motionDetectorContainer.appendChild(motionDiv)
+        })
+      })
+    </script>
+  </body>
+</html>
