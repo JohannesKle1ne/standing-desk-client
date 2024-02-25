@@ -157,15 +157,24 @@ Findings:
 
 -> Looks like it can detect the presence of a person (14,50 €)
 - WaveSensor: je höher die frequnenz desto langsamer der sensor. Wenn kurze frequnez -> schnells
+- the mqtt user name seems not to have any effect on the connection stability
 
 
 Next Meeting Luke:
 - Overleaf template
-- previous study questionnaires
 - Ask about collision detection
 - Figure 8 in Paper. Is it true that manual and interval were actually liked more?
 - how did you handle the case when people watched a zoom meting and did not use their mouse?
+- how did mouse/keyboard tracker work? What if listening to meeting? What if reading?
 
 
-- test222
+Findings:
+- controllers seem to work the same: same code -> same led lights
+-> test table up/down again
+
+
+Ideas:
+- before desk moves a popup apears that asks if its fine to move the desk and gives the posibblity to cancle it.
+- maybe only track clicks and keyboard?
+
 

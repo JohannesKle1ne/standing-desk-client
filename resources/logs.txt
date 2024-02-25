@@ -1,0 +1,6 @@
+2024-02-25 21:33:05 - Motion detected!
+2024-02-25 21:33:35 - Motion detected!
+2024-02-25 21:34:05 - Motion detected!
+2024-02-25 21:34:35 - Motion detected!
+2024-02-25 21:35:05 - Motion detected!
+2024-02-25 21:35:36 - Motion detected!

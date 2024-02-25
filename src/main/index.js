@@ -2,10 +2,59 @@ import { app, shell, BrowserWindow, Tray, Menu, screen } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import { mouse, keyboard, Key } from '@nut-tree/nut-js'
 
+const fs = require('fs')
 const path = require('path')
 
 let tray
+
+// Function to get the current time in the desired format
+function getCurrentTime() {
+  const now = new Date()
+  const formattedTime = now.toISOString().replace('T', ' ').split('.')[0]
+  return formattedTime
+}
+
+// Function to add a new line with the current time to the file
+function addNewLineToFile(filePath) {
+  const currentTime = getCurrentTime()
+  const newLine = `${currentTime} - Motion detected!\n`
+
+  // Read the existing content from the file
+  fs.readFile(filePath, 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error reading file:', err)
+      return
+    }
+
+    // Append the new line to the existing content
+    const updatedContent = data + newLine
+
+    // Write the updated content back to the file
+    fs.writeFile(filePath, updatedContent, 'utf8', (err) => {
+      if (err) {
+        console.error('Error writing to file:', err)
+        return
+      }
+
+      console.log('New line added successfully!')
+    })
+  })
+}
+
+// Example usage
+const filePath = path.join(__dirname, '../../resources/logs.txt')
+
+let lastPosition
+setInterval(async () => {
+  const position = await mouse.getPosition()
+  console.log(position)
+  if (JSON.stringify(lastPosition) !== JSON.stringify(position)) {
+    addNewLineToFile(filePath)
+  }
+  lastPosition = position
+}, 30000)
 
 function createWindow() {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize
