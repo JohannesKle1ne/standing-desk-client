@@ -9,4 +9,4 @@ Problem:
 - Wich those you can easy move you desk up and down depending on you wanting to stand or sit
 - Those desks have shown to reduce the amount of sitting time and therefor reduce helath risks and discomfort for the user
 - However, the problem here is that even when people want to stand more and got a standing desk for themself, they rarly use it in standing more in practics
-- test2
+- test2new
