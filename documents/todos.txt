@@ -178,3 +178,24 @@ Ideas:
 - maybe only track clicks and keyboard?
 
 
+Finding:
+- screen tracker not optimal, because different operating systems and privacy concerns
+- mmWave worth a try
+- Studie: basline + feature testing
+- baseline: controller plugged in to monitor
+- study: different groups with different settings
+- Findings: How much often, hoch much down time? Did users like the table?
+- RQ: Can be similar to Luke ones. 
+- Other Idea: How must a automik des behave to suppport the user of readcihng his stanid goals?
+- How can gamification with an automated standing desk support users by standing more often on their desk?
+- how can an autometad standing desk nudge the user to stand more without causing frustration?
+
+
+Todos:
+- create demo interafce for statistics (rings?)
+- start with slides
+- 
+
+
+
+

@@ -1,0 +1,11 @@
+Introduction:
+- introduce you to my master thesis topic that I just started to work on
+- topic: Integrating an autonomous standing desk into the workplace
+
+Problem:
+- as most of you are aware of, most people sit a lot, especially during their work times
+- Many studies show that spend a lot time sitting each day can lead to negative consequences for health
+- A solution to reduceing the amount of sitting during the workday are height adjustable standing desks
+- Wich those you can easy move you desk up and down depending on you wanting to stand or sit
+- Those desks have shown to reduce the amount of sitting time and therefor reduce helath risks and discomfort for the user
+- However, the problem here is that even when people want to stand more and got a standing desk for themself, they rarly use it in standing more in practics

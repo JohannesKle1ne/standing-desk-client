@@ -47,14 +47,14 @@ function addNewLineToFile(filePath) {
 const filePath = path.join(__dirname, '../../resources/logs.txt')
 
 let lastPosition
-setInterval(async () => {
+/* setInterval(async () => {
   const position = await mouse.getPosition()
   console.log(position)
   if (JSON.stringify(lastPosition) !== JSON.stringify(position)) {
     addNewLineToFile(filePath)
   }
   lastPosition = position
-}, 30000)
+}, 30000) */
 
 function createWindow() {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize

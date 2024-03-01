@@ -58,6 +58,14 @@
       </svg>
     </div>
   </div>
+  <div style="display: flex; justify-content: space-between; align-items: center; width: 80%">
+    <button @click="sendPreset(1)" class="rounded-button">Preset 1</button>
+    <button @click="sendPreset(2)" class="rounded-button">Preset 2</button>
+    <button @click="sendPreset(3)" class="rounded-button">Preset 3</button>
+    <button @click="sendPreset(4)" class="rounded-button">Preset 4</button>
+    <button @click="sendDirection('up')" class="rounded-button">Up</button>
+    <button @click="sendDirection('down')" class="rounded-button">Down</button>
+  </div>
   <div style="display: flex; align-items: center; width: 100%">
     <h3 style="margin: 10px">Get Logs</h3>
     <span style="flex-grow: 1"></span>
@@ -364,6 +372,31 @@ network={
         }
       })
     }
+    const sendPreset = async (number) => {
+      const topic = 'preset' + number
+      const message = 'preset' + number
+      if (!client.value || !client.value.connected) return
+      client.value.publish(topic, message, (err) => {
+        if (err) {
+          console.error('Error publishing message:', err)
+        } else {
+          console.log(`Sent: "${message}"`)
+        }
+      })
+    }
+
+    const sendDirection = async (direction) => {
+      const topic = direction
+      const message = direction
+      if (!client.value || !client.value.connected) return
+      client.value.publish(topic, message, (err) => {
+        if (err) {
+          console.error('Error publishing message:', err)
+        } else {
+          console.log(`Sent: "${message}"`)
+        }
+      })
+    }
 
     onMounted(() => {})
 
@@ -387,7 +420,9 @@ network={
       connectPiWifiAccessPoint,
       ssid,
       password,
-      piLocalIp
+      piLocalIp,
+      sendPreset,
+      sendDirection
     }
   }
 }
