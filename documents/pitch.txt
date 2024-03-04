@@ -8,5 +8,14 @@ Problem:
 - A solution to reduceing the amount of sitting during the workday are height adjustable standing desks
 - Wich those you can easy move you desk up and down depending on you wanting to stand or sit
 - Those desks have shown to reduce the amount of sitting time and therefor reduce helath risks and discomfort for the user
-- However, the problem here is that even when people want to stand more and got a standing desk for themself, they rarly use it in standing more in practics
-- test2new2
+- However, the problem here is that even when people want to stand more and got a standing desk for themself, they rarly use it in standing mode in practics
+- This is exaclty what an autonmpous standing desk can imporve
+- I want to implement a system that moves the users table in samrt way while giving the user full 
+control over the configureation
+- I want to conduct a study that tests this system in the daily life and on real Workplaces with participants that decided to use
+a standing desk while working
+- with my study I want to answer the followong research question:
+RQ: How should an autonomous standing desk be designed, to support the user in reaching his/her standing goals?
+oder
+RQ: How should an autonomous standing desk be designed, to sublty assist users in reaching their desigred standing time?
+
