@@ -189,7 +189,8 @@ Finding:
 - Other Idea: How must a automik des behave to suppport the user of readcihng his stanid goals?
 - How can gamification with an automated standing desk support users by standing more often on their desk?
 - how can an autometad standing desk nudge the user to stand more without causing frustration?
-
+- oder
+RQ: How should an autonomous standing desk be designed, to sublty assist users in reaching their desigred standing time?
 
 Todos:
 - create demo interafce for statistics (rings?)
