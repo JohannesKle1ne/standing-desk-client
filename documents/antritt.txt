@@ -1,0 +1,57 @@
+-- Problem --
+
+- sitting as health risk (negative consequences)
+- solution ->  height-adjustable standing desks.
+- move your desk up and down depending on whether you want to stand or sit
+-> reduce health risks and discomfort for the person.
+But: long term studies have shown that even when people own a standing desk, they rarely use it in practice.
+
+-- Solution --
+
+Autonomous standing desks are one potential solution -> they can increase the overall standing time.
+-> planning to implement such a system that is able to move the user's desk autonomously and can decide for the user to move or up.
+RQ: How should an autonomous standing desk be designed to support the user in reaching the desired amount of standing time?
+
+
+-- Design Goals --
+
+Non-interrupting movement:
+- trivial approach, not perfect (interval mode)
+- users dislike being interrupted
+-> finding the right timing for desk movement
+- study Luke Haliburton and colleagues showed that users favored desk movement during breaks -> presence detection extended in new implementation
+
+Desk learns from the user:
+- understand behavioral patterns of the user and adapt to them
+- example: person likes to sit in the morning but stand in the afternoon
+
+Intuitive setup and configuration
+- to be installed at personal workplace (in the wild study)
+
+user data visualization
+- users can track their progress of standing time
+
+
+-- Implementation --
+
+- builds upon existing project of Luke Haliburton and colleagues
+- Motion/presence sensor: can be used to detect if the user is currently sitting at the desk
+-> find time intervals where the user is not present at the desk (trigger desk movement)
+- Desk controller (via Ethernet cables, it can be connected to the desk and keypad)
+- Status LEDs on the controller to show the current state (connected, not connected, showing if motion detected)
+
+-- Study --
+
+- Participants should be standing desk users
+- Set up the controller on their workplace.
+- manual movement of the desk (at least one week).
+- controller usage for 1-2 weeks
+
+
+-- Open questions --
+
+Study duration?
+Study design (between subjects or the same configuration for all)?
+Type of motion/presence sensor using with Pi Zero?
+Degree of freedom for personal configuration?
+
