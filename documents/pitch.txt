@@ -1,37 +1,36 @@
-Introduction:
+-- Introduction --
 
 Introduce you to my master thesis topic that I just started to work on.
 Topic: Integrating an autonomous standing desk into the workplace.
-Problem:
+
+-- Problem --
 
 As most of you are aware, most people sit a lot, especially during their work times.
 Many studies show that spending a lot of time sitting each day can lead to negative consequences for health.
+
 A solution to reducing the amount of sitting during the workday is height-adjustable standing desks.
 With those, you can easily move your desk up and down depending on whether you want to stand or sit.
-Those desks have shown to reduce the amount of sitting time and therefore reduce health risks and discomfort for the user.
-However, the problem here is that even when people want to stand more and got a standing desk for themselves, they rarely use it in standing mode in practice.
+Those desks have shown to reduce the amount of sitting time and therefore reduce health risks and discomfort for the person.
 
-Solution:
+However, logterm studies have shown that even when people own a standing desk, they rarely use it in practice.
 
-This is exactly what an autonomous standing desk can improve.
-I want to implement a system that is able to move the user's desk autonomously while still giving the option to control it manually.
-I want to conduct a study that tests this system in daily life and on real workplaces with participants who decided to use a standing desk while working.
-With my study, I want to answer the following research question:
+-- Solution --
+
+autonomous standing desks are one potential solution to this problem as they can increase the overall standing time.
+-> I plan to implement such a system that is able to move the user's desk autonomously and can decide for the user to move or up.
 RQ: How should an autonomous standing desk be designed to support the user in reaching the desired amount of standing time?
-Implementation (Components):
-
-
 
 
 -- Design Goals --
 
-How should the tables behave?
+How should the desk behave?
 - trivial approach not working
 
 Non-interrupting movement:
 - users dislike being interrupted
-- find the right timing for table movement.
-- study Luke Haliburton and his colleagues (from this research group) showed that users favored desk movement during breaks
+- find the right timing for desk movement.
+- study Luke Haliburton and his colleagues (from this research group) showed that users favored desk movement during breaks -> usful for my implemention
+
 
 Desk learns from the user:
 - understand behavioral patterns of the user and adapt to them
@@ -44,26 +43,30 @@ user data visualization
 - users can track their progress of standing time
 
 
+-- Implementation --
 
-My system will build upon an existing project of Luke Haliburton and his colleagues (from this research group).
-Desk controller (via Ethernet cables, it can be connected to the table and keypad).
-The desk controller is able to move the desk up or down or to a specific preset that was set by the user.
+- existing project of Luke Haliburton and his colleagues (from this research group)
+- Desk controller (via Ethernet cables, it can be connected to the desk and keypad).
+- The desk controller is able to move the desk up or down or to a specific preset that was set by the user.
 
 Motion/presence sensor: can be used to detect if the user is currently sitting at the desk.
-One promising approach is to use a motion sensor at the table that can find time intervals where the user is not present at the desk.
+One promising approach is to use a motion sensor at the desk that can find time intervals where the user is not present at the desk.
 This interval can then be used to move the desk up without interrupting any user task.
 
 Status LEDs on the controller to show the current state (connected, not connected, showing if motion detected).
-Additionally, we will have a dashboard on the user's personal computer that is able to display data from the table and can be used to configure the table-moving behavior.
+
+Additionally, we will have a dashboard on the user's personal computer that is able to display data from the desk and can be used to configure the desk-moving behavior.
 
 
-Study:
+-- Study --
 
 Try to recruit participants who have already decided to use a standing desk.
 Set up the controller on their workplace.
 In my study, I plan to have a baseline study to gather insights about manual movement of the desk (at least one week).
 After that, participants will install the system and use it for some weeks (between subjects or all have the same configuration).
-Open questions:
+
+
+-- Open questions --
 
 Study duration?
 Study design (between subjects or the same configuration)?
