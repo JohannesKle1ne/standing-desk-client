@@ -45,8 +45,9 @@ user data visualization
 
 -- Implementation --
 
-- existing project of Luke Haliburton and his colleagues (from this research group)
+- existing project of Luke and his colleagues (from this research group)
 - Desk controller (via Ethernet cables, it can be connected to the desk and keypad).
+- simulte button pressed an tell to motor to move up or down
 - The desk controller is able to move the desk up or down or to a specific preset that was set by the user.
 
 Motion/presence sensor: can be used to detect if the user is currently sitting at the desk.

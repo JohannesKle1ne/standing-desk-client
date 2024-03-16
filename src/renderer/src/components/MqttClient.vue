@@ -1,126 +1,263 @@
 <template>
-  <div style="display: flex; align-items: center; width: 100%">
-    <h3 style="margin: 10px">MQTT</h3>
-    <span style="flex-grow: 1"></span>
-    <button @click="handleClick" class="rounded-button">
-      {{ connectStatus === 2 ? 'disconnect' : 'connect' }}
-    </button>
-    <div
-      style="
-        margin: 10px;
-        margin-left: 7px;
-        width: 21.5px;
-        height: 21.5px;
-        overflow: hidden;
-        border-radius: 50%;
-        background-color: white;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: #2f3241;
-      "
-      :style="{
-        backgroundColor: connectStatus === 0 ? 'white' : connectStatus === 1 ? 'white' : 'green'
-      }"
-    >
-      <!-- <svg v-if="connectStatus === 0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <div v-if="true" style="position: relative; width: 100%; height: 100vh">
+    <ConnectStatus @disconnect="disconnect" @connect="connect" :status="connectStatus" />
+    <TableControls @buttonClicked="publish" />
+  </div>
+
+  <div v-else>
+    <div style="display: flex; align-items: center; width: 100%">
+      <TableControls></TableControls>
+      <h3 style="margin: 10px">MQTT</h3>
+      <span style="flex-grow: 1"></span>
+
+      <div
+        style="
+          margin: 10px;
+          margin-left: 7px;
+          width: 21.5px;
+          height: 21.5px;
+          overflow: hidden;
+          border-radius: 50%;
+          background-color: white;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: #2f3241;
+        "
+        :style="{
+          backgroundColor: connectStatus === 0 ? 'white' : connectStatus === 1 ? 'white' : 'green'
+        }"
+      >
+        <!-- <svg v-if="connectStatus === 0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
         <path d="M9,7L11,12L9,17H11L12,14.5L13,17H15L13,12L15,7H13L12,9.5L11,7H9Z" fill="#2f3241" />
       </svg> -->
-      <svg
-        v-if="connectStatus === 0"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        width="12"
-        height="12"
-      >
-        <path
-          d="M16,9V11H8V9H10V8H4V10H2V2H4V4H12A2,2 0 0,1 14,6V9H16M10,15V18A2,2 0 0,0 12,20H20V22H22V14H20V16H14V15H16V13H8V15H10Z"
-          fill="#2f3241"
+        <svg
+          v-if="connectStatus === 0"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          width="12"
+          height="12"
+        >
+          <path
+            d="M16,9V11H8V9H10V8H4V10H2V2H4V4H12A2,2 0 0,1 14,6V9H16M10,15V18A2,2 0 0,0 12,20H20V22H22V14H20V16H14V15H16V13H8V15H10Z"
+            fill="#2f3241"
+          />
+        </svg>
+        <img
+          v-if="connectStatus === 1"
+          src="../assets/Spinner-1s-200px.gif"
+          alt="Round Image"
+          style="width: 100%; height: 100%; object-fit: cover"
         />
-      </svg>
-      <img
-        v-if="connectStatus === 1"
-        src="../assets/Spinner-1s-200px.gif"
-        alt="Round Image"
-        style="width: 100%; height: 100%; object-fit: cover"
-      />
-      <svg
-        v-if="connectStatus === 2"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        width="16"
-        height="16"
-      >
-        <path
-          d="M9,20.42L2.79,14.21L5.62,11.38L9,14.77L18.88,4.88L21.71,7.71L9,20.42Z"
-          fill="#2f3241"
-        />
-      </svg>
+        <svg
+          v-if="connectStatus === 2"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          width="16"
+          height="16"
+        >
+          <path
+            d="M9,20.42L2.79,14.21L5.62,11.38L9,14.77L18.88,4.88L21.71,7.71L9,20.42Z"
+            fill="#2f3241"
+          />
+        </svg>
+      </div>
+    </div>
+
+    <div v-if="piLocalIp && false" style="display: flex; align-items: center; width: 100%">
+      <h3 style="margin: 10px">Local network</h3>
+      <span style="flex-grow: 1"></span>
+      <button @click="updatePiWifi" class="rounded-button">update pi wifi</button>
+    </div>
+
+    <div style="display: flex; align-items: center; width: 100%">
+      <h3 style="margin: 10px">Access point network</h3>
+      <span style="flex-grow: 1"></span>
+      <button @click="updatePiWifiAccessPoint" class="rounded-button">update pi wifi</button>
+    </div>
+    <div style="display: flex; align-items: center; width: 100%">
+      <h3 style="margin: 10px">Access point network</h3>
+      <span style="flex-grow: 1"></span>
+      <button @click="connectPiWifiAccessPoint" class="rounded-button">
+        connect pi to given wifi
+      </button>
+    </div>
+    <div style="display: flex; align-items: center; width: 100%">
+      <label for="ssid">SSID:</label>
+      <input v-model="ssid" id="ssid" />
+
+      <label for="password">Password:</label>
+      <input v-model="password" id="password" />
+    </div>
+    <div
+      style="
+        margin-left: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: start;
+        width: 100%;
+        color: white;
+        font-size: 12px;
+      "
+    >
+      {{ errorMessage }}
     </div>
   </div>
-  <div style="display: flex; justify-content: space-between; align-items: center; width: 80%">
-    <button @click="sendPreset(1)" class="rounded-button">Preset 1</button>
-    <button @click="sendPreset(2)" class="rounded-button">Preset 2</button>
-    <button @click="sendPreset(3)" class="rounded-button">Preset 3</button>
-    <button @click="sendPreset(4)" class="rounded-button">Preset 4</button>
-    <button @click="sendDirection('up')" class="rounded-button">Up</button>
-    <button @click="sendDirection('down')" class="rounded-button">Down</button>
-  </div>
-  <div style="display: flex; align-items: center; width: 100%">
-    <h3 style="margin: 10px">Get Logs</h3>
-    <span style="flex-grow: 1"></span>
-    <button @click="getLogs" class="rounded-button">get Logs</button>
-  </div>
-  <div v-if="piLocalIp && false" style="display: flex; align-items: center; width: 100%">
-    <h3 style="margin: 10px">Local network</h3>
-    <span style="flex-grow: 1"></span>
-    <button @click="updatePiWifi" class="rounded-button">update pi wifi</button>
-  </div>
-  <div v-if="piLocalIp && false" style="display: flex; align-items: center; width: 100%">
-    <h3 style="margin: 10px">Local network</h3>
-    <span style="flex-grow: 1"></span>
-    <button @click="connectPiWifi" class="rounded-button">connect pi to given wifi</button>
-  </div>
-  <div style="display: flex; align-items: center; width: 100%">
-    <h3 style="margin: 10px">Access point network</h3>
-    <span style="flex-grow: 1"></span>
-    <button @click="updatePiWifiAccessPoint" class="rounded-button">update pi wifi</button>
-  </div>
-  <div style="display: flex; align-items: center; width: 100%">
-    <h3 style="margin: 10px">Access point network</h3>
-    <span style="flex-grow: 1"></span>
-    <button @click="connectPiWifiAccessPoint" class="rounded-button">
-      connect pi to given wifi
-    </button>
-  </div>
-  <div style="display: flex; align-items: center; width: 100%">
-    <label for="ssid">SSID:</label>
-    <input v-model="ssid" id="ssid" />
-
-    <label for="password">Password:</label>
-    <input v-model="password" id="password" />
-  </div>
-  <div
-    style="
-      margin-left: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: start;
-      width: 100%;
-      color: white;
-      font-size: 12px;
-    "
-  >
-    {{ errorMessage }}
-  </div>
-  <!--   <h3>{{ url }}</h3>
- -->
-  <!--  <button @click="connect" style="color: black">Connect</button>
-  <h3>{{ connectStatus }}</h3>-->
-  <div style="margin: 10px 10px 10px 10px">
-    <span style="color: white; white-space: pre-line" @click="connect">{{ text }}</span>
-  </div>
 </template>
+
+<script setup>
+import TableControls from './TableControls.vue'
+import ConnectStatus from './ConnectStatus.vue'
+
+import { ref, onMounted } from 'vue'
+import mqtt from 'mqtt'
+import axios from 'axios'
+
+const options = {
+  protocol: 'wss',
+  username: 'desk1',
+  password: '1q2w3e4r-P'
+}
+
+//const mosquittoUrl = 'ws://192.168.178.23:9001'
+
+const url = 'wss://c05856853e9043bea25080c1d6fc5a38.s2.eu.hivemq.cloud:8884/mqtt'
+
+const client = ref(null)
+const text = ref('')
+const payload = ref({})
+const connectStatus = ref(0)
+const errorMessage = ref('')
+const ssid = ref('Soul7')
+const password = ref('52868737320352956218')
+const piLocalIp = ref(null)
+
+onMounted(() => {
+  connect()
+})
+
+const disconnect = () => {
+  if (!client.value) return
+  connectStatus.value = 1
+  client.value.end()
+}
+
+const connect = () => {
+  connectStatus.value = 1
+  piLocalIp.value = null
+  client.value = mqtt.connect(url, options)
+  client.value.on('connect', () => {
+    console.log('connected')
+    connectStatus.value = 2
+
+    // Subscribe to broker
+    client.value.subscribe('#', { qos: 0 }, (error) => {
+      if (error) {
+        console.log('Subscribe to topics error', error)
+        return
+      }
+      console.log('Subscribe successful')
+    })
+    const topic = 'echo'
+    const message = 'Echo to me!'
+    client.value.publish(topic, message, (err) => {
+      if (err) {
+        console.error('Error publishing message:', err)
+      } else {
+        console.log(`Message "${message}" published to topic "${topic}"`)
+      }
+    })
+  })
+  client.value.on('end', () => {
+    connectStatus.value = 0
+    console.log('MQTT client is fully disconnected')
+  })
+  client.value.on('offline', () => {
+    console.log('MQTT client is offline')
+  })
+  client.value.on('error', (err) => {
+    console.log('error')
+    console.log('Connection error: ', err.message)
+    console.log('Connection error: ', err.code)
+    console.log('Connection error: ', err.stack)
+    errorMessage.value = err.message
+
+    client.value.end()
+  })
+
+  client.value.on('reconnect', () => {
+    console.log('reconnect')
+
+    connectStatus.value = 1
+  })
+
+  client.value.on('message', (topic, message) => {
+    console.log('recieved: ' + message.toString())
+
+    const extractIPAddress = (message) => {
+      const ipv4Match = message.match(/\b(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\b/)
+      const ipv6Match = message.match(/\b([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}\b/)
+
+      if (ipv4Match) {
+        return ipv4Match[0]
+      } else if (ipv6Match) {
+        return ipv6Match[0]
+      }
+
+      return null // Return null if no match is found
+    }
+    const ipAddress = extractIPAddress(message.toString())
+    if (ipAddress !== null) {
+      piLocalIp.value = ipAddress
+    }
+  })
+}
+
+const updatePiWifiAccessPoint = async () => {
+  const fileContent = `
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+country=DE
+
+network={
+   ssid="${ssid.value}"
+   psk="${password.value}"
+   key_mgmt=WPA-PSK
+}`
+
+  //10.0.0.5
+  //192.168.178.69
+  try {
+    const response = await axios.post('http://10.0.0.5/update_wifi', {
+      wpaSupplicant: fileContent
+    })
+    console.log(response.data)
+  } catch (error) {
+    console.error('Error getting data:', error)
+  }
+}
+
+const connectPiWifiAccessPoint = async () => {
+  try {
+    const response = await axios.post('http://10.0.0.5/connect_wifi')
+    console.log(response.data)
+  } catch (error) {
+    console.error('Error getting data:', error)
+  }
+}
+
+const publish = async (message) => {
+  const topic = 'X'
+  if (!client.value || !client.value.connected) return
+  client.value.publish(topic, message, (err) => {
+    if (err) {
+      console.error('Error publishing message:', err)
+    } else {
+      console.log(`Sent: "${message}"`)
+    }
+  })
+}
+</script>
 
 <style>
 .rounded-button {
@@ -140,290 +277,10 @@
 
 /* Add a hover effect */
 .rounded-button:hover {
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 .rounded-button:focus {
   outline: none; /* Removes the default focus outline */
   /* Add any other styles you want to remove for the focused state */
 }
 </style>
-
-<script>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
-import mqtt from 'mqtt'
-import axios from 'axios'
-
-const options = {
-  protocol: 'wss',
-  username: 'desk1',
-  password: '1q2w3e4r-P'
-}
-
-const mosquittoUrl = 'ws://192.168.178.23:9001'
-
-const url = 'wss://c05856853e9043bea25080c1d6fc5a38.s2.eu.hivemq.cloud:8884/mqtt'
-
-export default {
-  setup() {
-    const client = ref(null)
-    const text = ref('')
-    const payload = ref({})
-    const connectStatus = ref(0)
-    const errorMessage = ref('')
-    const ssid = ref('Soul7')
-    const password = ref('52868737320352956218')
-    const piLocalIp = ref(null)
-
-    /*  setInterval(() => {
-      const topic = 'your/topic'
-      const message = 'Hello, MQTT!'
-      if (!client.value || !client.value.connected) return
-      client.value.publish(topic, message, (err) => {
-        if (err) {
-          console.error('Error publishing message:', err)
-        } else {
-          console.log(`Message "${message}" published to topic "${topic}"`)
-        }
-      })
-    }, 5000) */
-
-    const handleClick = () => {
-      errorMessage.value = ''
-      console.log(connectStatus.value)
-      if (connectStatus.value === 2) {
-        disconnect()
-        return
-      }
-      connect()
-    }
-
-    const disconnect = () => {
-      if (!client.value) return
-      connectStatus.value = 1
-      client.value.end()
-    }
-
-    const connect = () => {
-      connectStatus.value = 1
-      piLocalIp.value = null
-      client.value = mqtt.connect(url, options)
-      client.value.on('connect', () => {
-        console.log('connected')
-        connectStatus.value = 2
-
-        // Subscribe to broker
-        client.value.subscribe('#', { qos: 0 }, (error) => {
-          if (error) {
-            console.log('Subscribe to topics error', error)
-            return
-          }
-          console.log('Subscribe successful')
-        })
-        const topic = 'echo'
-        const message = 'Echo to me!'
-        client.value.publish(topic, message, (err) => {
-          if (err) {
-            console.error('Error publishing message:', err)
-          } else {
-            console.log(`Message "${message}" published to topic "${topic}"`)
-          }
-        })
-      })
-      client.value.on('end', () => {
-        connectStatus.value = 0
-        console.log('MQTT client is fully disconnected')
-      })
-      client.value.on('offline', () => {
-        console.log('MQTT client is offline')
-      })
-      client.value.on('error', (err) => {
-        console.log('error')
-        console.log('Connection error: ', err.message)
-        console.log('Connection error: ', err.code)
-        console.log('Connection error: ', err.stack)
-        errorMessage.value = err.message
-
-        client.value.end()
-      })
-
-      client.value.on('reconnect', () => {
-        console.log('reconnect')
-
-        connectStatus.value = 1
-      })
-
-      client.value.on('message', (topic, message) => {
-        console.log('recieved: ' + message.toString())
-
-        const currentTime = getCurrentTime()
-        if (!text.value.endsWith(currentTime)) {
-          text.value = `${text.value}\n${currentTime} ${topic.toString()} ${message.toString()}`
-        }
-
-        const extractIPAddress = (message) => {
-          const ipv4Match = message.match(/\b(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\b/)
-          const ipv6Match = message.match(/\b([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}\b/)
-
-          if (ipv4Match) {
-            return ipv4Match[0]
-          } else if (ipv6Match) {
-            return ipv6Match[0]
-          }
-
-          return null // Return null if no match is found
-        }
-        const ipAddress = extractIPAddress(message.toString())
-        if (ipAddress !== null) {
-          piLocalIp.value = ipAddress
-        }
-
-        const maxLineBreaks = 10
-        // Ensure text contains a maximum of 10 line breaks
-        const lines = text.value.split('\n')
-        if (lines.length > maxLineBreaks) {
-          // Remove time substrings at the beginning of the text
-          const filteredLines = lines.slice(lines.length - maxLineBreaks)
-          text.value = filteredLines.join('\n')
-        }
-      })
-    }
-
-    const getCurrentTime = () => {
-      const now = new Date()
-      const hours = now.getHours().toString().padStart(2, '0')
-      const minutes = now.getMinutes().toString().padStart(2, '0')
-      const seconds = now.getSeconds().toString().padStart(2, '0')
-
-      return `${hours}:${minutes}:${seconds}`
-    }
-
-    const updatePiWifi = async () => {
-      const fileContent = `
-ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
-update_config=1
-country=DE
-
-network={
-   ssid="${ssid.value}"
-   psk="${password.value}"
-   key_mgmt=WPA-PSK
-}`
-      try {
-        const response = await axios.post(`http://${piLocalIp.value}/update_wifi`, {
-          wpaSupplicant: fileContent
-        })
-        console.log(response.data)
-      } catch (error) {
-        console.error('Error getting data:', error)
-      }
-    }
-
-    const updatePiWifiAccessPoint = async () => {
-      const fileContent = `
-ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
-update_config=1
-country=DE
-
-network={
-   ssid="${ssid.value}"
-   psk="${password.value}"
-   key_mgmt=WPA-PSK
-}`
-
-      //10.0.0.5
-      //192.168.178.69
-      try {
-        const response = await axios.post('http://10.0.0.5/update_wifi', {
-          wpaSupplicant: fileContent
-        })
-        console.log(response.data)
-      } catch (error) {
-        console.error('Error getting data:', error)
-      }
-    }
-
-    const connectPiWifi = async () => {
-      try {
-        const response = await axios.post(`http://${piLocalIp.value}/connect_wifi`)
-        console.log(response.data)
-      } catch (error) {
-        console.error('Error getting data:', error)
-      }
-    }
-
-    const connectPiWifiAccessPoint = async () => {
-      try {
-        const response = await axios.post('http://10.0.0.5/connect_wifi')
-        console.log(response.data)
-      } catch (error) {
-        console.error('Error getting data:', error)
-      }
-    }
-
-    const getLogs = async () => {
-      const topic = 'get logs'
-      const message = 'logs!'
-      if (!client.value || !client.value.connected) return
-      client.value.publish(topic, message, (err) => {
-        if (err) {
-          console.error('Error publishing message:', err)
-        } else {
-          console.log(`Sent: "${message}"`)
-        }
-      })
-    }
-    const sendPreset = async (number) => {
-      const topic = 'preset' + number
-      const message = 'preset' + number
-      if (!client.value || !client.value.connected) return
-      client.value.publish(topic, message, (err) => {
-        if (err) {
-          console.error('Error publishing message:', err)
-        } else {
-          console.log(`Sent: "${message}"`)
-        }
-      })
-    }
-
-    const sendDirection = async (direction) => {
-      const topic = direction
-      const message = direction
-      if (!client.value || !client.value.connected) return
-      client.value.publish(topic, message, (err) => {
-        if (err) {
-          console.error('Error publishing message:', err)
-        } else {
-          console.log(`Sent: "${message}"`)
-        }
-      })
-    }
-
-    onMounted(() => {})
-
-    onBeforeUnmount(() => {
-      /*   if (client.value) {
-        client.value.end()
-      } */
-    })
-
-    return {
-      url,
-      handleClick,
-      connectStatus,
-      text,
-      payload,
-      errorMessage,
-      updatePiWifi,
-      updatePiWifiAccessPoint,
-      connectPiWifi,
-      getLogs,
-      connectPiWifiAccessPoint,
-      ssid,
-      password,
-      piLocalIp,
-      sendPreset,
-      sendDirection
-    }
-  }
-}
-</script>

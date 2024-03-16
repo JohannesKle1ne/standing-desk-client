@@ -193,9 +193,6 @@ Finding:
 RQ: How should an autonomous standing desk be designed, to sublty assist users in reaching their desigred standing time?
 
 Todos:
-- create demo interafce for statistics (rings?)
-- start with slides
-- 
 
 
 

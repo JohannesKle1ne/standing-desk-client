@@ -51,7 +51,7 @@ user data visualization
 -- Open questions --
 
 Study duration?
-Study design (between subjects or the same configuration for all)?
+Study design (within study design and same configuration for all)?
 Type of motion/presence sensor using with Pi Zero?
 Degree of freedom for personal configuration?
 
