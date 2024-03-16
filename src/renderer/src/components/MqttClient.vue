@@ -1,69 +1,11 @@
 <template>
   <div v-if="true" style="position: relative; width: 100%; height: 100vh">
-    <ConnectStatus @disconnect="disconnect" @connect="connect" :status="connectStatus" />
+    <ConnectStatus @disconnect="disconnect" @connect="connect" :status="mqttStatus" />
+    <DeskStatus @lookForDesk="lookForDesk" :status="deskStatus" />
     <TableControls @buttonClicked="publish" />
   </div>
 
   <div v-else>
-    <div style="display: flex; align-items: center; width: 100%">
-      <TableControls></TableControls>
-      <h3 style="margin: 10px">MQTT</h3>
-      <span style="flex-grow: 1"></span>
-
-      <div
-        style="
-          margin: 10px;
-          margin-left: 7px;
-          width: 21.5px;
-          height: 21.5px;
-          overflow: hidden;
-          border-radius: 50%;
-          background-color: white;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          color: #2f3241;
-        "
-        :style="{
-          backgroundColor: connectStatus === 0 ? 'white' : connectStatus === 1 ? 'white' : 'green'
-        }"
-      >
-        <!-- <svg v-if="connectStatus === 0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-        <path d="M9,7L11,12L9,17H11L12,14.5L13,17H15L13,12L15,7H13L12,9.5L11,7H9Z" fill="#2f3241" />
-      </svg> -->
-        <svg
-          v-if="connectStatus === 0"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          width="12"
-          height="12"
-        >
-          <path
-            d="M16,9V11H8V9H10V8H4V10H2V2H4V4H12A2,2 0 0,1 14,6V9H16M10,15V18A2,2 0 0,0 12,20H20V22H22V14H20V16H14V15H16V13H8V15H10Z"
-            fill="#2f3241"
-          />
-        </svg>
-        <img
-          v-if="connectStatus === 1"
-          src="../assets/Spinner-1s-200px.gif"
-          alt="Round Image"
-          style="width: 100%; height: 100%; object-fit: cover"
-        />
-        <svg
-          v-if="connectStatus === 2"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          width="16"
-          height="16"
-        >
-          <path
-            d="M9,20.42L2.79,14.21L5.62,11.38L9,14.77L18.88,4.88L21.71,7.71L9,20.42Z"
-            fill="#2f3241"
-          />
-        </svg>
-      </div>
-    </div>
-
     <div v-if="piLocalIp && false" style="display: flex; align-items: center; width: 100%">
       <h3 style="margin: 10px">Local network</h3>
       <span style="flex-grow: 1"></span>
@@ -108,8 +50,9 @@
 <script setup>
 import TableControls from './TableControls.vue'
 import ConnectStatus from './ConnectStatus.vue'
+import DeskStatus from './DeskStatus.vue'
 
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import mqtt from 'mqtt'
 import axios from 'axios'
 
@@ -126,7 +69,18 @@ const url = 'wss://c05856853e9043bea25080c1d6fc5a38.s2.eu.hivemq.cloud:8884/mqtt
 const client = ref(null)
 const text = ref('')
 const payload = ref({})
-const connectStatus = ref(0)
+const deskAlive = ref(false)
+const deskSearch = ref(false)
+const mqttStatus = ref(0)
+const deskStatus = computed(() => {
+  if (mqttStatus.value === 2 && deskAlive.value) {
+    return 2
+  }
+  if (mqttStatus.value === 2 && !deskAlive.value && deskSearch.value) {
+    return 1
+  }
+  return 0
+})
 const errorMessage = ref('')
 const ssid = ref('Soul7')
 const password = ref('52868737320352956218')
@@ -138,17 +92,28 @@ onMounted(() => {
 
 const disconnect = () => {
   if (!client.value) return
-  connectStatus.value = 1
+  mqttStatus.value = 1
   client.value.end()
 }
 
+const lookForDesk = () => {
+  publish('confirm_presence')
+  deskSearch.value = true
+  console.log('set true')
+  setTimeout(() => {
+    deskSearch.value = false
+    console.log('set false')
+  }, 2000)
+  //deskAlive.value = true
+}
+
 const connect = () => {
-  connectStatus.value = 1
+  mqttStatus.value = 1
   piLocalIp.value = null
   client.value = mqtt.connect(url, options)
   client.value.on('connect', () => {
     console.log('connected')
-    connectStatus.value = 2
+    mqttStatus.value = 2
 
     // Subscribe to broker
     client.value.subscribe('#', { qos: 0 }, (error) => {
@@ -169,7 +134,7 @@ const connect = () => {
     })
   })
   client.value.on('end', () => {
-    connectStatus.value = 0
+    mqttStatus.value = 0
     console.log('MQTT client is fully disconnected')
   })
   client.value.on('offline', () => {
@@ -188,11 +153,15 @@ const connect = () => {
   client.value.on('reconnect', () => {
     console.log('reconnect')
 
-    connectStatus.value = 1
+    mqttStatus.value = 1
   })
 
   client.value.on('message', (topic, message) => {
-    console.log('recieved: ' + message.toString())
+    if (message === 'present') {
+      deskAlive.value = true
+    }
+
+    console.log('received: ' + message.toString())
 
     const extractIPAddress = (message) => {
       const ipv4Match = message.match(/\b(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\b/)

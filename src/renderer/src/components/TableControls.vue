@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>Table Controls</h1>
-    <div style="display: flex; justify-content: space-between; align-items: center; width: 80%">
+    <div style="display: flex; justify-content: space-between; align-items: center; width: 60%">
       <button v-for="b in buttons" @click="b.onClick" class="rounded-button">{{ b.title }}</button>
     </div>
   </div>

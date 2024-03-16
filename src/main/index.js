@@ -7,6 +7,49 @@ import { mouse, keyboard, Key } from '@nut-tree/nut-js'
 const fs = require('fs')
 const path = require('path')
 
+const fileExists = (path) => {
+  fs.access(path, fs.constants.F_OK, (err) => {
+    if (err) {
+      return false
+    } else {
+      return true
+    }
+  })
+}
+
+// Function to generate a random ID
+function generateRandomId(length) {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  let result = ''
+  const charactersLength = characters.length
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength))
+  }
+  return result
+}
+
+// File path
+const filePathToUserInfo = path.join(__dirname, '../../resources/user_info.json')
+
+if (!fileExists(filePathToUserInfo)) {
+  const randomId = generateRandomId(10)
+  const userInfo = {
+    id: randomId
+  }
+
+  const data = JSON.stringify(userInfo)
+
+  fs.writeFile(filePathToUserInfo, data, 'utf8', (err) => {
+    if (err) {
+      console.error('Error writing to user_info.json:', err)
+    } else {
+      console.log('New ID saved to user_info.json')
+    }
+  })
+} else {
+  console.log('user_config exists!')
+}
+
 let tray
 
 // Function to get the current time in the desired format
@@ -59,7 +102,7 @@ let lastPosition
 function createWindow() {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize
 
-  const windowWidth = 800
+  const windowWidth = 1000
   const windowHeight = 600
 
   // Calculate the position for the bottom right corner
