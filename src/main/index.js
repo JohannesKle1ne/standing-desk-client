@@ -1,21 +1,47 @@
-import { app, shell, BrowserWindow, Tray, Menu, screen } from 'electron'
+import { app, shell, BrowserWindow, Tray, Menu, screen, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { mouse, keyboard, Key } from '@nut-tree/nut-js'
 
-const fs = require('fs')
+const fs = require('fs').promises
 const path = require('path')
 
-const fileExists = (path) => {
-  fs.access(path, fs.constants.F_OK, (err) => {
-    if (err) {
-      return false
-    } else {
-      return true
-    }
-  })
+const filePathToUserInfo = path.join(__dirname, '../../resources/user_info.json')
+
+const setMissingId = async () => {
+  const id = await getId()
+  if (id) return
+
+  const randomId = generateRandomId(10)
+  const userInfo = {
+    id: randomId
+  }
+  const data = JSON.stringify(userInfo)
+  console.log('write new id to file')
+  await fs.writeFile(filePathToUserInfo, data, 'utf8')
 }
+
+const getId = async () => {
+  try {
+    const data = await fs.readFile(filePathToUserInfo, 'utf8')
+    const obj = JSON.parse(data)
+    return obj.id
+  } catch (error) {
+    console.log('id could not be read')
+  }
+}
+
+const getIdFromFile = async () => {
+  await setMissingId()
+  return await getId()
+}
+/* 
+;(async () => {
+  await setMissingId()
+  const id = await getId()
+  console.log('Id: ' + id)
+})() */
 
 // Function to generate a random ID
 function generateRandomId(length) {
@@ -26,28 +52,6 @@ function generateRandomId(length) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength))
   }
   return result
-}
-
-// File path
-const filePathToUserInfo = path.join(__dirname, '../../resources/user_info.json')
-
-if (!fileExists(filePathToUserInfo)) {
-  const randomId = generateRandomId(10)
-  const userInfo = {
-    id: randomId
-  }
-
-  const data = JSON.stringify(userInfo)
-
-  fs.writeFile(filePathToUserInfo, data, 'utf8', (err) => {
-    if (err) {
-      console.error('Error writing to user_info.json:', err)
-    } else {
-      console.log('New ID saved to user_info.json')
-    }
-  })
-} else {
-  console.log('user_config exists!')
 }
 
 let tray
@@ -181,6 +185,7 @@ function createWindow() {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
+  ipcMain.handle('getId', getIdFromFile)
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
 

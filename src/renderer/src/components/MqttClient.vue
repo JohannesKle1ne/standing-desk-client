@@ -1,7 +1,7 @@
 <template>
   <div v-if="true" style="position: relative; width: 100%; height: 100vh; display: flow-root">
     <ConnectStatus @disconnect="disconnect" @connect="connect" :status="mqttStatus" />
-    <DeskStatus @lookForDesk="lookForDesk" :status="deskStatus" />
+    <DeskStatus :status="deskStatus" />
     <TableControls @buttonClicked="publish" :height="height" />
   </div>
 
@@ -68,8 +68,9 @@ const url = 'wss://c05856853e9043bea25080c1d6fc5a38.s2.eu.hivemq.cloud:8884/mqtt
 
 const client = ref(null)
 const height = ref('')
-const payload = ref({})
 const deskAlive = ref(false)
+const lastDeskAlive = ref(0)
+
 const deskSearch = ref(false)
 const mqttStatus = ref(0)
 const deskStatus = computed(() => {
@@ -85,8 +86,19 @@ const errorMessage = ref('')
 const ssid = ref('Soul7')
 const password = ref('52868737320352956218')
 const piLocalIp = ref(null)
+const id = ref(null)
 
-onMounted(() => {
+onMounted(async () => {
+  const myId = await window.electronAPI.getId()
+  console.log('my id: ' + myId)
+  id.value = myId
+  setInterval(() => {
+    const now = new Date().getTime()
+    console.log(now - lastDeskAlive.value)
+    if (now - lastDeskAlive.value > 25000) {
+      deskAlive.value = false
+    }
+  }, 20000)
   connect()
 })
 
@@ -96,7 +108,7 @@ const disconnect = () => {
   client.value.end()
 }
 
-const lookForDesk = () => {
+/* const lookForDesk = () => {
   publish('confirm_presence')
   deskSearch.value = true
   console.log('set true')
@@ -105,7 +117,7 @@ const lookForDesk = () => {
     console.log('set false')
   }, 2000)
   //deskAlive.value = true
-}
+} */
 
 const connect = () => {
   mqttStatus.value = 1
@@ -116,20 +128,15 @@ const connect = () => {
     mqttStatus.value = 2
 
     // Subscribe to broker
-    client.value.subscribe('#', { qos: 0 }, (error) => {
+    client.value.subscribe(id.value, { qos: 0 }, (error) => {
       if (error) {
-        console.log('Subscribe to topics error', error)
-        return
+        console.log('Subscribe error', error)
       }
-      console.log('Subscribe successful')
     })
-    const topic = 'echo'
-    const message = 'Echo to me!'
-    client.value.publish(topic, message, (err) => {
+    const message = 'Hello from vue'
+    client.value.publish(id.value, message, (err) => {
       if (err) {
         console.error('Error publishing message:', err)
-      } else {
-        console.log(`Message "${message}" published to topic "${topic}"`)
       }
     })
   })
@@ -157,33 +164,17 @@ const connect = () => {
   })
 
   client.value.on('message', (topic, message) => {
-    if (message === 'present') {
-      deskAlive.value = true
-    }
-
-    console.log('received: ' + message.toString())
+    console.log(`received: ${message.toString()}`)
 
     const newHeight = getHeight(message)
     if (newHeight) {
       height.value = newHeight
     }
-
-    /*     const extractIPAddress = (message) => {
-      const ipv4Match = message.match(/\b(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\b/)
-      const ipv6Match = message.match(/\b([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}\b/)
-
-      if (ipv4Match) {
-        return ipv4Match[0]
-      } else if (ipv6Match) {
-        return ipv6Match[0]
-      }
-
-      return null // Return null if no match is found
-    } */
-    /*     const ipAddress = extractIPAddress(message.toString())
-    if (ipAddress !== null) {
-      piLocalIp.value = ipAddress
-    } */
+    const alive = getAlive(message)
+    if (alive) {
+      deskAlive.value = alive
+      lastDeskAlive.value = new Date().getTime()
+    }
   })
 }
 
@@ -192,6 +183,15 @@ const getHeight = (message) => {
     const messageString = message.toString()
     const messageObj = JSON.parse(messageString)
     return messageObj?.height
+  } catch (error) {
+    return null
+  }
+}
+const getAlive = (message) => {
+  try {
+    const messageString = message.toString()
+    const messageObj = JSON.parse(messageString)
+    return messageObj?.alive
   } catch (error) {
     return null
   }
@@ -231,9 +231,8 @@ const connectPiWifiAccessPoint = async () => {
 }
 
 const publish = async (message) => {
-  const topic = 'X'
   if (!client.value || !client.value.connected) return
-  client.value.publish(topic, message, (err) => {
+  client.value.publish(id.value, message, (err) => {
     if (err) {
       console.error('Error publishing message:', err)
     } else {
