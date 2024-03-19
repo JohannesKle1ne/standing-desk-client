@@ -109,7 +109,7 @@
       >Connected to mqtt broker</span
     >
     <span v-if="status === 1" style="font-size: 12px; color: #2f3241"
-      >Try connecting to desk controller</span
+      >Try connecting to mqtt broker</span
     >
     <span v-if="status === 0" style="font-size: 12px; color: #2f3241"
       >Disconnected from mqtt broker</span

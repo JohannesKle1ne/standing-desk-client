@@ -2,7 +2,8 @@
   <div v-if="true" style="position: relative; width: 100%; height: 100vh; display: flow-root">
     <ConnectStatus @disconnect="disconnect" @connect="connect" :status="mqttStatus" />
     <DeskStatus :status="deskStatus" />
-    <TableControls @buttonClicked="publish" :height="height" />
+    <TableControls v-if="false" @buttonClicked="publish" :height="height" />
+    <Guide />
   </div>
 
   <div v-else>
@@ -11,39 +12,6 @@
       <span style="flex-grow: 1"></span>
       <button @click="updatePiWifi" class="rounded-button">update pi wifi</button>
     </div>
-
-    <div style="display: flex; align-items: center; width: 100%">
-      <h3 style="margin: 10px">Access point network</h3>
-      <span style="flex-grow: 1"></span>
-      <button @click="updatePiWifiAccessPoint" class="rounded-button">update pi wifi</button>
-    </div>
-    <div style="display: flex; align-items: center; width: 100%">
-      <h3 style="margin: 10px">Access point network</h3>
-      <span style="flex-grow: 1"></span>
-      <button @click="connectPiWifiAccessPoint" class="rounded-button">
-        connect pi to given wifi
-      </button>
-    </div>
-    <div style="display: flex; align-items: center; width: 100%">
-      <label for="ssid">SSID:</label>
-      <input v-model="ssid" id="ssid" />
-
-      <label for="password">Password:</label>
-      <input v-model="password" id="password" />
-    </div>
-    <div
-      style="
-        margin-left: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: start;
-        width: 100%;
-        color: white;
-        font-size: 12px;
-      "
-    >
-      {{ errorMessage }}
-    </div>
   </div>
 </template>
 
@@ -51,10 +19,10 @@
 import TableControls from './TableControls.vue'
 import ConnectStatus from './ConnectStatus.vue'
 import DeskStatus from './DeskStatus.vue'
+import Guide from './Guide.vue'
 
 import { ref, onMounted, computed } from 'vue'
 import mqtt from 'mqtt'
-import axios from 'axios'
 
 const options = {
   protocol: 'wss',
@@ -82,9 +50,7 @@ const deskStatus = computed(() => {
   }
   return 0
 })
-const errorMessage = ref('')
-const ssid = ref('Soul7')
-const password = ref('52868737320352956218')
+
 const piLocalIp = ref(null)
 const id = ref(null)
 
@@ -152,7 +118,6 @@ const connect = () => {
     console.log('Connection error: ', err.message)
     console.log('Connection error: ', err.code)
     console.log('Connection error: ', err.stack)
-    errorMessage.value = err.message
 
     client.value.end()
   })
@@ -194,39 +159,6 @@ const getAlive = (message) => {
     return messageObj?.alive
   } catch (error) {
     return null
-  }
-}
-
-const updatePiWifiAccessPoint = async () => {
-  const fileContent = `
-ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
-update_config=1
-country=DE
-
-network={
-   ssid="${ssid.value}"
-   psk="${password.value}"
-   key_mgmt=WPA-PSK
-}`
-
-  //10.0.0.5
-  //192.168.178.69
-  try {
-    const response = await axios.post('http://10.0.0.5/update_wifi', {
-      wpaSupplicant: fileContent
-    })
-    console.log(response.data)
-  } catch (error) {
-    console.error('Error getting data:', error)
-  }
-}
-
-const connectPiWifiAccessPoint = async () => {
-  try {
-    const response = await axios.post('http://10.0.0.5/connect_wifi')
-    console.log(response.data)
-  } catch (error) {
-    console.error('Error getting data:', error)
   }
 }
 

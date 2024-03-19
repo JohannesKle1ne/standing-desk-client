@@ -195,7 +195,9 @@ RQ: How should an autonomous standing desk be designed, to sublty assist users i
 
 
 Todos:
-- go on with getting the id from the file and passing it to the Frontend
+- Send id to PI aswell and save id in a userConfig file
+- get id in mqttclient.py
+
 
 
 
