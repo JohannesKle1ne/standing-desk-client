@@ -192,8 +192,10 @@ Finding:
 - oder
 RQ: How should an autonomous standing desk be designed, to sublty assist users in reaching their desigred standing time?
 
-Todos:
 
+
+Todos:
+- go on with getting the id from the file and passing it to the Frontend
 
 
 

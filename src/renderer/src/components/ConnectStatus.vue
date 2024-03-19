@@ -102,7 +102,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      background-color: rgb(134, 165, 177);
+      background-color: #fff;
     "
   >
     <span v-if="status === 2" style="font-size: 12px; color: #2f3241"

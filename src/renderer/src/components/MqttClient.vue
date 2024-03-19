@@ -1,8 +1,8 @@
 <template>
-  <div v-if="true" style="position: relative; width: 100%; height: 100vh">
+  <div v-if="true" style="position: relative; width: 100%; height: 100vh; display: flow-root">
     <ConnectStatus @disconnect="disconnect" @connect="connect" :status="mqttStatus" />
     <DeskStatus @lookForDesk="lookForDesk" :status="deskStatus" />
-    <TableControls @buttonClicked="publish" />
+    <TableControls @buttonClicked="publish" :height="height" />
   </div>
 
   <div v-else>
@@ -67,7 +67,7 @@ const options = {
 const url = 'wss://c05856853e9043bea25080c1d6fc5a38.s2.eu.hivemq.cloud:8884/mqtt'
 
 const client = ref(null)
-const text = ref('')
+const height = ref('')
 const payload = ref({})
 const deskAlive = ref(false)
 const deskSearch = ref(false)
@@ -163,7 +163,12 @@ const connect = () => {
 
     console.log('received: ' + message.toString())
 
-    const extractIPAddress = (message) => {
+    const newHeight = getHeight(message)
+    if (newHeight) {
+      height.value = newHeight
+    }
+
+    /*     const extractIPAddress = (message) => {
       const ipv4Match = message.match(/\b(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\b/)
       const ipv6Match = message.match(/\b([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}\b/)
 
@@ -174,12 +179,22 @@ const connect = () => {
       }
 
       return null // Return null if no match is found
-    }
-    const ipAddress = extractIPAddress(message.toString())
+    } */
+    /*     const ipAddress = extractIPAddress(message.toString())
     if (ipAddress !== null) {
       piLocalIp.value = ipAddress
-    }
+    } */
   })
+}
+
+const getHeight = (message) => {
+  try {
+    const messageString = message.toString()
+    const messageObj = JSON.parse(messageString)
+    return messageObj?.height
+  } catch (error) {
+    return null
+  }
 }
 
 const updatePiWifiAccessPoint = async () => {
