@@ -2,8 +2,20 @@
   <div v-if="true" style="position: relative; width: 100%; height: 100vh; display: flow-root">
     <ConnectStatus @disconnect="disconnect" @connect="connect" :status="mqttStatus" />
     <DeskStatus :status="deskStatus" />
-    <TableControls v-if="false" @buttonClicked="publish" :height="height" />
-    <Guide />
+    <!--  <GuideMqtt
+      v-if="!mqttConnected && !apConnected && !deskConnected"
+      @buttonClicked="publish"
+      :height="height"
+    /> -->
+    <GuideAP v-if="!apConnected && !deskConnected" @buttonClicked="publish" :height="height" />
+    <GuideWifi
+      v-if="apConnected && !deskConnected"
+      :ssidPi="ssidPi"
+      :pskPi="pskPi"
+      :url="urlAP"
+      @getWifi="getWifi"
+    />
+    <TableControls v-if="deskConnected" @buttonClicked="publish" :height="height" />
   </div>
 
   <div v-else>
@@ -19,7 +31,10 @@
 import TableControls from './TableControls.vue'
 import ConnectStatus from './ConnectStatus.vue'
 import DeskStatus from './DeskStatus.vue'
-import Guide from './Guide.vue'
+import GuideMqtt from './GuideMqtt.vue'
+import GuideAP from './GuideAP.vue'
+import GuideWifi from './GuideWifi.vue'
+import axios from 'axios'
 
 import { ref, onMounted, computed } from 'vue'
 import mqtt from 'mqtt'
@@ -31,13 +46,21 @@ const options = {
 }
 
 //const mosquittoUrl = 'ws://192.168.178.23:9001'
+//const urlAP = 'http://192.168.178.69'
+const urlAP = 'http://10.0.0.5'
 
 const url = 'wss://c05856853e9043bea25080c1d6fc5a38.s2.eu.hivemq.cloud:8884/mqtt'
 
 const client = ref(null)
-const height = ref('')
 const deskAlive = ref(false)
 const lastDeskAlive = ref(0)
+
+const apConnected = ref(false)
+const lastApAlive = ref(0)
+const height = ref(0)
+
+const ssidPi = ref('')
+const pskPi = ref('')
 
 const deskSearch = ref(false)
 const mqttStatus = ref(0)
@@ -51,6 +74,13 @@ const deskStatus = computed(() => {
   return 0
 })
 
+const deskConnected = computed(() => {
+  return deskStatus.value === 2
+})
+const mqttConnected = computed(() => {
+  return mqttStatus.value === 2
+})
+
 const piLocalIp = ref(null)
 const id = ref(null)
 
@@ -60,13 +90,35 @@ onMounted(async () => {
   id.value = myId
   setInterval(() => {
     const now = new Date().getTime()
-    console.log(now - lastDeskAlive.value)
     if (now - lastDeskAlive.value > 25000) {
       deskAlive.value = false
     }
-  }, 20000)
+    if (now - lastApAlive.value > 3500) {
+      apConnected.value = false
+    }
+    if (!deskConnected.value) {
+      getWifi()
+    }
+  }, 3000)
   connect()
 })
+
+const getWifi = async () => {
+  try {
+    const response = await axios({
+      method: 'get',
+      url: urlAP + '/get_wifi',
+      timeout: 3000
+    })
+    console.log(response.data)
+    ssidPi.value = response.data.ssid
+    pskPi.value = response.data.psk
+    lastApAlive.value = new Date().getTime()
+    apConnected.value = true
+  } catch (error) {
+    console.log('Error reaching pi ap')
+  }
+}
 
 const disconnect = () => {
   if (!client.value) return
@@ -199,3 +251,4 @@ const publish = async (message) => {
   /* Add any other styles you want to remove for the focused state */
 }
 </style>
+./GuideWifi.vue
