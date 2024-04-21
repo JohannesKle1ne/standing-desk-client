@@ -36,3 +36,7 @@ wearedoingresearch.
 sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
 
 sudo nano Documents/Code/mqtt_client.py
+
+
+
+gpio 23 is for 4th channel (not used for presets)

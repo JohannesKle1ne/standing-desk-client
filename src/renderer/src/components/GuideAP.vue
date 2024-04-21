@@ -13,12 +13,12 @@
 import { ref, onMounted, computed } from 'vue'
 
 const instructions = ref([
-  'I looks like you are not connected to the controller',
-  'Do the follwong steps:',
-  'Plug the controller to power supply',
-  'wait for 2-4 minutes until it is booted',
-  'if the controller can connect to your wifi, the desk icon will turn green',
-  'if not, connect your computer to the wifi "DeskController"',
+  'It looks like you are not connected to the controller',
+  'Do the following steps:',
+  'Plug the controller into the power supply',
+  'Wait for 2-4 minutes until it is booted',
+  'If the controller can connect to your WiFi, the desk icon will turn green',
+  'If not, connect your computer to the WiFi "DeskController"',
   'Enter the password "1234567890"'
 ])
 </script>

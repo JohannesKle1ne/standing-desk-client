@@ -56,9 +56,9 @@ const ssid = ref('')
 const psk = ref('')
 
 const instructions = ref([
-  'Enter your wifi credentails below (the network your pc normally is connected to)',
+  'Enter your WiFi credentials below (the network your PC normally is connected to)',
   'Press Save',
-  'If saved sucesfully, connect back to your wifi and reboot the pi'
+  'If saved successfully, connect back to your WiFi and reboot the Pi'
 ])
 
 const updatePiWifiAccessPoint = async () => {

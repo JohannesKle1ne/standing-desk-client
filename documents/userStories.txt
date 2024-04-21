@@ -1,0 +1,55 @@
+“As [persona], I want to [action], so that I can [benefit].”
+
+Connectivity:
+As a user, I want to be guided through the process of setting up the controller (including adding wifi creadentails), so that I know what steps to take in which order
+As a user, I want to see a status symbol for the MQTT broker connection, so that I know if I am connected or not
+As a user, I want to see a status symbol for the desk controller connection, so that I know if I am connected or not
+As a user, I want to see the current status of presence detection, to be sure the system recognises my presence
+
+Statistics:
+As a user, I want to see a graph that shows me the daily and weekly amount of standing time, so I see if I am making imporvements
+As a user, I want to see comparison of average standing time per, week or month, so I see if I am making imporvements
+As a user, I want to see a graph that shows me the daily and weekly amount of desk presence, so I can derive how many hours I spend working
+As a user, I want to see a what percentage of working time I spend standing, to better track my progress.
+
+
+Actions: 
+As a user, I want to use the keypad UI, so that a I don't have to press the pyhsical buttons
+As a user, I want to adjust to parameters of the presence sensor, to adapt it to my workplace
+As a user, I want to be able to set a weekly goal of standing time, to easily track my sucess
+As a user, I want to define prefered standing intervals thouout the day, so that I stand when I prefer to stand (morning, noon, evening)
+As a user, I want the table to move down after I reached my standing goal, so that I don't have to do it manually.
+
+Notifications:
+- As a user, I want to get notified when the desk wants to move up, so that I can cancle it if I don't want it to move
+- As a user, I want to get notified if I am about to miss my daily standing goal, so that I can still move the tableup in time
+
+Study:
+- As a study conductor, I want to see a visualization of the standing time data, to check on the actions of study participants
+
+
+Database:
+- userState: height, goals, 
+
+Events: 
+prensence change: {timestamp: 12321321, present: true}
+height change: {timestamp: 2324212312, height: 167}
+
+update from controller every 30 Seconds:
+{timestamp: 12321321, present: true, height: 70}
+{timestamp: 34321321, present: false, height: 70}
+{timestamp: 56321321, present: false, height: 150}
+{timestamp: 78321321, present: true, height: 150}
+
+
+At 00:00 a post requust to the server is made:
+standing intervals: [{standing: false, start: 23242342, end: 512321},{standing: true, start: 512321, end: 312321}]
+prensence intervals: [{standing: false, start: 23242342, end: 512321},{standing: true, start: 512321, end: 312321}]
+
+
+
+
+
+
+
+

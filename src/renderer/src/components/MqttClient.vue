@@ -16,6 +16,10 @@
       @getWifi="getWifi"
     />
     <TableControls v-if="deskConnected" @buttonClicked="publish" :height="height" />
+    <div v-if="deskConnected">
+      <div>Is present:</div>
+      <h1 :style="{ color: isPresent ? 'green' : 'red' }">{{ isPresent ? 'Yes' : 'No' }}</h1>
+    </div>
   </div>
 
   <div v-else>
@@ -31,7 +35,6 @@
 import TableControls from './TableControls.vue'
 import ConnectStatus from './ConnectStatus.vue'
 import DeskStatus from './DeskStatus.vue'
-import GuideMqtt from './GuideMqtt.vue'
 import GuideAP from './GuideAP.vue'
 import GuideWifi from './GuideWifi.vue'
 import axios from 'axios'
@@ -54,6 +57,7 @@ const url = 'wss://c05856853e9043bea25080c1d6fc5a38.s2.eu.hivemq.cloud:8884/mqtt
 const client = ref(null)
 const deskAlive = ref(false)
 const lastDeskAlive = ref(0)
+const isPresent = ref(false)
 
 const apConnected = ref(false)
 const lastApAlive = ref(0)
@@ -180,6 +184,27 @@ const connect = () => {
     mqttStatus.value = 1
   })
 
+  let lastPresence = new Date().getTime()
+  let breaks = []
+
+  const convertTimeStampToReadable = (timeStamp) => {
+    // Create a new Date object with the provided time stamp
+    var date = new Date(timeStamp)
+
+    // Extract hours, minutes, and seconds from the date object
+    var hours = date.getHours()
+    var minutes = date.getMinutes()
+    var seconds = date.getSeconds()
+
+    // Add leading zeros if necessary
+    hours = (hours < 10 ? '0' : '') + hours
+    minutes = (minutes < 10 ? '0' : '') + minutes
+    seconds = (seconds < 10 ? '0' : '') + seconds
+
+    // Return the readable representation
+    return hours + ':' + minutes + ':' + seconds
+  }
+
   client.value.on('message', (topic, message) => {
     console.log(`received: ${message.toString()}`)
 
@@ -187,9 +212,26 @@ const connect = () => {
     if (newHeight) {
       height.value = newHeight
     }
+    const presence = getPresence(message)
+    if (presence != null) {
+      isPresent.value = presence
+      const now = new Date().getTime()
+      if (presence) {
+        lastPresence = now
+      }
+      if (now - lastPresence > 1000 * 60 * 2) {
+        breaks = breaks.filter((b) => b.from !== convertTimeStampToReadable(lastPresence))
+        breaks.push({
+          from: convertTimeStampToReadable(lastPresence),
+          to: convertTimeStampToReadable(now)
+        })
+        console.log(breaks)
+      }
+    }
+
     const alive = getAlive(message)
-    if (alive) {
-      deskAlive.value = alive
+    if (alive != null || presence != null || newHeight != null) {
+      deskAlive.value = true
       lastDeskAlive.value = new Date().getTime()
     }
   })
@@ -209,6 +251,16 @@ const getAlive = (message) => {
     const messageString = message.toString()
     const messageObj = JSON.parse(messageString)
     return messageObj?.alive
+  } catch (error) {
+    return null
+  }
+}
+
+const getPresence = (message) => {
+  try {
+    const messageString = message.toString()
+    const messageObj = JSON.parse(messageString)
+    return messageObj?.present
   } catch (error) {
     return null
   }
