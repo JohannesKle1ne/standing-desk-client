@@ -21,6 +21,7 @@
     "@electron-toolkit/utils": "^3.0.0",
     "@nut-tree/nut-js": "^3.1.2",
     "axios": "^1.6.7",
+    "chart.js": "^4.4.2",
     "mqtt": "^5.3.4"
   },
   "devDependencies": {

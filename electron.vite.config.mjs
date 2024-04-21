@@ -16,5 +16,8 @@ export default defineConfig({
       }
     },
     plugins: [vue()]
+  },
+  optimizeDeps: {
+    exclude: ['js-big-decimal']
   }
 })
