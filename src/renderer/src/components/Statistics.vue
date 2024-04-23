@@ -18,6 +18,13 @@ const roundToMinute = (timestamp) => {
   return minutes * 60 * 1000
 }
 
+const roundToHour = (timestamp) => {
+  const seconds = Math.floor(timestamp / 1000)
+  const minutes = Math.floor(seconds / 60)
+  const hours = Math.floor(minutes / 60)
+  return hours * 60 * 60 * 1000
+}
+
 onMounted(async () => {
   console.log(data)
   const groups = data.reduce((acc, d) => {
@@ -31,6 +38,8 @@ onMounted(async () => {
       return [...acc, { minute: minute, deskUps: [d.deskUp], presents: [d.present] }]
     }
   }, [])
+
+  console.log(groups)
 
   const formatted = groups.map((g) => {
     const date = new Date(g.minute)
@@ -47,46 +56,97 @@ onMounted(async () => {
     const notPresent = g.presents.filter((d) => !d).length
     const present = isPresent > notPresent
 
-    console.log(minutes)
     if (minutes.toString().length <= 1) {
       minutes = '0' + minutes
     }
     return {
-      time: `${hours}:${minutes}`,
-      deskUp: deskUp ? 1 : 0.1,
-      present: present ? 1 : 0.1
+      timestamp: g.minute,
+      deskUp: deskUp,
+      present: present
     }
   })
 
   console.log(formatted)
 
-  const foramttedCopy = JSON.parse(JSON.stringify(formatted))
+  const groupedByHour = formatted.reduce((acc, d) => {
+    const hour = roundToHour(d.timestamp)
+    const group = acc.find((d) => d.hour === hour)
+    const addDeskUp = d.deskUp ? 1 : 0
+    const addPresent = d.present ? 1 : 0
+    const addStanding = d.deskUp && d.present ? 1 : 0
+    if (group) {
+      group.deskUpCounter += addDeskUp
+      group.presentCounter += addPresent
+      group.standingCounter += addStanding
+      return acc
+    } else {
+      return [
+        ...acc,
+        {
+          hour: hour,
+          deskUpCounter: addDeskUp,
+          presentCounter: addPresent,
+          standingCounter: addStanding
+        }
+      ]
+    }
+  }, [])
+
+  console.log(groupedByHour)
+
+  const formattedHours = groupedByHour.map((g) => {
+    const date = new Date(g.hour)
+
+    // Get hours and minutes
+    const hours = date.getHours()
+    // let minutes = date.getMinutes()
+
+    /*  const deskUps = g.deskUps.filter((d) => d).length
+    const deskDowns = g.deskUps.filter((d) => !d).length
+    const deskUp = deskUps > deskDowns
+
+    const isPresent = g.presents.filter((d) => d).length
+    const notPresent = g.presents.filter((d) => !d).length
+    const present = isPresent > notPresent */
+    /*
+    if (minutes.toString().length <= 1) {
+      minutes = '0' + minutes
+    } */
+    return {
+      ...g,
+      time: `${hours}:00`
+    }
+  })
+
+  console.log(formattedHours)
+
+  /*  const foramttedCopy = JSON.parse(JSON.stringify(formatted))
 
   const accumulated = formatted.map((g, index) => {
     const sliced = foramttedCopy
       .slice(0, index + 1)
       .filter((g) => g.present === 1 && g.deskUp === 1)
     return { ...g, accumulated: sliced.length }
-  })
+  }) */
 
-  const chartData = accumulated
+  const chartData = formattedHours
 
   new Chart(document.getElementById('barChart'), {
     type: 'bar',
     data: {
       labels: chartData.map((row) => row.time),
       datasets: [
+        /*  {
+          label: 'Desk Up minutes',
+          data: chartData.map((row) => row.deskUpCounter)
+        }, */
         {
-          label: 'Desk up minutes',
-          data: chartData.map((row) => row.accumulated)
+          label: 'Presence minutes',
+          data: chartData.map((row) => row.presentCounter)
         },
         {
-          label: 'Desk up',
-          data: chartData.map((row) => row.deskUp)
-        },
-        {
-          label: 'Presence',
-          data: chartData.map((row) => row.present)
+          label: 'Standing minutes',
+          data: chartData.map((row) => row.standingCounter)
         }
       ]
     }
