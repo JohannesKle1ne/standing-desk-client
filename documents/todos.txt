@@ -200,9 +200,16 @@ Todos:
 
 
 
-Plan study:
-- prestudy and main study?
-- 
+Next todos:
+- create test version of api -> done
+- create DB -> done
+- deploy both on remote server -> done
+
+Next tomorrow:
+- create a DB table for deskStates (userId, present, tablehteight, timstapm)
+- add post and get methods
+- connect with electron app
+- if works: set up MQTT Borker (mosquitto or Hive)
 
 
 

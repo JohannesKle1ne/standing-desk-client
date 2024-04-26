@@ -15,11 +15,16 @@
       :url="urlAP"
       @getWifi="getWifi"
     />
-    <TableControls v-if="deskConnected" @buttonClicked="publish" :height="height" />
-    <div v-if="deskConnected">
+    <TableControls
+      v-if="deskConnected"
+      @buttonClicked="publish"
+      :deskUpdates="deskUpdates"
+      :height="height"
+    />
+    <!--  <div v-if="deskConnected">
       <div>Is present:</div>
       <h1 :style="{ color: isPresent ? 'green' : 'red' }">{{ isPresent ? 'Yes' : 'No' }}</h1>
-    </div>
+    </div> -->
   </div>
 
   <div v-else>
@@ -54,6 +59,7 @@ const urlAP = 'http://10.0.0.5'
 
 const url = 'wss://c05856853e9043bea25080c1d6fc5a38.s2.eu.hivemq.cloud:8884/mqtt'
 
+const deskUpdates = ref([])
 const client = ref(null)
 const deskAlive = ref(false)
 const lastDeskAlive = ref(0)
@@ -92,7 +98,7 @@ onMounted(async () => {
   const myId = await window.electronAPI.getId()
   console.log('my id: ' + myId)
   id.value = myId
-  setInterval(() => {
+  /*  setInterval(() => {
     const now = new Date().getTime()
     if (now - lastDeskAlive.value > 25000) {
       deskAlive.value = false
@@ -103,7 +109,7 @@ onMounted(async () => {
     if (!deskConnected.value) {
       getWifi()
     }
-  }, 3000)
+  }, 3000) */
   connect()
 })
 
@@ -234,6 +240,13 @@ const connect = () => {
       deskAlive.value = true
       lastDeskAlive.value = new Date().getTime()
     }
+
+    const status = getStatus(message)
+    console.log(status)
+    if (status) {
+      deskUpdates.value = [...deskUpdates.value, status]
+      console.log(deskUpdates.value)
+    }
   })
 }
 
@@ -251,6 +264,19 @@ const getAlive = (message) => {
     const messageString = message.toString()
     const messageObj = JSON.parse(messageString)
     return messageObj?.alive
+  } catch (error) {
+    return null
+  }
+}
+
+const getStatus = (message) => {
+  try {
+    const messageString = message.toString()
+    const messageObj = JSON.parse(messageString)
+    if ('present' in messageObj && 'deskUp' in messageObj && 'timestamp' in messageObj) {
+      return messageObj
+    }
+    return null
   } catch (error) {
     return null
   }

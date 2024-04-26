@@ -4,8 +4,8 @@ import Statistics from './components/Statistics.vue'
 </script>
 
 <template>
-  <Statistics></Statistics>
-  <!--  <MqttClient></MqttClient> -->
+  <!-- <Statistics></Statistics> -->
+  <MqttClient></MqttClient>
 </template>
 
 <style lang="less">

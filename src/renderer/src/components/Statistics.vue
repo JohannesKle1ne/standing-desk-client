@@ -1,10 +1,10 @@
 <template>
-  <div style="width: 500; height: 500"><canvas id="barChart"></canvas></div>
+  <div style="width: 500px"><canvas id="barChart"></canvas></div>
+  <div style="width: 500px"><canvas id="barChart2"></canvas></div>
 </template>
 
 <script setup>
 import Chart from 'chart.js/auto'
-import { svgs } from './svg'
 import { ref, computed, onMounted } from 'vue'
 import { data } from './testData'
 const emits = defineEmits(['buttonClicked'])
@@ -114,7 +114,7 @@ onMounted(async () => {
     } */
     return {
       ...g,
-      time: `${hours}:00`
+      time: `${hours}-${hours + 1}`
     }
   })
 
@@ -140,10 +140,10 @@ onMounted(async () => {
           label: 'Desk Up minutes',
           data: chartData.map((row) => row.deskUpCounter)
         }, */
-        {
+        /*  {
           label: 'Presence minutes',
           data: chartData.map((row) => row.presentCounter)
-        },
+        } */
         {
           label: 'Standing minutes',
           data: chartData.map((row) => row.standingCounter)
@@ -151,6 +151,20 @@ onMounted(async () => {
       ]
     }
   })
+  /* new Chart(document.getElementById('barChart2'), {
+    type: 'bar',
+    data: {
+      labels: chartData.map((row) => row.time),
+      datasets: [
+       
+        {
+          label: 'Presence minutes',
+          data: chartData.map((row) => row.presentCounter)
+        }
+        
+      ]
+    }
+  }) */
 })
 </script>
 
