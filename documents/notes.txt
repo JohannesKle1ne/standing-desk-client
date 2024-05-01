@@ -40,3 +40,13 @@ sudo nano Documents/Code/mqtt_client.py
 
 
 gpio 23 is for 4th channel (not used for presets)
+
+
+old ip from ionos domain:
+217.160.0.199
+
+
+A	@	217.160.0.199
+AAAA	@	2001:8d8:100f:f000:0:0:0:200
+TXT	_dep_ws_mutex	"ae95fa2f383515ca191df46cc39a1a39d1e4617b6815f1a942ada52a26a52d65_1714155365883"
+

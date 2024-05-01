@@ -212,6 +212,10 @@ Next tomorrow:
 - if works: set up MQTT Borker (mosquitto or Hive)
 
 
+Next tomorrow:
+- get old setup with motionsensor and desk running
+- solar the first board -> test functionality
+
 
 
 
