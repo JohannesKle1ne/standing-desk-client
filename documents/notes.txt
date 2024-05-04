@@ -50,3 +50,24 @@ A	@	217.160.0.199
 AAAA	@	2001:8d8:100f:f000:0:0:0:200
 TXT	_dep_ws_mutex	"ae95fa2f383515ca191df46cc39a1a39d1e4617b6815f1a942ada52a26a52d65_1714155365883"
 
+
+
+
+
+Old iPhone PI:
+172.20.10.6
+
+Old Soul7 PI:
+192.168.178.69
+
+
+Don't use SHA encoding. It easy to guess someones id after knowing that the own id comes from the name.
+
+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 git token
+
+
+cd /home/johannes/Documents/standing-desk-controller-2/pi_zero
+
+morgen: 
+- write logs from socket server to DB
+- add enpoint with filters to rest api to display daily stats
