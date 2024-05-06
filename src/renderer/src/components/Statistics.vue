@@ -6,7 +6,10 @@
 <script setup>
 import Chart from 'chart.js/auto'
 import { ref, computed, onMounted } from 'vue'
-import { data } from './testData'
+import axios from 'axios'
+
+const url = 'https://standing-desk.org/api/state/'
+
 const emits = defineEmits(['buttonClicked'])
 const props = defineProps({
   height: String
@@ -25,17 +28,31 @@ const roundToHour = (timestamp) => {
   return hours * 60 * 60 * 1000
 }
 
+const getDeskUp = (height) => height > 1000
+
 onMounted(async () => {
+  const myId = await window.electronAPI.getId()
+  const response = await axios({
+    method: 'get',
+    url: url + myId
+  })
+  console.log(response.data)
+
+  const data = response.data
+
   console.log(data)
   const groups = data.reduce((acc, d) => {
     const minute = roundToMinute(d.timestamp)
     const group = acc.find((d) => d.minute === minute)
     if (group) {
-      group.deskUps.push(d.deskUp)
-      group.presents.push(d.present)
+      group.deskUps.push(getDeskUp(d.deskHeight))
+      group.presents.push(d.presenceDetected)
       return acc
     } else {
-      return [...acc, { minute: minute, deskUps: [d.deskUp], presents: [d.present] }]
+      return [
+        ...acc,
+        { minute: minute, deskUps: [getDeskUp(d.deskHeight)], presents: [d.presenceDetected] }
+      ]
     }
   }, [])
 
@@ -140,14 +157,14 @@ onMounted(async () => {
           label: 'Desk Up minutes',
           data: chartData.map((row) => row.deskUpCounter)
         }, */
-        /*  {
+        {
           label: 'Presence minutes',
           data: chartData.map((row) => row.presentCounter)
-        } */
-        {
+        }
+        /*   {
           label: 'Standing minutes',
           data: chartData.map((row) => row.standingCounter)
-        }
+        } */
       ]
     }
   })
@@ -156,12 +173,12 @@ onMounted(async () => {
     data: {
       labels: chartData.map((row) => row.time),
       datasets: [
-       
+
         {
           label: 'Presence minutes',
           data: chartData.map((row) => row.presentCounter)
         }
-        
+
       ]
     }
   }) */
