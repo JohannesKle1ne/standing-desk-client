@@ -1,35 +1,64 @@
 <template>
-  <EnterName v-if="state === State.ENTER_NAME" />
+  <EnterName @created="socketIo.connect()" v-if="showEnterName" />
+  <div>{{ deskConnected }}</div>
+  <div>{{ socketConnected }}</div>
+  <div>{{ apConnected }}</div>
 </template>
 
 <script setup>
 import EnterName from './EnterName.vue'
 import Loading from './Loading.vue'
+import socketIo from './Socket.io'
+import { piTest } from './api.js'
 import { ref, onMounted, computed } from 'vue'
-import socketIo from './socket.io.js'
 
-const State = { ENTER_NAME: 0, CONNECT_TO_AP: 1 }
+const deskConnected = ref(false)
+const socketConnected = ref(false)
+const apConnected = ref(false)
 
-const instructions = ref([
-  'I looks like you are not connected to the mqtt broker.',
-  'Are you connected to the internet?'
-])
+const lastDeskUpdate = ref(0)
+const lastApUpdate = ref(0)
 
-const state = ref(State.LOADING)
-
-const id = ref(null)
-
-onMounted(async () => {
-  fetchId()
-  console.log(socketIo)
+const showEnterName = computed(() => {
+  return !socketConnected.value && !apConnected.value
 })
 
-const fetchId = async () => {
-  id.value = await window.electronAPI.getId()
-  if (id.value) {
-    state.value = State.CONNECT_TO_AP
+const lookForPi = async () => {
+  const piSuccess = await piTest()
+  if (piSuccess) {
+    lastApUpdate.value = new Date().getTime()
+    apConnected.value = true
   }
 }
+
+const checkStatus = async () => {
+  const now = new Date().getTime()
+  if (now - lastDeskUpdate.value > 6000) {
+    deskConnected.value = false
+  }
+  if (now - lastApUpdate.value > 6000) {
+    apConnected.value = false
+  }
+  if (!deskConnected.value) {
+    //lookForPi()
+  }
+}
+
+onMounted(async () => {
+  await socketIo.connect()
+  socketIo.onConnected(() => {
+    socketConnected.value = true
+  })
+  socketIo.onDisconnected(() => {
+    socketConnected.value = false
+  })
+  socketIo.onStateMessage((state) => {
+    console.log(state)
+    lastDeskUpdate.value = new Date().getTime()
+    deskConnected.value = true
+  })
+  setInterval(checkStatus, 3000)
+})
 </script>
 
 <style></style>

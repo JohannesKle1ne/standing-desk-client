@@ -1,19 +1,52 @@
 import io from 'socket.io-client'
 
-const socket = io('https://standing-desk.org', { auth: { id: '123' } })
+let stateCallback = () => {}
+let connectedCallback = () => {}
+let disconnectedCallback = () => {}
 
-socket.on('connect', () => {
-  console.log('Connected to Socket.IO server')
-})
+let isConnectedFlag = false // Flag to track connection status
 
-socket.on('disconnect', () => {
-  console.log('Disconnected from Socket.IO server')
-})
+const connect = async () => {
+  const userInfo = await window.electronAPI.getUserInfo()
 
-const stateCallback = null
+  if (userInfo?.id == null) return
+
+  const socket = io('https://standing-desk.org', {
+    auth: { id: userInfo.id },
+    transports: ['websocket']
+  })
+
+  socket.on('connect', (e) => {
+    console.log('Connected to Socket.IO server')
+    connectedCallback(e)
+    isConnectedFlag = true
+  })
+
+  socket.on('disconnect', (e) => {
+    console.log('Disconnected from Socket.IO server')
+    disconnectedCallback(e)
+    isConnectedFlag = false
+  })
+
+  socket.on('state', (state) => {
+    stateCallback(state)
+  })
+}
+
+const isConnected = () => {
+  return isConnectedFlag
+}
 
 const onStateMessage = (callback) => {
   stateCallback = callback
+}
+
+const onConnected = (callback) => {
+  connectedCallback = callback
+}
+
+const onDisconnected = (callback) => {
+  disconnectedCallback = callback
 }
 
 const sendPreset = () => {}
@@ -22,4 +55,13 @@ const sendUp = () => {}
 
 const sendDown = () => {}
 
-export default { onStateMessage, sendPreset, sendUp, sendDown }
+export default {
+  connect,
+  isConnected,
+  onConnected,
+  onDisconnected,
+  onStateMessage,
+  sendPreset,
+  sendUp,
+  sendDown
+}

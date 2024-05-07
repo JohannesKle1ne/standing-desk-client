@@ -55,7 +55,6 @@ const options = {
 
 //const mosquittoUrl = 'ws://192.168.178.23:9001'
 //const urlAP = 'http://192.168.178.69'
-const urlAP = 'http://10.0.0.5'
 
 const url = 'wss://c05856853e9043bea25080c1d6fc5a38.s2.eu.hivemq.cloud:8884/mqtt'
 
@@ -98,18 +97,7 @@ onMounted(async () => {
   const myId = await window.electronAPI.getId()
   console.log('my id: ' + myId)
   id.value = myId
-  /*  setInterval(() => {
-    const now = new Date().getTime()
-    if (now - lastDeskAlive.value > 25000) {
-      deskAlive.value = false
-    }
-    if (now - lastApAlive.value > 3500) {
-      apConnected.value = false
-    }
-    if (!deskConnected.value) {
-      getWifi()
-    }
-  }, 3000) */
+
   connect()
 })
 

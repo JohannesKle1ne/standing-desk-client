@@ -1,5 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron'
 
 contextBridge.exposeInMainWorld('electronAPI', {
-  getId: () => ipcRenderer.invoke('getId')
+  getUserInfo: () => ipcRenderer.invoke('getUserInfo'),
+  setUserInfo: (info) => ipcRenderer.invoke('setUserInfo', info)
 })

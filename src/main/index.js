@@ -9,33 +9,27 @@ const path = require('path')
 
 const filePathToUserInfo = path.join(__dirname, '../../resources/user_info.json')
 
-const setMissingId = async () => {
-  const id = await getId()
-  if (id) return
-
-  const randomId = generateRandomId(10)
-  const userInfo = {
-    id: randomId
-  }
+const setUserInfo = async (event, userInfo) => {
+  console.log(userInfo)
   const data = JSON.stringify(userInfo)
   console.log('write new id to file')
-  await fs.writeFile(filePathToUserInfo, data, 'utf8')
-}
-
-const getId = async () => {
   try {
-    const data = await fs.readFile(filePathToUserInfo, 'utf8')
-    const obj = JSON.parse(data)
-    return obj.id
+    await fs.writeFile(filePathToUserInfo, data, 'utf8')
   } catch (error) {
     console.log('id could not be read')
   }
 }
 
-const getIdFromFile = async () => {
-  await setMissingId()
-  return await getId()
+const getUserInfo = async () => {
+  try {
+    const data = await fs.readFile(filePathToUserInfo, 'utf8')
+    const obj = JSON.parse(data)
+    return obj
+  } catch (error) {
+    console.log('id could not be read')
+  }
 }
+
 /* 
 ;(async () => {
   await setMissingId()
@@ -185,7 +179,9 @@ function createWindow() {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-  ipcMain.handle('getId', getIdFromFile)
+  ipcMain.handle('getUserInfo', getUserInfo)
+  ipcMain.handle('setUserInfo', setUserInfo)
+
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
 
