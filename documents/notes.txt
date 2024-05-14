@@ -63,6 +63,8 @@ Old Soul7 PI:
 
 Don't use SHA encoding. It easy to guess someones id after knowing that the own id comes from the name.
 
+
+JohannesKle1ne
 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 git token
 
 

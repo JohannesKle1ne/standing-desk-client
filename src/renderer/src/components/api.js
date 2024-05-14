@@ -2,15 +2,21 @@ import axios from 'axios'
 const urlAP = 'http://10.0.0.5'
 const urlRestApi = 'https://standing-desk.org/api'
 
-export async function getWifi() {
+export async function pairWithPi(ssid, psk, userName, id) {
   try {
     const response = await axios({
-      method: 'get',
-      url: urlAP + '/get_wifi'
+      method: 'post',
+      url: urlAP + '/update_wifi',
+      data: {
+        ssid,
+        psk,
+        userName,
+        id
+      }
     })
     return response.data
   } catch (error) {
-    console.log('Error reaching pi ap')
+    console.error(error)
   }
 }
 
@@ -24,6 +30,21 @@ export async function piTest() {
     if (response) return true
   } catch (error) {
     console.log('Error reaching pi ap')
+    return false
+  }
+}
+
+export async function checkServer() {
+  try {
+    const response = await axios({
+      method: 'get',
+      url: urlRestApi + '/state/wRzlEv5zFm',
+      timeout: 3000
+    })
+    if (response) return true
+  } catch (error) {
+    console.log(error)
+    console.log('Error reaching server')
     return false
   }
 }

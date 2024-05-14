@@ -15,12 +15,12 @@
       :url="urlAP"
       @getWifi="getWifi"
     />
-    <TableControls
+    <!--  <TableControls
       v-if="deskConnected"
       @buttonClicked="publish"
       :deskUpdates="deskUpdates"
       :height="height"
-    />
+    /> -->
     <!--  <div v-if="deskConnected">
       <div>Is present:</div>
       <h1 :style="{ color: isPresent ? 'green' : 'red' }">{{ isPresent ? 'Yes' : 'No' }}</h1>
@@ -37,7 +37,6 @@
 </template>
 
 <script setup>
-import TableControls from './TableControls.vue'
 import ConnectStatus from './ConnectStatus.vue'
 import DeskStatus from './DeskStatus.vue'
 import GuideAP from './GuideAP.vue'

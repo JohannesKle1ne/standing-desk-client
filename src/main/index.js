@@ -16,7 +16,7 @@ const setUserInfo = async (event, userInfo) => {
   try {
     await fs.writeFile(filePathToUserInfo, data, 'utf8')
   } catch (error) {
-    console.log('id could not be read')
+    console.log('id could not be set')
   }
 }
 

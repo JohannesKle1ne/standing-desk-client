@@ -1,6 +1,6 @@
 <template>
   <div style="display: flex; flex-direction: column; gap: 10px; margin: 10px">
-    <h3>Table Controls</h3>
+    <h3>Desk Controls</h3>
     <div style="display: flex; gap: 10px; align-items: center; width: 100%">
       <span v-for="b in buttons">
         <span v-if="b.svg" @click="b.onClick" class="control-button" v-html="b.svg"></span>

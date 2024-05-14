@@ -6,10 +6,14 @@ let disconnectedCallback = () => {}
 
 let isConnectedFlag = false // Flag to track connection status
 
+let userId = null
+
 const connect = async () => {
   const userInfo = await window.electronAPI.getUserInfo()
 
   if (userInfo?.id == null) return
+
+  userId = userInfo.id
 
   const socket = io('https://standing-desk.org', {
     auth: { id: userInfo.id },
@@ -37,6 +41,8 @@ const isConnected = () => {
   return isConnectedFlag
 }
 
+const hasUserId = () => userId != null
+
 const onStateMessage = (callback) => {
   stateCallback = callback
 }
@@ -58,6 +64,7 @@ const sendDown = () => {}
 export default {
   connect,
   isConnected,
+  hasUserId,
   onConnected,
   onDisconnected,
   onStateMessage,

@@ -1,46 +1,85 @@
 <template>
+  <ReadNoInternet v-if="showNoInternet" />
   <EnterName @created="socketIo.connect()" v-if="showEnterName" />
-  <div>{{ deskConnected }}</div>
-  <div>{{ socketConnected }}</div>
-  <div>{{ apConnected }}</div>
+  <ReadInstructions v-if="showReadIntructions" />
+  <EnterWifiCredentails v-if="showEnterWifiCredentails" />
+  <ViewDesk v-if="viewDesk"></ViewDesk>
 </template>
 
 <script setup>
 import EnterName from './EnterName.vue'
-import Loading from './Loading.vue'
+import ReadInstructions from './ReadInstructions.vue'
+import ReadNoInternet from './ReadNoInternet.vue'
+import EnterWifiCredentails from './EnterWifiCredentails.vue'
+import ViewDesk from './ViewDesk.vue'
 import socketIo from './Socket.io'
-import { piTest } from './api.js'
+import { piTest, checkServer } from './api.js'
 import { ref, onMounted, computed } from 'vue'
 
-const deskConnected = ref(false)
 const socketConnected = ref(false)
+
+const deskConnected = ref(false)
 const apConnected = ref(false)
+const serverConnected = ref(false)
 
-const lastDeskUpdate = ref(0)
-const lastApUpdate = ref(0)
+const dateNow = new Date().getTime()
 
-const showEnterName = computed(() => {
-  return !socketConnected.value && !apConnected.value
+const lastDeskUpdate = ref(dateNow)
+const lastApUpdate = ref(dateNow)
+const lastServerUpdate = ref(dateNow)
+
+const viewDesk = computed(() => {
+  return deskConnected.value
 })
 
-const lookForPi = async () => {
+const showNoInternet = computed(() => {
+  return !apConnected.value && !serverConnected.value && !deskConnected.value
+})
+
+const showEnterName = computed(() => {
+  return (
+    !socketConnected.value && !apConnected.value && serverConnected.value && !socketIo.hasUserId()
+  )
+})
+
+const showReadIntructions = computed(() => {
+  return socketConnected.value && !deskConnected.value && !apConnected.value
+})
+
+const showEnterWifiCredentails = computed(() => {
+  return apConnected.value
+})
+
+const lookForPi = async (now) => {
   const piSuccess = await piTest()
   if (piSuccess) {
-    lastApUpdate.value = new Date().getTime()
+    lastApUpdate.value = now
     apConnected.value = true
+  }
+}
+
+const lookForServer = async (now) => {
+  const internetSuccess = await checkServer()
+  if (internetSuccess) {
+    lastServerUpdate.value = now
+    serverConnected.value = true
   }
 }
 
 const checkStatus = async () => {
   const now = new Date().getTime()
+  if (!deskConnected.value) {
+    lookForPi(now)
+    lookForServer(now)
+  }
   if (now - lastDeskUpdate.value > 6000) {
     deskConnected.value = false
   }
   if (now - lastApUpdate.value > 6000) {
     apConnected.value = false
   }
-  if (!deskConnected.value) {
-    //lookForPi()
+  if (now - lastServerUpdate.value > 6000) {
+    serverConnected.value = false
   }
 }
 
