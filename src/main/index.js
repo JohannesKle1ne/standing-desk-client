@@ -4,6 +4,28 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { mouse, keyboard, Key } from '@nut-tree/nut-js'
 
+var AutoLaunch = require('auto-launch')
+
+var minecraftAutoLauncher = new AutoLaunch({
+  name: 'StandingDeskApp'
+})
+
+minecraftAutoLauncher.enable()
+
+//minecraftAutoLauncher.disable();
+
+minecraftAutoLauncher
+  .isEnabled()
+  .then(function (isEnabled) {
+    if (isEnabled) {
+      return
+    }
+    minecraftAutoLauncher.enable()
+  })
+  .catch(function (err) {
+    // handle error
+  })
+
 const fs = require('fs').promises
 const path = require('path')
 
@@ -28,24 +50,6 @@ const getUserInfo = async () => {
   } catch (error) {
     console.log('id could not be read')
   }
-}
-
-/* 
-;(async () => {
-  await setMissingId()
-  const id = await getId()
-  console.log('Id: ' + id)
-})() */
-
-// Function to generate a random ID
-function generateRandomId(length) {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-  let result = ''
-  const charactersLength = characters.length
-  for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength))
-  }
-  return result
 }
 
 let tray

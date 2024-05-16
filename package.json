@@ -20,6 +20,7 @@
     "@electron-toolkit/preload": "^3.0.0",
     "@electron-toolkit/utils": "^3.0.0",
     "@nut-tree/nut-js": "^3.1.2",
+    "auto-launch": "^5.0.6",
     "axios": "^1.6.7",
     "chart.js": "^4.4.2",
     "js-sha256": "^0.11.0",

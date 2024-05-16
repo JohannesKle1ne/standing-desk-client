@@ -55,15 +55,16 @@ export async function createUser(name) {
       method: 'post',
       url: urlRestApi + '/user',
       data: {
-        name: name
+        userName: name
       }
     })
+    console.log(response.data)
     return response.data
   } catch (error) {
     console.log('Error creating user')
-    return {
+    /* return {
       userName: 'Johannes Kleine',
       id: '83898cf2-188b-493f-b6f0-4b15725be10d'
-    }
+    } */
   }
 }
