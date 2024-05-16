@@ -135,10 +135,8 @@ function createWindow() {
 
   mainWindow.on('close', (event) => {
     // Prevent the window from actually closing
-    event.preventDefault()
-
-    // Hide the window instead
-    mainWindow.hide()
+    //event.preventDefault()
+    //app.quit()
   })
 
   tray = new Tray(path.join(__dirname, '../../resources/icon.png'))
