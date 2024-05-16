@@ -73,3 +73,8 @@ cd /home/johannes/Documents/standing-desk-controller-2/pi_zero
 morgen: 
 - write logs from socket server to DB
 - add enpoint with filters to rest api to display daily stats
+
+
+MAC taskmanager:
+
+Durch die gedrückte Tastenkombination [CMD] + [ALT] + [ESC]
