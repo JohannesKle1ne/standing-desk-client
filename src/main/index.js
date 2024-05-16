@@ -68,13 +68,13 @@ function createWindow() {
 
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    frame: false,
+    frame: true,
     width: windowWidth,
     height: windowHeight,
     x,
     y,
-    show: false,
-    autoHideMenuBar: true,
+    show: true,
+    autoHideMenuBar: false,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
@@ -91,16 +91,17 @@ function createWindow() {
   mainWindow.on('close', (event) => {
     // Prevent the window from actually closing
     event.preventDefault()
+    app.exit()
 
     // Hide the window instead
     mainWindow.hide()
   })
 
-  tray = new Tray(path.join(__dirname, '../../resources/icon.png'))
+  /*   tray = new Tray(path.join(__dirname, '../../resources/icon.png'))
 
   const contextMenu = Menu.buildFromTemplate([
     /*     { label: 'Show App', click: () => mainWindow.show() },
-     */ { label: 'Quit', click: () => app.quit() }
+      { label: 'Quit', click: () => app.exit() }
   ])
 
   // Set the tray icon and context menu
@@ -109,10 +110,11 @@ function createWindow() {
 
   // Show/hide the main window when the tray icon is clicked
   tray.on('click', () => {
-    if (!mainWindow.isVisible()) {
+    app.exit()
+    /* if (!mainWindow.isVisible()) {
       mainWindow.show()
-    }
-  })
+    } 
+  }) */
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
@@ -161,9 +163,7 @@ app.whenReady().then(() => {
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
+  app.exit()
 })
 
 // In this file you can include the rest of your app"s specific main process
