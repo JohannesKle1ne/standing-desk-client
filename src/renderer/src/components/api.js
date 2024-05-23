@@ -49,6 +49,19 @@ export async function checkServer() {
   }
 }
 
+export async function getStatistics(id) {
+  try {
+    const response = await axios({
+      method: 'get',
+      url: urlRestApi + `/state/${id}`
+    })
+    return response.data
+  } catch (error) {
+    console.log(error)
+    console.log('Error reaching server')
+  }
+}
+
 export async function createUser(name) {
   try {
     const response = await axios({

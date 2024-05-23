@@ -1,9 +1,10 @@
 <template>
-  <ReadNoInternet v-if="showNoInternet" />
+  <!--  <ReadNoInternet v-if="showNoInternet" />
   <EnterName @created="socketIo.connect()" v-if="showEnterName" />
   <ReadInstructions v-if="showReadIntructions" />
-  <EnterWifiCredentails v-if="showEnterWifiCredentails" />
-  <ViewDesk v-if="viewDesk"></ViewDesk>
+  <EnterWifiCredentails v-if="showEnterWifiCredentails" /> 
+  <ViewDesk @showStatistics="viewStatistics = true" v-if="viewDesk"></ViewDesk>-->
+  <ViewDesk></ViewDesk>
 </template>
 
 <script setup>

@@ -1,6 +1,5 @@
 <script setup>
 import MqttClient from './components/MqttClient.vue'
-import Statistics from './components/Statistics.vue'
 import Base from './components/Base.vue'
 </script>
 

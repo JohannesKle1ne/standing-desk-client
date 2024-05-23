@@ -11,7 +11,8 @@
     </div>
     <h3>Height</h3>
     <div style="color: white; font-size: 50px; line-height: 1">{{ formattedHeight }}</div>
-    <div style="width: 800px; height: 600px"><canvas id="lineChart"></canvas></div>
+    <!-- <div style="width: 800px; height: 600px"><canvas id="lineChart"></canvas></div> -->
+    <ViewStatistics></ViewStatistics>
   </div>
 </template>
 
@@ -19,6 +20,7 @@
 import { svgs } from './svg'
 import { ref, computed, watch } from 'vue'
 import Chart from 'chart.js/auto'
+import ViewStatistics from './ViewStatistics.vue'
 
 let lineChart = null
 
@@ -40,7 +42,7 @@ const cutData = (arr, defaultValue) => {
   return newArray
 }
 
-watch(
+/* watch(
   () => props.deskUpdates,
   (newValue) => {
     if (lineChart == null) {
@@ -104,7 +106,7 @@ watch(
     lineChart.update()
   },
   { deep: true }
-)
+) */
 
 const formattedHeight = computed(() => {
   if (!props.height) return ''

@@ -1,20 +1,3 @@
-<template>
-  <div style="width: 500px"><canvas id="barChart"></canvas></div>
-  <div style="width: 500px"><canvas id="barChart2"></canvas></div>
-</template>
-
-<script setup>
-import Chart from 'chart.js/auto'
-import { ref, computed, onMounted } from 'vue'
-import axios from 'axios'
-
-const url = 'https://standing-desk.org/api/state/'
-
-const emits = defineEmits(['buttonClicked'])
-const props = defineProps({
-  height: String
-})
-
 const roundToMinute = (timestamp) => {
   const seconds = Math.floor(timestamp / 1000)
   const minutes = Math.floor(seconds / 60)
@@ -28,20 +11,34 @@ const roundToHour = (timestamp) => {
   return hours * 60 * 60 * 1000
 }
 
-const getDeskUp = (height) => height > 1000
+const getDeskUp = (height) => height > 600
 
-onMounted(async () => {
-  const myId = await window.electronAPI.getId()
-  const response = await axios({
-    method: 'get',
-    url: url + myId
-  })
-  console.log(response.data)
+export function getStartOfToday() {
+  const now = new Date()
+  return new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
+}
 
-  const data = response.data
+export function getDayIntervals(initData) {
+  let intervals = []
+  const millisecondsPerDay = 86400000
+  const today = getStartOfToday()
 
-  console.log(data)
-  const groups = data.reduce((acc, d) => {
+  for (let i = 10; i >= 0; i--) {
+    const intervalStart = today - i * millisecondsPerDay
+    const intervalEnd = intervalStart + millisecondsPerDay
+    intervals.push({
+      day: intervalStart,
+      data: initData.filter(
+        (state) => state.timestamp > intervalStart && state.timestamp < intervalEnd
+      )
+    })
+  }
+  return intervals
+}
+
+export function getChartData(initData) {
+  console.log(initData)
+  const groups = initData.reduce((acc, d) => {
     const minute = roundToMinute(d.timestamp)
     const group = acc.find((d) => d.minute === minute)
     if (group) {
@@ -63,7 +60,7 @@ onMounted(async () => {
 
     // Get hours and minutes
     const hours = date.getHours()
-    let minutes = date.getMinutes()
+    /*     let minutes = date.getMinutes() */
 
     const deskUps = g.deskUps.filter((d) => d).length
     const deskDowns = g.deskUps.filter((d) => !d).length
@@ -73,9 +70,9 @@ onMounted(async () => {
     const notPresent = g.presents.filter((d) => !d).length
     const present = isPresent > notPresent
 
-    if (minutes.toString().length <= 1) {
+    /*     if (minutes.toString().length <= 1) {
       minutes = '0' + minutes
-    }
+    } */
     return {
       timestamp: g.minute,
       deskUp: deskUp,
@@ -131,7 +128,7 @@ onMounted(async () => {
     } */
     return {
       ...g,
-      time: `${hours}-${hours + 1}`
+      time: `${hours}:00 - ${hours + 1}:00`
     }
   })
 
@@ -146,43 +143,5 @@ onMounted(async () => {
     return { ...g, accumulated: sliced.length }
   }) */
 
-  const chartData = formattedHours
-
-  new Chart(document.getElementById('barChart'), {
-    type: 'bar',
-    data: {
-      labels: chartData.map((row) => row.time),
-      datasets: [
-        /*  {
-          label: 'Desk Up minutes',
-          data: chartData.map((row) => row.deskUpCounter)
-        }, */
-        {
-          label: 'Presence minutes',
-          data: chartData.map((row) => row.presentCounter)
-        }
-        /*   {
-          label: 'Standing minutes',
-          data: chartData.map((row) => row.standingCounter)
-        } */
-      ]
-    }
-  })
-  /* new Chart(document.getElementById('barChart2'), {
-    type: 'bar',
-    data: {
-      labels: chartData.map((row) => row.time),
-      datasets: [
-
-        {
-          label: 'Presence minutes',
-          data: chartData.map((row) => row.presentCounter)
-        }
-
-      ]
-    }
-  }) */
-})
-</script>
-
-<style></style>
+  return formattedHours
+}
