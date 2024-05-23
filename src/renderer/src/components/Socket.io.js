@@ -1,12 +1,15 @@
 import io from 'socket.io-client'
 
 let stateCallback = () => {}
+let heightCallback = () => {}
 let connectedCallback = () => {}
 let disconnectedCallback = () => {}
 
 let isConnectedFlag = false // Flag to track connection status
 
 let userId = null
+
+let socket
 
 const connect = async () => {
   const userInfo = await window.electronAPI.getUserInfo()
@@ -15,7 +18,7 @@ const connect = async () => {
 
   userId = userInfo.id
 
-  const socket = io('https://standing-desk.org', {
+  socket = io('https://standing-desk.org', {
     auth: { id: userInfo.id },
     transports: ['websocket']
   })
@@ -35,6 +38,9 @@ const connect = async () => {
   socket.on('state', (state) => {
     stateCallback(state)
   })
+  socket.on('height', (state) => {
+    heightCallback(state)
+  })
 }
 
 const isConnected = () => {
@@ -47,6 +53,10 @@ const onStateMessage = (callback) => {
   stateCallback = callback
 }
 
+const onHeightMessage = (callback) => {
+  heightCallback = callback
+}
+
 const onConnected = (callback) => {
   connectedCallback = callback
 }
@@ -55,11 +65,12 @@ const onDisconnected = (callback) => {
   disconnectedCallback = callback
 }
 
-const sendPreset = () => {}
-
-const sendUp = () => {}
-
-const sendDown = () => {}
+const sendCommand = (command) => {
+  console.log('send')
+  if (socket && isConnectedFlag) {
+    socket.emit('command', command)
+  }
+}
 
 export default {
   connect,
@@ -68,7 +79,6 @@ export default {
   onConnected,
   onDisconnected,
   onStateMessage,
-  sendPreset,
-  sendUp,
-  sendDown
+  sendCommand,
+  onHeightMessage
 }

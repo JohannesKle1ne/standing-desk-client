@@ -1,10 +1,15 @@
 <template>
-  <!--  <ReadNoInternet v-if="showNoInternet" />
+  <ReadNoInternet v-if="showNoInternet" />
   <EnterName @created="socketIo.connect()" v-if="showEnterName" />
   <ReadInstructions v-if="showReadIntructions" />
-  <EnterWifiCredentails v-if="showEnterWifiCredentails" /> 
-  <ViewDesk @showStatistics="viewStatistics = true" v-if="viewDesk"></ViewDesk>-->
-  <ViewDesk></ViewDesk>
+  <EnterWifiCredentails v-if="showEnterWifiCredentails" />
+  <ViewDesk
+    @buttonClicked="sendCommand"
+    @showStatistics="viewStatistics = true"
+    :height="height"
+    v-if="viewDesk"
+  ></ViewDesk>
+  <!--   <ViewDesk></ViewDesk> -->
 </template>
 
 <script setup>
@@ -29,6 +34,8 @@ const lastDeskUpdate = ref(dateNow)
 const lastApUpdate = ref(dateNow)
 const lastServerUpdate = ref(dateNow)
 
+const height = ref(null)
+
 const viewDesk = computed(() => {
   return deskConnected.value
 })
@@ -50,6 +57,10 @@ const showReadIntructions = computed(() => {
 const showEnterWifiCredentails = computed(() => {
   return apConnected.value
 })
+
+const sendCommand = (command) => {
+  socketIo.sendCommand(command)
+}
 
 const lookForPi = async (now) => {
   const piSuccess = await piTest()
@@ -96,6 +107,10 @@ onMounted(async () => {
     console.log(state)
     lastDeskUpdate.value = new Date().getTime()
     deskConnected.value = true
+  })
+  socketIo.onHeightMessage((newHeight) => {
+    console.log(newHeight)
+    height.value = JSON.parse(newHeight).height
   })
   setInterval(checkStatus, 3000)
 })

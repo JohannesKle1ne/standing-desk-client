@@ -2,9 +2,7 @@
   <div style="display: flex; flex-direction: column; gap: 10px; margin: 10px">
     <h3>Instructions</h3>
     <div style="color: white; display: flex; flex-direction: column; gap: 4px; font-size: 14px">
-      <span v-for="(i, index) in instructions">{{
-        (index > 1 ? `${index - 1}.` : '') + ' ' + i
-      }}</span>
+      <span v-for="(i, index) in instructions">{{ i }}</span>
     </div>
 
     <div style="width: 100%; color: white">
@@ -13,13 +11,13 @@
         <input class="text-black" style="width: 200px" v-model="ssid" />
       </div>
 
-      <div style="display: flex">
+      <div style="display: flex" class="mt-2">
         <div style="width: 100px">password:</div>
         <input class="text-black" style="width: 200px" v-model="psk" />
       </div>
     </div>
     <div style="display: flex; align-items: center; width: 100%">
-      <button @click="pair" class="rounded-button">Save</button>
+      <button @click="pair" class="rounded-button">save</button>
     </div>
   </div>
 </template>
@@ -32,13 +30,13 @@ const emits = defineEmits(['getWifi'])
 
 /* ssid="iPhoneJohannes"
         psk="12121212" */
-const ssid = ref('Soul7')
-const psk = ref('52868737320352956218')
+const ssid = ref('')
+const psk = ref('')
 
 const instructions = ref([
   'Enter your WiFi credentials below',
-  'Press Save',
-  'If saved successfully, connect back to your WiFi and reboot the Pi'
+  'Press "save"',
+  'After saving, the pi will reboot. This can take about 2 minutes'
 ])
 
 const pair = async () => {

@@ -104,7 +104,7 @@ let lastPosition
 function createWindow() {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize
 
-  const windowWidth = 1000
+  const windowWidth = 600
   const windowHeight = 600
 
   // Calculate the position for the bottom right corner
@@ -161,7 +161,7 @@ function createWindow() {
     mainWindow.show()
   })
 
-  mainWindow.webContents.openDevTools()
+  //mainWindow.webContents.openDevTools()
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url)

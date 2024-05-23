@@ -1,8 +1,8 @@
 <template>
-  <div class="flex justify-center items-center w-full">
-    <h3>Please enter your full name</h3>
-    <input v-model="name" />
-    <button @click="create">Create User</button>
+  <div class="flex flex-col justify-center items-center w-full text-white p-4">
+    <h3 class="text-center p-4">Please enter your full name</h3>
+    <div><input class="text-black" v-model="name" /></div>
+    <div><button @click="create">Create User</button></div>
   </div>
 </template>
 

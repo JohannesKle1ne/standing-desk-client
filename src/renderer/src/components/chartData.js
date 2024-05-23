@@ -11,7 +11,7 @@ const roundToHour = (timestamp) => {
   return hours * 60 * 60 * 1000
 }
 
-const getDeskUp = (height) => height > 600
+const getDeskUp = (height) => height > 900
 
 export function getStartOfToday() {
   const now = new Date()

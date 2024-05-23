@@ -4,6 +4,7 @@
     <span @click="goBack()" class="day-button" v-html="svgs.chevronLeft"></span>
     <span class="w-[100px] text-center">{{ formatDateFromTimestamp(currentDay) }}</span>
     <span @click="goForward()" class="day-button" v-html="svgs.chevronRight"></span>
+    <button @click="updateChart" class="ml-8 text-white">Refresh</button>
   </div>
 </template>
 
@@ -47,7 +48,7 @@ const goBack = () => {
 
 const updateChart = async () => {
   const userInfo = await window.electronAPI.getUserInfo()
-  const responseData = await getStatistics('83898cf2-188b-493f-b6f0-4b15725be10d')
+  const responseData = await getStatistics(userInfo.id)
 
   dayIntervals = getDayIntervals(responseData)
 
