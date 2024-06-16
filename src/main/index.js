@@ -29,26 +29,29 @@ minecraftAutoLauncher
 const fs = require('fs').promises
 const path = require('path')
 
-const filePathToUserInfo = path.join(__dirname, '../../resources/user_info.json')
+const getUserInfoFilePath = () => {
+  return path.join(app.getPath('userData'), 'user_info.json')
+}
 
 const setUserInfo = async (event, userInfo) => {
-  console.log(userInfo)
+  const filePathToUserInfo = getUserInfoFilePath()
   const data = JSON.stringify(userInfo)
-  console.log('write new id to file')
   try {
     await fs.writeFile(filePathToUserInfo, data, 'utf8')
+    console.log('User info written to file')
   } catch (error) {
-    console.log('id could not be set')
+    console.error('User info could not be set:', error)
   }
 }
 
 const getUserInfo = async () => {
+  const filePathToUserInfo = getUserInfoFilePath()
   try {
     const data = await fs.readFile(filePathToUserInfo, 'utf8')
     const obj = JSON.parse(data)
     return obj
   } catch (error) {
-    console.log('id could not be read')
+    console.error('User info could not be read:', error)
   }
 }
 
@@ -104,7 +107,7 @@ let lastPosition
 function createWindow() {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize
 
-  const windowWidth = 600
+  const windowWidth = 1000
   const windowHeight = 600
 
   // Calculate the position for the bottom right corner
@@ -161,7 +164,7 @@ function createWindow() {
     mainWindow.show()
   })
 
-  //mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools()
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url)

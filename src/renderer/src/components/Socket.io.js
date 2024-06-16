@@ -19,7 +19,7 @@ const connect = async () => {
   userId = userInfo.id
 
   socket = io('https://standing-desk.org', {
-    auth: { id: userInfo.id },
+    auth: { id: userInfo.id, type: 'electron' },
     transports: ['websocket']
   })
 
@@ -38,8 +38,11 @@ const connect = async () => {
   socket.on('state', (state) => {
     stateCallback(state)
   })
-  socket.on('height', (state) => {
-    heightCallback(state)
+  socket.on('height', (height) => {
+    heightCallback(height)
+  })
+  socket.on('requestGoUp', () => {
+    socket.emit('confirmGoUp')
   })
 }
 

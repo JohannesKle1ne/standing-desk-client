@@ -217,6 +217,27 @@ Next tomorrow:
 - solar the first board -> test functionality
 
 
+________________
+Current Status:
+- statstisview for current day and last 10 days
+- auto launch
+- Pairing: UserName+ Id saved in database. Pi uses this ID to talk to the socket server and Backend
+
+- what to do for registration?
+
+
+
+- pre defined username for participants
+- add sitting minutes
+- set standing goal
+- automatic movement
+- weekly overview over the statistics
+- jarvis motor should work fully 
+
+
+________________
+
+- add type to pi auth
 
 
 

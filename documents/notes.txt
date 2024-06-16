@@ -64,8 +64,7 @@ Old Soul7 PI:
 Don't use SHA encoding. It easy to guess someones id after knowing that the own id comes from the name.
 
 
-JohannesKle1ne
-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 git token
+
 
 
 cd /home/johannes/Documents/standing-desk-controller-2/pi_zero
@@ -78,3 +77,27 @@ morgen:
 MAC taskmanager:
 
 Durch die gedrückte Tastenkombination [CMD] + [ALT] + [ESC]
+
+
+Check file storage:
+
+df -h
+
+Filesystem      Size  Used Avail Use% Mounted on
+tmpfs            86M  1.1M   85M   2% /run
+/dev/vda1       9.6G  4.4G  5.2G  47% /
+tmpfs           429M   28K  429M   1% /dev/shm
+tmpfs           5.0M     0  5.0M   0% /run/lock
+/dev/vda15      105M  6.1M   99M   6% /boot/efi
+tmpfs            86M  4.0K   86M   1% /run/user/0
+
+
+Master password pg Admin: 0o9i8u7z
+
+When connecting sensor to PC:
+GND to GND
+TX to RX
+RX to TX
+5V to 5V
+
+set both Mx RG to 2

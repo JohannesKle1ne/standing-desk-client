@@ -84,7 +84,7 @@ const checkStatus = async () => {
     lookForPi(now)
     lookForServer(now)
   }
-  if (now - lastDeskUpdate.value > 6000) {
+  if (now - lastDeskUpdate.value > 60000) {
     deskConnected.value = false
   }
   if (now - lastApUpdate.value > 6000) {
