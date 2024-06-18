@@ -1,6 +1,7 @@
 <template>
   <button @click="hideWindow">Hide</button>
   <button @click="quitApp">Quit</button>
+
   <ReadNoInternet v-if="showNoInternet" />
   <EnterName @created="socketIo.connect()" v-if="showEnterName" />
   <ReadInstructions v-if="showReadIntructions" />
@@ -101,6 +102,7 @@ const checkStatus = async () => {
 }
 
 onMounted(async () => {
+  hideWindow()
   await socketIo.connect()
   socketIo.onConnected(() => {
     socketConnected.value = true

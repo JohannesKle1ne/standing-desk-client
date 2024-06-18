@@ -4,27 +4,31 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { mouse, keyboard, Key } from '@nut-tree/nut-js'
 
-var AutoLaunch = require('auto-launch')
+const runAutoLauncher = () => {
+  var AutoLaunch = require('auto-launch')
 
-var minecraftAutoLauncher = new AutoLaunch({
-  name: 'StandingDeskApp'
-})
-
-minecraftAutoLauncher.enable()
-
-//minecraftAutoLauncher.disable();
-
-minecraftAutoLauncher
-  .isEnabled()
-  .then(function (isEnabled) {
-    if (isEnabled) {
-      return
-    }
-    minecraftAutoLauncher.enable()
+  var deskAutoLauncher = new AutoLaunch({
+    name: 'StandingDeskApp'
   })
-  .catch(function (err) {
-    // handle error
-  })
+
+  deskAutoLauncher.enable()
+
+  //minecraftAutoLauncher.disable();
+
+  deskAutoLauncher
+    .isEnabled()
+    .then(function (isEnabled) {
+      if (isEnabled) {
+        return
+      }
+      deskAutoLauncher.enable()
+    })
+    .catch(function (err) {
+      // handle error
+    })
+}
+
+runAutoLauncher()
 
 const fs = require('fs').promises
 const path = require('path')
@@ -123,7 +127,7 @@ function createWindow() {
     height: windowHeight,
     x,
     y,
-    show: false,
+    show: true,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
@@ -192,7 +196,6 @@ app.whenReady().then(() => {
     mainWindow.hide()
   })
   ipcMain.handle('quitApp', () => {
-    console.log('quit')
     app.quit()
   })
 
