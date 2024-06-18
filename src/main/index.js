@@ -104,6 +104,8 @@ let lastPosition
   lastPosition = position
 }, 30000) */
 
+let mainWindow
+
 function createWindow() {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize
 
@@ -115,14 +117,14 @@ function createWindow() {
   const y = height - windowHeight - 50 // Adjust the value based on your window height
 
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
-    frame: true,
+  mainWindow = new BrowserWindow({
+    frame: false,
     width: windowWidth,
     height: windowHeight,
     x,
     y,
-    show: true,
-    autoHideMenuBar: false,
+    show: false,
+    autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
@@ -142,7 +144,7 @@ function createWindow() {
     //app.quit()
   })
 
-  tray = new Tray(path.join(__dirname, '../../resources/icon.png'))
+  tray = new Tray(path.join(__dirname, '../../resources/icon16x16.png'))
 
   const contextMenu = Menu.buildFromTemplate([
     /*     { label: 'Show App', click: () => mainWindow.show() },
@@ -159,10 +161,10 @@ function createWindow() {
       mainWindow.show()
     }
   })
-
+  /* 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
-  })
+  }) */
 
   mainWindow.webContents.openDevTools()
 
@@ -186,6 +188,13 @@ function createWindow() {
 app.whenReady().then(() => {
   ipcMain.handle('getUserInfo', getUserInfo)
   ipcMain.handle('setUserInfo', setUserInfo)
+  ipcMain.handle('hideWindow', () => {
+    mainWindow.hide()
+  })
+  ipcMain.handle('quitApp', () => {
+    console.log('quit')
+    app.quit()
+  })
 
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')

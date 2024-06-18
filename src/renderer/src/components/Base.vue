@@ -1,4 +1,6 @@
 <template>
+  <button @click="hideWindow">Hide</button>
+  <button @click="quitApp">Quit</button>
   <ReadNoInternet v-if="showNoInternet" />
   <EnterName @created="socketIo.connect()" v-if="showEnterName" />
   <ReadInstructions v-if="showReadIntructions" />
@@ -118,6 +120,14 @@ onMounted(async () => {
   })
   setInterval(checkStatus, 3000)
 })
+
+const hideWindow = async () => {
+  await window.electronAPI.hideWindow()
+}
+
+const quitApp = async () => {
+  await window.electronAPI.quitApp()
+}
 </script>
 
 <style></style>
