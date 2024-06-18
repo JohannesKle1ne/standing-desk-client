@@ -84,7 +84,10 @@ const checkStatus = async () => {
     lookForPi(now)
     lookForServer(now)
   }
-  if (now - lastDeskUpdate.value > 60000) {
+  if (now - lastDeskUpdate.value > 20000) {
+    socketIo.requestAlive()
+  }
+  if (now - lastDeskUpdate.value > 30000) {
     deskConnected.value = false
   }
   if (now - lastApUpdate.value > 6000) {
@@ -99,12 +102,13 @@ onMounted(async () => {
   await socketIo.connect()
   socketIo.onConnected(() => {
     socketConnected.value = true
+    socketIo.requestAlive()
   })
   socketIo.onDisconnected(() => {
     socketConnected.value = false
   })
-  socketIo.onStateMessage((state) => {
-    console.log(state)
+  socketIo.onAliveMessage(() => {
+    console.log('pi alive')
     lastDeskUpdate.value = new Date().getTime()
     deskConnected.value = true
   })

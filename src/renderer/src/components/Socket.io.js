@@ -1,6 +1,6 @@
 import io from 'socket.io-client'
 
-let stateCallback = () => {}
+let aliveCallback = () => {}
 let heightCallback = () => {}
 let connectedCallback = () => {}
 let disconnectedCallback = () => {}
@@ -25,8 +25,8 @@ const connect = async () => {
 
   socket.on('connect', (e) => {
     console.log('Connected to Socket.IO server')
-    connectedCallback(e)
     isConnectedFlag = true
+    connectedCallback(e)
   })
 
   socket.on('disconnect', (e) => {
@@ -35,8 +35,8 @@ const connect = async () => {
     isConnectedFlag = false
   })
 
-  socket.on('state', (state) => {
-    stateCallback(state)
+  socket.on('alive', () => {
+    aliveCallback()
   })
   socket.on('height', (height) => {
     heightCallback(height)
@@ -52,8 +52,8 @@ const isConnected = () => {
 
 const hasUserId = () => userId != null
 
-const onStateMessage = (callback) => {
-  stateCallback = callback
+const onAliveMessage = (callback) => {
+  aliveCallback = callback
 }
 
 const onHeightMessage = (callback) => {
@@ -69,9 +69,14 @@ const onDisconnected = (callback) => {
 }
 
 const sendCommand = (command) => {
-  console.log('send')
   if (socket && isConnectedFlag) {
     socket.emit('command', command)
+  }
+}
+
+const requestAlive = () => {
+  if (socket && isConnectedFlag) {
+    socket.emit('requestAlive')
   }
 }
 
@@ -81,7 +86,8 @@ export default {
   hasUserId,
   onConnected,
   onDisconnected,
-  onStateMessage,
+  onAliveMessage,
   sendCommand,
-  onHeightMessage
+  onHeightMessage,
+  requestAlive
 }
