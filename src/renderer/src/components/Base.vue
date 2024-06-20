@@ -1,7 +1,9 @@
 <template>
-  <button @click="hideWindow">Hide</button>
-  <button @click="quitApp">Quit</button>
-  <button @click="logOut">Log out</button>
+  <div
+    @click="hideWindow"
+    class="w-7 h-7 absolute right-1 top-1 text-white cursor-pointer"
+    v-html="svgs.close"
+  ></div>
 
   <ReadNoInternet v-if="showNoInternet" />
   <Login @login="socketIo.connect()" @setRegisterFlag="registerFlag = true" v-if="showLogin" />
@@ -18,6 +20,27 @@
     :height="height"
     v-if="viewDesk"
   ></ViewDesk>
+  <div
+    @click="quitApp"
+    class="w-7 h-7 absolute right-0 bottom-1 text-white cursor-pointer"
+    v-html="svgs.quit"
+    @mouseover="setQuitToolTip"
+    @mouseleave="hideQuitToolTip"
+  ></div>
+  <div
+    @click="logOut"
+    class="w-7 h-7 absolute right-8 bottom-1 text-white cursor-pointer"
+    v-html="svgs.logOut"
+    @mouseover="setLogOutToolTip"
+    @mouseleave="hideQuitToolTip"
+  ></div>
+  <div
+    v-if="tooltip != null"
+    :style="{ right: tooltip.x + 'px', bottom: tooltip.y + 'px' }"
+    class="absolute bg-white text-sm text-[#2f3241]"
+  >
+    {{ tooltip.text }}
+  </div>
   <!--   <ViewDesk></ViewDesk> -->
 </template>
 
@@ -31,6 +54,7 @@ import ViewDesk from './ViewDesk.vue'
 import socketIo from './Socket.io'
 import { piTest, checkServer } from './api.js'
 import { ref, onMounted, computed } from 'vue'
+import { svgs } from './svg'
 
 const socketConnected = ref(false)
 
@@ -45,6 +69,8 @@ const lastApUpdate = ref(dateNow)
 const lastServerUpdate = ref(dateNow)
 
 const height = ref(null)
+
+const tooltip = ref(null)
 
 const registerFlag = ref(false)
 
@@ -159,6 +185,18 @@ const hideWindow = async () => {
 
 const quitApp = async () => {
   await window.electronAPI.quitApp()
+}
+
+const setQuitToolTip = () => {
+  tooltip.value = { text: 'Quit app', x: 5, y: 35 }
+}
+
+const setLogOutToolTip = () => {
+  tooltip.value = { text: 'Log out', x: 25, y: 35 }
+}
+
+const hideQuitToolTip = () => {
+  tooltip.value = null
 }
 </script>
 

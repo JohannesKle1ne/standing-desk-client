@@ -4,6 +4,8 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { mouse, keyboard, Key } from '@nut-tree/nut-js'
 
+const dev = false
+
 const runAutoLauncher = () => {
   var AutoLaunch = require('auto-launch')
 
@@ -123,7 +125,7 @@ let mainWindow
 function createWindow() {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize
 
-  const windowWidth = 1000
+  const windowWidth = dev ? 1000 : 600
   const windowHeight = 600
 
   // Calculate the position for the bottom right corner
@@ -145,6 +147,8 @@ function createWindow() {
       sandbox: false
     }
   })
+
+  dev && mainWindow.webContents.openDevTools()
 
   mainWindow.on('blur', (e) => {
     // Prevent the window from actually closing
@@ -179,8 +183,6 @@ function createWindow() {
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
   }) */
-
-  mainWindow.webContents.openDevTools()
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url)

@@ -101,3 +101,7 @@ RX to TX
 5V to 5V
 
 set both Mx RG to 2
+
+
+lo4anke@gmail.com
+8,ankilein
