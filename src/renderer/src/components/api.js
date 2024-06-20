@@ -62,22 +62,38 @@ export async function getStatistics(id) {
   }
 }
 
-export async function createUser(name) {
+export async function registerUser(name, password) {
   try {
     const response = await axios({
       method: 'post',
-      url: urlRestApi + '/user',
+      url: urlRestApi + '/user/register',
       data: {
-        userName: name
+        userName: name,
+        password
       }
     })
     console.log(response.data)
     return response.data
   } catch (error) {
-    console.log('Error creating user')
-    /* return {
-      userName: 'Johannes Kleine',
-      id: '83898cf2-188b-493f-b6f0-4b15725be10d'
-    } */
+    console.log('Error registering user')
+    console.log(error)
+  }
+}
+
+export async function loginUser(name, password) {
+  try {
+    const response = await axios({
+      method: 'post',
+      url: urlRestApi + '/user/login',
+      data: {
+        userName: name,
+        password
+      }
+    })
+    console.log(response.data)
+    return response.data
+  } catch (error) {
+    console.log('Error loggin in')
+    console.log(error)
   }
 }

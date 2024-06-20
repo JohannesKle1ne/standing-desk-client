@@ -59,6 +59,16 @@ const getUserInfo = async () => {
   }
 }
 
+const removeUserInfoFile = async () => {
+  const filePathToUserInfo = getUserInfoFilePath()
+  try {
+    await fs.unlink(filePathToUserInfo)
+    console.log('User info file removed')
+  } catch (error) {
+    console.error('User info file could not be removed:', error)
+  }
+}
+
 let tray
 
 // Function to get the current time in the desired format
@@ -197,6 +207,11 @@ app.whenReady().then(() => {
   })
   ipcMain.handle('quitApp', () => {
     app.quit()
+  })
+  ipcMain.handle('logOut', async () => {
+    await removeUserInfoFile()
+    app.relaunch()
+    app.exit()
   })
 
   // Set app user model id for windows

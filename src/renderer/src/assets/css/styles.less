@@ -3,6 +3,22 @@
 @tailwind components;
 @tailwind utilities;
 
+.rounded-button {
+  display: inline-block;
+  padding: 4px 8px; /* Adjust the padding as needed */
+  border: none;
+  border-radius: 20px; /* Adjust the border-radius for rounded corners */
+  /* Set your desired text color */
+  color: #2f3241;
+  font-weight: bold;
+  font-size: 12px;
+  cursor: pointer;
+  background-color: white;
+  transition:
+    background-color 0.3s ease,
+    transform 0.1s ease;
+}
+
 body {
   display: flex;
   flex-direction: column;

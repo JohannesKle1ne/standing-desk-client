@@ -1,9 +1,15 @@
 <template>
   <button @click="hideWindow">Hide</button>
   <button @click="quitApp">Quit</button>
+  <button @click="logOut">Log out</button>
 
   <ReadNoInternet v-if="showNoInternet" />
-  <EnterName @created="socketIo.connect()" v-if="showEnterName" />
+  <Login @login="socketIo.connect()" @setRegisterFlag="registerFlag = true" v-if="showLogin" />
+  <Register
+    @registered="socketIo.connect()"
+    @unsetRegisterFlag="registerFlag = false"
+    v-if="showRegister"
+  />
   <ReadInstructions v-if="showReadIntructions" />
   <EnterWifiCredentails v-if="showEnterWifiCredentails" />
   <ViewDesk
@@ -16,7 +22,8 @@
 </template>
 
 <script setup>
-import EnterName from './EnterName.vue'
+import Login from './Login.vue'
+import Register from './Register.vue'
 import ReadInstructions from './ReadInstructions.vue'
 import ReadNoInternet from './ReadNoInternet.vue'
 import EnterWifiCredentails from './EnterWifiCredentails.vue'
@@ -39,6 +46,8 @@ const lastServerUpdate = ref(dateNow)
 
 const height = ref(null)
 
+const registerFlag = ref(false)
+
 const viewDesk = computed(() => {
   return deskConnected.value
 })
@@ -47,9 +56,23 @@ const showNoInternet = computed(() => {
   return !apConnected.value && !serverConnected.value && !deskConnected.value
 })
 
-const showEnterName = computed(() => {
+const showLogin = computed(() => {
   return (
-    !socketConnected.value && !apConnected.value && serverConnected.value && !socketIo.hasUserId()
+    !socketConnected.value &&
+    !apConnected.value &&
+    serverConnected.value &&
+    !socketIo.hasUserId() &&
+    !registerFlag.value
+  )
+})
+
+const showRegister = computed(() => {
+  return (
+    !socketConnected.value &&
+    !apConnected.value &&
+    serverConnected.value &&
+    !socketIo.hasUserId() &&
+    registerFlag.value
   )
 })
 
@@ -85,7 +108,8 @@ const checkStatus = async () => {
   const now = new Date().getTime()
   if (!deskConnected.value) {
     lookForPi(now)
-    lookForServer(now)
+
+    await lookForServer(now)
   }
   if (now - lastDeskUpdate.value > 20000) {
     socketIo.requestAlive()
@@ -102,7 +126,7 @@ const checkStatus = async () => {
 }
 
 onMounted(async () => {
-  hideWindow()
+  //hideWindow()
   await socketIo.connect()
   socketIo.onConnected(() => {
     socketConnected.value = true
@@ -120,8 +144,14 @@ onMounted(async () => {
     console.log(newHeight)
     height.value = JSON.parse(newHeight).height
   })
+
+  checkStatus()
   setInterval(checkStatus, 3000)
 })
+
+const logOut = async () => {
+  await window.electronAPI.logOut()
+}
 
 const hideWindow = async () => {
   await window.electronAPI.hideWindow()
