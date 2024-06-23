@@ -4,7 +4,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { mouse, keyboard, Key } from '@nut-tree/nut-js'
 
-const dev = false
+const dev = true
 
 const runAutoLauncher = () => {
   var AutoLaunch = require('auto-launch')
@@ -55,6 +55,7 @@ const getUserInfo = async () => {
   try {
     const data = await fs.readFile(filePathToUserInfo, 'utf8')
     const obj = JSON.parse(data)
+    console.log('User info: ', obj)
     return obj
   } catch (error) {
     console.error('User info could not be read:', error)
@@ -125,7 +126,7 @@ let mainWindow
 function createWindow() {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize
 
-  const windowWidth = dev ? 1000 : 600
+  const windowWidth = dev ? 1400 : 1000
   const windowHeight = 600
 
   // Calculate the position for the bottom right corner

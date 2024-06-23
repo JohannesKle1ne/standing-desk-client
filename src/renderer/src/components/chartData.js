@@ -36,9 +36,76 @@ export function getDayIntervals(initData) {
   return intervals
 }
 
+/* function collapseMinutes(initData) {
+  return initData.reduce((acc, d) => {
+    const rounded = roundToMinute(d.timestamp)
+    const minuteObject = acc.find((d) => d.minute === rounded)
+    if (minuteObject) {
+      minuteObject.deskUp = minuteObject.deskUp || getDeskUp(d.deskHeight)
+      minuteObject.present = minuteObject.present || getDeskUp(d.present)
+    }
+  }, [])
+} */
+
 export function getChartData(initData) {
-  console.log(initData)
-  const groups = initData.reduce((acc, d) => {
+  const minuteObjects = initData.reduce((acc, d, index) => {
+    const start = d.timestamp
+    const end = initData[index + 1]?.timestamp || d.timestamp
+    const startMinute = roundToMinute(start)
+    const endMinute = roundToMinute(end)
+    const minutes = []
+    let iteratingMinute = startMinute
+    while (iteratingMinute <= endMinute) {
+      const foundMinute = acc.find((m) => m.minute === iteratingMinute)
+      if (foundMinute) {
+        foundMinute.deskUp = foundMinute.deskUp || getDeskUp(d.deskHeight)
+        foundMinute.present = foundMinute.present || d.presenceDetected
+      } else {
+        minutes.push({
+          minute: iteratingMinute,
+          deskUp: getDeskUp(d.deskHeight),
+          present: d.presenceDetected
+        })
+      }
+      iteratingMinute = iteratingMinute + 60000
+    }
+    return [...acc, ...minutes]
+  }, [])
+  console.log(minuteObjects)
+  /*  return
+
+  let dataStack = initData
+  const minutesStack = []
+  minutesStack.push({
+    minute: roundToMinute(dataStack.at(0).timestamp),
+    deskUp: false,
+    present: false
+  })
+
+  while (true) {
+    console.log(dataStack)
+    const currentMinuteObject = minutesStack.at(-1)
+    const currentMinuteStart = currentMinuteObject.minute
+    const currentMinuteEnd = currentMinuteStart + 60000
+    const dataOfMinute = dataStack.filter(
+      (d) => d.timestamp >= currentMinuteStart && d.timestamp <= currentMinuteEnd
+    )
+    dataStack = dataStack.filter(
+      (d) => !(d.timestamp >= currentMinuteStart && d.timestamp <= currentMinuteEnd)
+    )
+    currentMinuteObject.deskUp = dataOfMinute.some((d) => getDeskUp(d.deskHeight))
+    currentMinuteObject.present = dataOfMinute.some((d) => d.presenceDetected)
+    minutesStack.push({
+      minute: currentMinuteEnd,
+      deskUp: false,
+      present: false
+    })
+  }
+
+  console.log(minutesStack)
+  return */
+
+  /*   const groups = initData.reduce((acc, d) => {
     const minute = roundToMinute(d.timestamp)
     const group = acc.find((d) => d.minute === minute)
     if (group) {
@@ -53,14 +120,14 @@ export function getChartData(initData) {
     }
   }, [])
 
-  console.log(groups)
+  console.log(groups) */
 
-  const formatted = groups.map((g) => {
+  /*   const formatted = groups.map((g) => {
     const date = new Date(g.minute)
 
     // Get hours and minutes
     const hours = date.getHours()
-    /*     let minutes = date.getMinutes() */
+    /*     let minutes = date.getMinutes() 
 
     const deskUps = g.deskUps.filter((d) => d).length
     const deskDowns = g.deskUps.filter((d) => !d).length
@@ -72,26 +139,26 @@ export function getChartData(initData) {
 
     /*     if (minutes.toString().length <= 1) {
       minutes = '0' + minutes
-    } */
+    } 
     return {
       timestamp: g.minute,
       deskUp: deskUp,
       present: present
     }
-  })
+  }) */
 
-  console.log(formatted)
-
-  const groupedByHour = formatted.reduce((acc, d) => {
-    const hour = roundToHour(d.timestamp)
+  const groupedByHour = minuteObjects.reduce((acc, d) => {
+    const hour = roundToHour(d.minute)
     const group = acc.find((d) => d.hour === hour)
     const addDeskUp = d.deskUp ? 1 : 0
     const addPresent = d.present ? 1 : 0
     const addStanding = d.deskUp && d.present ? 1 : 0
+    const addSitting = !d.deskUp && d.present ? 1 : 0
     if (group) {
       group.deskUpCounter += addDeskUp
       group.presentCounter += addPresent
       group.standingCounter += addStanding
+      group.sittingCounter += addSitting
       return acc
     } else {
       return [
@@ -100,7 +167,8 @@ export function getChartData(initData) {
           hour: hour,
           deskUpCounter: addDeskUp,
           presentCounter: addPresent,
-          standingCounter: addStanding
+          standingCounter: addStanding,
+          sittingCounter: addSitting
         }
       ]
     }
@@ -128,7 +196,7 @@ export function getChartData(initData) {
     } */
     return {
       ...g,
-      time: `${hours}:00 - ${hours + 1}:00`
+      time: `${hours}-${hours + 1}`
     }
   })
 

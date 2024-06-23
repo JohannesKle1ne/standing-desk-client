@@ -18,7 +18,7 @@
     @buttonClicked="sendCommand"
     @showStatistics="viewStatistics = true"
     :height="height"
-    v-if="viewDesk"
+    v-if="true"
   ></ViewDesk>
   <div
     @click="quitApp"

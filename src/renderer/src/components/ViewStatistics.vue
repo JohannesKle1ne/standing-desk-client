@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 500px"><canvas id="barChart"></canvas></div>
+  <div style="width: 800px"><canvas id="barChart"></canvas></div>
   <div style="display: flex; gap: 10px; align-items: center; width: 100%">
     <span @click="goBack()" class="day-button" v-html="svgs.chevronLeft"></span>
     <span class="w-[100px] text-center">{{ formatDateFromTimestamp(currentDay) }}</span>
@@ -48,33 +48,69 @@ const goBack = () => {
 
 const updateChart = async () => {
   const userInfo = await window.electronAPI.getUserInfo()
-  const responseData = await getStatistics(userInfo.id)
+  // const responseData = await getStatistics(userInfo.id)
+  const responseData = data
+  console.log(responseData)
 
   dayIntervals = getDayIntervals(responseData)
+
+  console.log(dayIntervals.find((i) => i.day === currentDay.value).data)
 
   const chartData = getChartData(dayIntervals.find((i) => i.day === currentDay.value).data)
 
   if (barChart?.destroy) {
     barChart.destroy()
   }
+
   barChart = new Chart(document.getElementById('barChart'), {
+    plugins: {
+      title: {
+        display: true,
+        text: 'Historico Mensual'
+      },
+      legend: {
+        labels: {
+          padding: 100
+        }
+      }
+    },
     type: 'bar',
     data: {
       labels: chartData.map((row) => row.time),
       datasets: [
-        /*  {
+        /*    {
           label: 'Desk Up minutes',
           data: chartData.map((row) => row.deskUpCounter)
         }, */
-        /*         {
+        {
           label: 'Presence minutes',
           data: chartData.map((row) => row.presentCounter)
-        } */
+        },
         {
           label: 'Standing minutes',
           data: chartData.map((row) => row.standingCounter)
+        },
+        {
+          label: 'Sitting minutes',
+          data: chartData.map((row) => row.sittingCounter)
         }
       ]
+    },
+    options: {
+      barPercentage: 0.9, // Adjust this value to set the width of the bars
+      categoryPercentage: 0.6 // Adjust this value to increase the space between groups
+      /* scales: {
+        x: {
+          ticks: {
+            padding: 20 // Adjust this value to add space between the bars and the x-axis labels
+          }
+        },
+        y: {
+          ticks: {
+            padding: 20 // Adjust this value to add space between the bars and the y-axis labels
+          }
+        }
+      } */
     }
   })
 }
