@@ -5,10 +5,22 @@ const roundToMinute = (timestamp) => {
 }
 
 const roundToHour = (timestamp) => {
-  const seconds = Math.floor(timestamp / 1000)
-  const minutes = Math.floor(seconds / 60)
-  const hours = Math.floor(minutes / 60)
-  return hours * 60 * 60 * 1000
+  const millisecondsPerHour = 60 * 60 * 1000
+  const roundedTimestamp = Math.floor(timestamp / millisecondsPerHour) * millisecondsPerHour
+  return roundedTimestamp
+}
+
+const roundToDay = (timestamp) => {
+  const now = new Date(timestamp)
+  return new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
+}
+
+const roundToWeek = (timestamp) => {
+  const now = new Date(timestamp)
+  const dayOfWeek = now.getDay() // Sunday - Saturday : 0 - 6
+  const startOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - dayOfWeek + 1) // Adjust for local time offset
+  startOfWeek.setHours(0, 0, 0, 0) // Set time to 00:00:00.000
+  return startOfWeek.getTime()
 }
 
 const getDeskUp = (height) => height > 900
@@ -36,6 +48,31 @@ export function getDayIntervals(initData) {
   return intervals
 }
 
+export function getStartOfWeek() {
+  const currentTimestamp = Date.now() // Get the current timestamp in milliseconds
+  return roundToWeek(currentTimestamp) //
+}
+
+// Function to get week intervals with data
+export function getWeekIntervals(initData) {
+  let intervals = []
+  const millisecondsPerWeek = 604800000 // 7 days * 24 hours * 60 minutes * 60 seconds * 1000 milliseconds
+  const startOfWeek = getStartOfWeek()
+  console.log('startOfWeek: ' + startOfWeek)
+
+  for (let i = 10; i >= 0; i--) {
+    const intervalStart = startOfWeek - i * millisecondsPerWeek
+    const intervalEnd = intervalStart + millisecondsPerWeek
+    intervals.push({
+      week: intervalStart,
+      data: initData.filter(
+        (state) => state.timestamp > intervalStart && state.timestamp < intervalEnd
+      )
+    })
+  }
+  return intervals
+}
+
 /* function collapseMinutes(initData) {
   return initData.reduce((acc, d) => {
     const rounded = roundToMinute(d.timestamp)
@@ -47,8 +84,8 @@ export function getDayIntervals(initData) {
   }, [])
 } */
 
-export function getChartData(initData) {
-  const minuteObjects = initData.reduce((acc, d, index) => {
+function getMinuteObjects(initData) {
+  return initData.reduce((acc, d, index) => {
     const start = d.timestamp
     const end = initData[index + 1]?.timestamp || d.timestamp
     const startMinute = roundToMinute(start)
@@ -71,81 +108,96 @@ export function getChartData(initData) {
     }
     return [...acc, ...minutes]
   }, [])
-  console.log(minuteObjects)
-  /*  return
+}
 
-  let dataStack = initData
-  const minutesStack = []
-  minutesStack.push({
-    minute: roundToMinute(dataStack.at(0).timestamp),
-    deskUp: false,
-    present: false
-  })
+export function getChartDataForWeek(initData, timestampStart) {
+  const minuteObjects = getMinuteObjects(initData)
+  console.log(minuteObjects.length)
+  console.log(minuteObjects.filter((m) => m.present).length)
+  console.log(
+    minuteObjects.map((m) => {
+      // Convert timestamp to Date object
+      let date = new Date(m.minute)
 
-  while (true) {
-    console.log(dataStack)
-    const currentMinuteObject = minutesStack.at(-1)
-    const currentMinuteStart = currentMinuteObject.minute
-    const currentMinuteEnd = currentMinuteStart + 60000
-    const dataOfMinute = dataStack.filter(
-      (d) => d.timestamp >= currentMinuteStart && d.timestamp <= currentMinuteEnd
-    )
-    dataStack = dataStack.filter(
-      (d) => !(d.timestamp >= currentMinuteStart && d.timestamp <= currentMinuteEnd)
-    )
-    currentMinuteObject.deskUp = dataOfMinute.some((d) => getDeskUp(d.deskHeight))
-    currentMinuteObject.present = dataOfMinute.some((d) => d.presenceDetected)
-    minutesStack.push({
-      minute: currentMinuteEnd,
-      deskUp: false,
-      present: false
+      // Extract and format the date components
+      let year = date.getFullYear()
+      let month = ('0' + (date.getMonth() + 1)).slice(-2) // Months are zero-based
+      let day = ('0' + date.getDate()).slice(-2)
+      let hours = ('0' + date.getHours()).slice(-2)
+      let minutes = ('0' + date.getMinutes()).slice(-2)
+      let seconds = ('0' + date.getSeconds()).slice(-2)
+
+      // Create a readable format
+      return { ...m, minute: `${year}-${month}-${day} ${hours}:${minutes}:${seconds}` }
     })
-  }
+  )
 
-  console.log(minutesStack)
-  return */
+  const groupedByDay = minuteObjects.reduce((acc, d) => {
+    const day = roundToDay(d.minute)
 
-  /*   const groups = initData.reduce((acc, d) => {
-    const minute = roundToMinute(d.timestamp)
-    const group = acc.find((d) => d.minute === minute)
+    const group = acc.find((d) => d.day === day)
+    const addDeskUp = d.deskUp ? 1 : 0
+    const addPresent = d.present ? 1 : 0
+    const addStanding = d.deskUp && d.present ? 1 : 0
+    const addSitting = !d.deskUp && d.present ? 1 : 0
     if (group) {
-      group.deskUps.push(getDeskUp(d.deskHeight))
-      group.presents.push(d.presenceDetected)
+      group.deskUpCounter += addDeskUp
+      group.presentCounter += addPresent
+      group.standingCounter += addStanding
+      group.sittingCounter += addSitting
       return acc
     } else {
       return [
         ...acc,
-        { minute: minute, deskUps: [getDeskUp(d.deskHeight)], presents: [d.presenceDetected] }
+        {
+          day,
+          deskUpCounter: addDeskUp,
+          presentCounter: addPresent,
+          standingCounter: addStanding,
+          sittingCounter: addSitting
+        }
       ]
     }
   }, [])
+  console.log(groupedByDay)
 
-  console.log(groups) */
+  const startOfWeek = timestampStart
+  let daysOfWeek = []
+  const millisecondsPerDay = 86400000
+  for (let i = 0; i < 7; i++) {
+    daysOfWeek.push({
+      day: startOfWeek + i * millisecondsPerDay,
+      deskUpCounter: 0,
+      presentCounter: 0,
+      standingCounter: 0,
+      sittingCounter: 0
+    })
+  }
 
-  /*   const formatted = groups.map((g) => {
-    const date = new Date(g.minute)
+  console.log(daysOfWeek)
 
-    // Get hours and minutes
-    const hours = date.getHours()
-    /*     let minutes = date.getMinutes() 
+  const withEmptyDays = daysOfWeek.map((d) => {
+    const found = groupedByDay.find((day) => day.day === d.day)
+    return found || d
+  })
 
-    const deskUps = g.deskUps.filter((d) => d).length
-    const deskDowns = g.deskUps.filter((d) => !d).length
-    const deskUp = deskUps > deskDowns
+  const formattedDays = withEmptyDays.map((g) => {
+    const date = new Date(g.day)
+    const day = ('0' + date.getDate()).slice(-2) // Get day and ensure two-digit format
+    const month = ('0' + (date.getMonth() + 1)).slice(-2) // Get month and ensure two-digit format
+    const formattedDate = `${day}.${month}`
 
-    const isPresent = g.presents.filter((d) => d).length
-    const notPresent = g.presents.filter((d) => !d).length
-    const present = isPresent > notPresent
-
-    /*     if (minutes.toString().length <= 1) {
-      minutes = '0' + minutes
-    } 
     return {
-      timestamp: g.minute,
-      deskUp: deskUp,
-      present: present
+      ...g,
+      time: formattedDate
     }
-  }) */
+  })
+
+  return formattedDays
+}
+
+export function getChartDataForDay(initData, timestampStart) {
+  const minuteObjects = getMinuteObjects(initData)
 
   const groupedByHour = minuteObjects.reduce((acc, d) => {
     const hour = roundToHour(d.minute)
@@ -176,40 +228,47 @@ export function getChartData(initData) {
 
   console.log(groupedByHour)
 
-  const formattedHours = groupedByHour.map((g) => {
+  const startOfDay = timestampStart
+  let hoursOfDay = []
+  const millisecondsPerHour = 60 * 60 * 1000
+  for (let i = 0; i < 24; i++) {
+    hoursOfDay.push({
+      hour: startOfDay + i * millisecondsPerHour,
+      deskUpCounter: 0,
+      presentCounter: 0,
+      standingCounter: 0,
+      sittingCounter: 0
+    })
+  }
+
+  console.log(hoursOfDay)
+
+  const withEmptyDays = hoursOfDay.map((h) => {
+    const found = groupedByHour.find((hour) => hour.hour === h.hour)
+    return found || h
+  })
+
+  const cutValue = 4
+  const firstThreeHours = withEmptyDays.slice(0, cutValue)
+  if (firstThreeHours.every((h) => h.presentCounter === 0)) {
+    withEmptyDays.splice(0, cutValue)
+  }
+
+  const lastThreeHours = withEmptyDays.slice(-cutValue)
+  if (lastThreeHours.every((h) => h.presentCounter === 0)) {
+    withEmptyDays.splice(withEmptyDays.length - cutValue, cutValue)
+  }
+
+  const formattedHours = withEmptyDays.map((g) => {
     const date = new Date(g.hour)
-
-    // Get hours and minutes
     const hours = date.getHours()
-    // let minutes = date.getMinutes()
-
-    /*  const deskUps = g.deskUps.filter((d) => d).length
-    const deskDowns = g.deskUps.filter((d) => !d).length
-    const deskUp = deskUps > deskDowns
-
-    const isPresent = g.presents.filter((d) => d).length
-    const notPresent = g.presents.filter((d) => !d).length
-    const present = isPresent > notPresent */
-    /*
-    if (minutes.toString().length <= 1) {
-      minutes = '0' + minutes
-    } */
     return {
       ...g,
-      time: `${hours}-${hours + 1}`
+      time: `${hours + 1}:00`
     }
   })
 
   console.log(formattedHours)
-
-  /*  const foramttedCopy = JSON.parse(JSON.stringify(formatted))
-
-  const accumulated = formatted.map((g, index) => {
-    const sliced = foramttedCopy
-      .slice(0, index + 1)
-      .filter((g) => g.present === 1 && g.deskUp === 1)
-    return { ...g, accumulated: sliced.length }
-  }) */
 
   return formattedHours
 }

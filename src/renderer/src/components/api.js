@@ -38,7 +38,7 @@ export async function checkServer() {
   try {
     const response = await axios({
       method: 'get',
-      url: urlRestApi + '/state/wRzlEv5zFm',
+      url: urlRestApi + '/test',
       timeout: 3000
     })
     if (response) return true
@@ -49,11 +49,24 @@ export async function checkServer() {
   }
 }
 
-export async function getStatistics(id) {
+export async function getStates(id) {
   try {
     const response = await axios({
       method: 'get',
       url: urlRestApi + `/state/${id}`
+    })
+    return response.data
+  } catch (error) {
+    console.log(error)
+    console.log('Error reaching server')
+  }
+}
+
+export async function getPiConnects(id) {
+  try {
+    const response = await axios({
+      method: 'get',
+      url: urlRestApi + `/piConnect/${id}`
     })
     return response.data
   } catch (error) {
