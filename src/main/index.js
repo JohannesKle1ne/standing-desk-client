@@ -4,7 +4,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { mouse, keyboard, Key } from '@nut-tree/nut-js'
 
-const dev = true
+const dev = false
 
 const runAutoLauncher = () => {
   var AutoLaunch = require('auto-launch')
@@ -126,7 +126,7 @@ let mainWindow
 function createWindow() {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize
 
-  const windowWidth = dev ? 1400 : 1000
+  const windowWidth = dev ? 1400 : 800
   const windowHeight = 600
 
   // Calculate the position for the bottom right corner
