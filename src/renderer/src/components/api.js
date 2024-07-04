@@ -38,7 +38,7 @@ export async function checkServer() {
   try {
     const response = await axios({
       method: 'get',
-      url: urlRestApi + '/test',
+      url: urlRestApi + '/state/0',
       timeout: 3000
     })
     if (response) return true

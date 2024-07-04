@@ -5,19 +5,22 @@
     v-html="svgs.close"
   ></div>
 
-  <!--   <ReadNoInternet v-if="showNoInternet" />
+  <ReadNoInternet v-if="showNoInternet" />
+
   <Login @login="socketIo.connect()" @setRegisterFlag="registerFlag = true" v-if="showLogin" />
   <Register
     @registered="socketIo.connect()"
     @unsetRegisterFlag="registerFlag = false"
     v-if="showRegister"
   />
-  <ReadInstructions v-if="showReadIntructions" />
-  <EnterWifiCredentails v-if="showEnterWifiCredentails" /> -->
+  <ReadInstructions v-if="showReadIntructions" /><EnterWifiCredentails
+    v-if="showEnterWifiCredentails"
+  />
   <ViewDesk
     @buttonClicked="sendCommand"
     @showStatistics="viewStatistics = true"
     :height="height"
+    v-if="viewDesk"
   ></ViewDesk>
   <div
     @click="quitApp"
@@ -42,7 +45,6 @@
   </div>
   <!--   <ViewDesk></ViewDesk> -->
 </template>
-v-if="viewDesk"
 <script setup>
 import Login from './Login.vue'
 import Register from './Register.vue'

@@ -2,14 +2,14 @@
   <span>
     <button
       class="rounded-button mr-2"
-      :style="chartMode === 'day' && { opacity: 0.8 }"
+      :style="chartMode !== 'day' && { opacity: 0.8 }"
       @click="showDay"
     >
       Day
     </button>
     <button
       class="rounded-button"
-      :style="chartMode === 'week' && { opacity: 0.8 }"
+      :style="chartMode !== 'week' && { opacity: 0.8 }"
       @click="showWeek"
     >
       Week
@@ -208,8 +208,42 @@ const updateChart = async () => {
     }
   })
 }
-
 function formatDateFromTimestamp(timestamp) {
+  if (chartMode.value === 'day') {
+    return formatDateFromTimestampDay(timestamp)
+  }
+  if (chartMode.value === 'week') {
+    return formatDateFromTimestampWeek(timestamp)
+  }
+}
+
+function formatDateFromTimestampWeek(timestamp) {
+  /*   if (timestamp === getStartOfWeek()) {
+    return 'This Week'
+  } */
+
+  return `${formatTimestamp(timestamp)} - ${formatTimestamp(timestamp + millisecondsPerWeek - millisecondsPerDay)}`
+}
+
+function formatTimestamp(timestamp) {
+  // Convert the Unix timestamp to a JavaScript `Date` object
+  const dateStart = new Date(timestamp)
+
+  // Extract the day of the month
+  const dayStart = dateStart.getDate()
+
+  // Extract the month (months are zero-indexed, so add 1)
+  const monthStart = dateStart.getMonth() + 1
+
+  // Format the day and month to two digits
+  const formattedDayStart = String(dayStart).padStart(2, '0')
+  const formattedMonth = String(monthStart).padStart(2, '0')
+
+  // Return the formatted string
+  return `${formattedDayStart}.${formattedMonth}`
+}
+
+function formatDateFromTimestampDay(timestamp) {
   if (timestamp === getStartOfToday()) {
     return 'Today'
   }

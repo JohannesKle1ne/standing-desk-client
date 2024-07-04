@@ -103,5 +103,8 @@ RX to TX
 set both Mx RG to 2
 
 
-lo4anke@gmail.com
-8,ankilein
+
+
+node ../home/standing-desk-controller-2/socket-server/socketioServer.js 
+
+sudo python ./Documents/standing-desk-controller-2/pi_zero/socketio_client.py 
