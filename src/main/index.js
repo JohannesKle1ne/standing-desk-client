@@ -4,7 +4,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { mouse, keyboard, Key } from '@nut-tree/nut-js'
 
-const dev = false
+const dev = true
 
 const runAutoLauncher = () => {
   var AutoLaunch = require('auto-launch')

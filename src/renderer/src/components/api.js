@@ -62,6 +62,33 @@ export async function getStates(id) {
   }
 }
 
+export async function getSettings(id) {
+  try {
+    const response = await axios({
+      method: 'get',
+      url: urlRestApi + `/profile/${id}`
+    })
+    return response.data
+  } catch (error) {
+    console.log(error)
+    console.log('Error reaching server')
+  }
+}
+
+export async function setSettings(id, settings) {
+  try {
+    const response = await axios({
+      method: 'post',
+      url: urlRestApi + `/profile/${id}`,
+      data: settings
+    })
+    return response.data
+  } catch (error) {
+    console.log(error)
+    console.log('Error reaching server')
+  }
+}
+
 export async function getPiConnects(id) {
   try {
     const response = await axios({

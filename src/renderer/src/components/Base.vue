@@ -13,9 +13,9 @@
     @unsetRegisterFlag="registerFlag = false"
     v-if="showRegister"
   />
-  <ReadInstructions v-if="showReadIntructions" /><EnterWifiCredentails
-    v-if="showEnterWifiCredentails"
-  />
+  <SetPresets @savePresets="savePresets" :settings="settings" v-if="showSetPresets" />
+  <ReadInstructions v-if="showReadIntructions" />
+  <EnterWifiCredentails v-if="showEnterWifiCredentails" />
   <ViewDesk
     @buttonClicked="sendCommand"
     @showStatistics="viewStatistics = true"
@@ -52,8 +52,9 @@ import ReadInstructions from './ReadInstructions.vue'
 import ReadNoInternet from './ReadNoInternet.vue'
 import EnterWifiCredentails from './EnterWifiCredentails.vue'
 import ViewDesk from './ViewDesk.vue'
+import SetPresets from './SetPresets.vue'
 import socketIo from './Socket.io'
-import { piTest, checkServer } from './api.js'
+import { piTest, checkServer, getSettings, setSettings } from './api.js'
 import { ref, onMounted, computed } from 'vue'
 import { svgs } from './svg'
 
@@ -74,6 +75,16 @@ const height = ref(null)
 const tooltip = ref(null)
 
 const registerFlag = ref(false)
+
+const settings = ref(null)
+
+const showSetPresets = computed(() => {
+  return true
+  const settingsObj = settings.value
+  if (settingsObj == null) return false
+  const { presetDown, presetUp } = settingsObj
+  return presetDown == null || presetUp == null
+})
 
 const viewDesk = computed(() => {
   return deskConnected.value
@@ -104,7 +115,9 @@ const showRegister = computed(() => {
 })
 
 const showReadIntructions = computed(() => {
-  return socketConnected.value && !deskConnected.value && !apConnected.value
+  return (
+    socketConnected.value && !deskConnected.value && !apConnected.value && !showSetPresets.value
+  )
 })
 
 const showEnterWifiCredentails = computed(() => {
@@ -154,6 +167,7 @@ const checkStatus = async () => {
 
 onMounted(async () => {
   //hideWindow()
+  fetchSettings()
   await socketIo.connect()
   socketIo.onConnected(() => {
     socketConnected.value = true
@@ -198,6 +212,32 @@ const setLogOutToolTip = () => {
 
 const hideQuitToolTip = () => {
   tooltip.value = null
+}
+
+const fetchSettings = async () => {
+  const userInfo = await window.electronAPI.getUserInfo()
+  const settingsObj = await getSettings(userInfo.id)
+  console.log(settingsObj)
+  settings.value = settingsObj || {}
+}
+
+const savePresets = async ({ presetDown, presetUp }) => {
+  console.log({ presetDown, presetUp })
+  const isValid = (value) => value && value <= 4 && value >= 1
+  if (!isValid(presetDown) || !isValid(presetUp)) return
+  saveSettings({ presetDown, presetUp })
+}
+
+const saveSettings = async (newSettings) => {
+  if (newSettings == null || settings.value == null) return
+  const userInfo = await window.electronAPI.getUserInfo()
+  console.log({ ...settings.value, ...newSettings })
+  const newDBSettings = await setSettings(userInfo.id, { ...settings.value, ...newSettings })
+  console.log(newDBSettings)
+  if (newDBSettings) {
+    settings.value = newDBSettings
+    console.log('new', settings.value)
+  }
 }
 </script>
 

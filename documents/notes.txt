@@ -108,3 +108,17 @@ set both Mx RG to 2
 node ../home/standing-desk-controller-2/socket-server/socketioServer.js 
 
 sudo python ./Documents/standing-desk-controller-2/pi_zero/socketio_client.py 
+
+
+cd ../home/standing-desk-controller-2
+node ./socket-server/socketioServer.js 
+node ./rest-api/server
+
+
+1. Pfeil nach unten drücken bis AST erscheint
+2. 1 drücken bis 10.1 erscheint
+3. Wieder lange Pfeil drücken
+
+
+
+3d hubs for (or hubs) for making the CAD boxes
