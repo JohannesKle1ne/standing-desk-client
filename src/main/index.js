@@ -39,6 +39,17 @@ const getUserInfoFilePath = () => {
   return path.join(app.getPath('userData'), 'user_info.json')
 }
 
+const setWindowBounds = async (event, bounds) => {
+  const { width, height } = bounds
+  const [currentWidth, currentHeight] = mainWindow.getSize()
+  const [x, y] = mainWindow.getPosition()
+
+  const newX = x - (width - currentWidth)
+  const newY = y - (height - currentHeight)
+
+  mainWindow.setBounds({ width, height, x: newX, y: newY })
+}
+
 const setUserInfo = async (event, userInfo) => {
   const filePathToUserInfo = getUserInfoFilePath()
   const data = JSON.stringify(userInfo)
@@ -216,6 +227,11 @@ app.whenReady().then(() => {
     app.relaunch()
     app.exit()
   })
+  ipcMain.handle('restart', async () => {
+    app.relaunch()
+    app.exit()
+  })
+  ipcMain.handle('setWindowBounds', setWindowBounds)
 
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')

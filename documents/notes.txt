@@ -122,3 +122,13 @@ node ./rest-api/server
 
 
 3d hubs for (or hubs) for making the CAD boxes
+
+
+
+Meeting:
+- presets (saved and history on server)
+- error on server
+- settings page
+- part list till friday (Plan for 20 controllers?)
+- Did luke have the same micro movements?
+

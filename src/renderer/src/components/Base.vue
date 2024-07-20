@@ -1,40 +1,61 @@
 <template>
+  <div class="title-bar w-[95%] h-6"></div>
+
+  <div v-if="apConnected || rebootTimeString" class="overlay">
+    <EnterWifiCredentails @saved="startRebootTimer" :rebootTimeString="rebootTimeString" />
+  </div>
+  <div v-else-if="!socketIo.hasUserId() && registerFlag" class="overlay">
+    <Register @registered="handleNewUserId" @unsetRegisterFlag="registerFlag = false" />
+  </div>
+  <div v-else-if="!socketIo.hasUserId()" class="overlay">
+    <Login @login="handleNewUserId" @setRegisterFlag="registerFlag = true" />
+  </div>
+  <div v-else-if="missingPresetDefinitions" class="overlay">
+    <SetPresets @savePresets="savePresets" :settings="settings" />
+  </div>
+
+  <Navbar
+    @showDesk="showDesk"
+    @showStatistics="showStatistics"
+    @showSettings="showSettings"
+    :currentPage="currentPage"
+  />
+
+  <ViewDesk
+    v-if="isDesk"
+    @buttonClicked="sendCommand"
+    :height="height"
+    :deskConnected="deskConnected"
+    :socketConnected="socketConnected"
+  />
+  <ViewStatistics v-if="isStatistics" />
+  <SetSettings v-if="isSettings" />
+
   <div
     @click="hideWindow"
     class="w-7 h-7 absolute right-1 top-1 text-white cursor-pointer"
     v-html="svgs.close"
   ></div>
-
-  <ReadNoInternet v-if="showNoInternet" />
-
-  <Login @login="socketIo.connect()" @setRegisterFlag="registerFlag = true" v-if="showLogin" />
-  <Register
-    @registered="socketIo.connect()"
-    @unsetRegisterFlag="registerFlag = false"
-    v-if="showRegister"
-  />
-  <SetPresets @savePresets="savePresets" :settings="settings" v-if="showSetPresets" />
-  <ReadInstructions v-if="showReadIntructions" />
-  <EnterWifiCredentails v-if="showEnterWifiCredentails" />
-  <ViewDesk
-    @buttonClicked="sendCommand"
-    @showStatistics="viewStatistics = true"
-    :height="height"
-    v-if="viewDesk"
-  ></ViewDesk>
   <div
     @click="quitApp"
     class="w-7 h-7 absolute right-0 bottom-1 text-white cursor-pointer"
     v-html="svgs.quit"
     @mouseover="setQuitToolTip"
-    @mouseleave="hideQuitToolTip"
+    @mouseleave="hideToolTip"
   ></div>
   <div
     @click="logOut"
     class="w-7 h-7 absolute right-8 bottom-1 text-white cursor-pointer"
     v-html="svgs.logOut"
     @mouseover="setLogOutToolTip"
-    @mouseleave="hideQuitToolTip"
+    @mouseleave="hideToolTip"
+  ></div>
+  <div
+    @click="showSettingsPage"
+    class="w-7 h-7 absolute right-[4.4rem] bottom-1 text-white cursor-pointer"
+    v-html="svgs.cogs"
+    @mouseover="setSettingsToolTip"
+    @mouseleave="hideToolTip"
   ></div>
   <div
     v-if="tooltip != null"
@@ -48,8 +69,7 @@
 <script setup>
 import Login from './Login.vue'
 import Register from './Register.vue'
-import ReadInstructions from './ReadInstructions.vue'
-import ReadNoInternet from './ReadNoInternet.vue'
+
 import EnterWifiCredentails from './EnterWifiCredentails.vue'
 import ViewDesk from './ViewDesk.vue'
 import SetPresets from './SetPresets.vue'
@@ -57,6 +77,44 @@ import socketIo from './Socket.io'
 import { piTest, checkServer, getSettings, setSettings } from './api.js'
 import { ref, onMounted, computed } from 'vue'
 import { svgs } from './svg'
+import SetSettings from './SetSettings.vue'
+import ViewStatistics from './ViewStatistics.vue'
+import Navbar from './Navbar.vue'
+import { PAGE } from './definitions.js'
+
+console.log(PAGE)
+
+const currentPage = ref(null)
+
+const rebootSecondsPassed = ref(0)
+
+let interval = null
+
+const startRebootTimer = () => {
+  clearInterval(interval)
+  interval = setInterval(() => {
+    rebootSecondsPassed.value += 1
+    console.log(rebootSecondsPassed.value)
+    if (rebootSecondsPassed.value >= 120) {
+      restartApp()
+    }
+  }, 1000)
+}
+
+const rebootTimeString = computed(() => {
+  if (rebootSecondsPassed.value === 0) return
+  const secondsLeft = 120 - rebootSecondsPassed.value
+  // Calculate the minutes and seconds
+  const minutes = Math.floor(secondsLeft / 60)
+  const remainingSeconds = secondsLeft % 60
+
+  // Pad the minutes and seconds with leading zeros if necessary
+  const paddedMinutes = String(minutes).padStart(2, '0')
+  const paddedSeconds = String(remainingSeconds).padStart(2, '0')
+
+  // Return the formatted string
+  return `${paddedMinutes}:${paddedSeconds}`
+})
 
 const socketConnected = ref(false)
 
@@ -78,51 +136,46 @@ const registerFlag = ref(false)
 
 const settings = ref(null)
 
-const showSetPresets = computed(() => {
-  return true
+const isDesk = computed(() => {
+  return currentPage.value === PAGE.DESK_CONTROLS
+})
+
+const isStatistics = computed(() => {
+  return currentPage.value === PAGE.STATISTICS
+})
+
+const isSettings = computed(() => {
+  return currentPage.value === PAGE.SETTINGS
+})
+
+const missingPresetDefinitions = computed(() => {
   const settingsObj = settings.value
   if (settingsObj == null) return false
   const { presetDown, presetUp } = settingsObj
   return presetDown == null || presetUp == null
 })
 
-const viewDesk = computed(() => {
-  return deskConnected.value
-})
+const handleNewUserId = () => {
+  socketIo.connect()
+  fetchSettings()
+}
 
-const showNoInternet = computed(() => {
-  return !apConnected.value && !serverConnected.value && !deskConnected.value
-})
+const setPage = async (newPage) => {
+  const leavePage = (page) => {
+    currentPage.value === page && newPage !== page
+  }
+  const enterPage = (page) => {
+    currentPage.value !== page && newPage === page
+  }
 
-const showLogin = computed(() => {
-  return (
-    !socketConnected.value &&
-    !apConnected.value &&
-    serverConnected.value &&
-    !socketIo.hasUserId() &&
-    !registerFlag.value
-  )
-})
-
-const showRegister = computed(() => {
-  return (
-    !socketConnected.value &&
-    !apConnected.value &&
-    serverConnected.value &&
-    !socketIo.hasUserId() &&
-    registerFlag.value
-  )
-})
-
-const showReadIntructions = computed(() => {
-  return (
-    socketConnected.value && !deskConnected.value && !apConnected.value && !showSetPresets.value
-  )
-})
-
-const showEnterWifiCredentails = computed(() => {
-  return apConnected.value
-})
+  if (enterPage(PAGE.DESK_CONTROLS)) {
+    await window.electronAPI.setWindowBounds({ width: 500, height: 200 })
+  }
+  if (enterPage(PAGE.SETTINGS)) {
+    await window.electronAPI.setWindowBounds({ width: 500, height: 500 })
+  }
+  currentPage.value = newPage
+}
 
 const sendCommand = (command) => {
   socketIo.sendCommand(command)
@@ -167,6 +220,7 @@ const checkStatus = async () => {
 
 onMounted(async () => {
   //hideWindow()
+  showDesk()
   fetchSettings()
   await socketIo.connect()
   socketIo.onConnected(() => {
@@ -194,6 +248,10 @@ const logOut = async () => {
   await window.electronAPI.logOut()
 }
 
+const restartApp = async () => {
+  await window.electronAPI.restart()
+}
+
 const hideWindow = async () => {
   await window.electronAPI.hideWindow()
 }
@@ -202,22 +260,35 @@ const quitApp = async () => {
   await window.electronAPI.quitApp()
 }
 
+const showDesk = async () => {
+  setPage(PAGE.DESK_CONTROLS)
+}
+const showStatistics = async () => {
+  setPage(PAGE.STATISTICS)
+}
+const showSettings = async () => {
+  setPage(PAGE.SETTINGS)
+}
+
 const setQuitToolTip = () => {
   tooltip.value = { text: 'Quit app', x: 5, y: 35 }
+}
+const setSettingsToolTip = () => {
+  tooltip.value = { text: 'Settings', x: 45, y: 35 }
 }
 
 const setLogOutToolTip = () => {
   tooltip.value = { text: 'Log out', x: 25, y: 35 }
 }
 
-const hideQuitToolTip = () => {
+const hideToolTip = () => {
   tooltip.value = null
 }
 
 const fetchSettings = async () => {
   const userInfo = await window.electronAPI.getUserInfo()
+  if (!userInfo?.id) return
   const settingsObj = await getSettings(userInfo.id)
-  console.log(settingsObj)
   settings.value = settingsObj || {}
 }
 
@@ -241,4 +312,13 @@ const saveSettings = async (newSettings) => {
 }
 </script>
 
-<style></style>
+<style>
+.title-bar {
+  -webkit-user-select: none;
+  -webkit-app-region: drag;
+}
+
+.overlay {
+  @apply w-full h-full bg-[#2f3241] absolute right-0 top-0 left-0 bottom-0 z-10;
+}
+</style>

@@ -1,5 +1,14 @@
 <template>
-  <div style="display: flex; flex-direction: column; gap: 10px; margin: 10px">
+  <div
+    class="flex flex-col justify-center items-center w-full text-white p-4"
+    v-if="rebootTimeString"
+  >
+    {{
+      'Successfully saved WiFi credentials. The controller now needs to reboot. Please connect back to your normal WiFi. You need to wait for two minutes: ' +
+      rebootTimeString
+    }}
+  </div>
+  <div v-else style="display: flex; flex-direction: column; gap: 10px; margin: 10px">
     <h3>Instructions</h3>
     <div style="color: white; display: flex; flex-direction: column; gap: 4px; font-size: 14px">
       <span v-for="(i, index) in instructions">{{ i }}</span>
@@ -26,7 +35,11 @@
 import { ref, onMounted, computed } from 'vue'
 import { pairWithPi } from './api'
 
-const emits = defineEmits(['getWifi'])
+const props = defineProps({
+  rebootTimeString: String
+})
+
+const emits = defineEmits(['saved'])
 
 /* ssid="iPhoneJohannes"
         psk="12121212" */
@@ -40,10 +53,18 @@ const instructions = ref([
 ])
 
 const pair = async () => {
-  const userInfo = await window.electronAPI.getUserInfo()
-
-  const wifi = await pairWithPi(ssid.value, psk.value, userInfo.userName, userInfo.id)
-  console.log(wifi)
+  try {
+    const userInfo = await window.electronAPI.getUserInfo()
+    const wifi = await pairWithPi(ssid.value, psk.value, userInfo.userName, userInfo.id)
+    console.log(wifi)
+    if (wifi) {
+      emits('saved')
+    }
+    console.log('saved')
+    emits('saved')
+  } catch (error) {
+    console.log(error)
+  }
 }
 </script>
 

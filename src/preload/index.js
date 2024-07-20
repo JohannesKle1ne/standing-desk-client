@@ -5,5 +5,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   setUserInfo: (info) => ipcRenderer.invoke('setUserInfo', info),
   hideWindow: () => ipcRenderer.invoke('hideWindow'),
   quitApp: () => ipcRenderer.invoke('quitApp'),
-  logOut: () => ipcRenderer.invoke('logOut')
+  logOut: () => ipcRenderer.invoke('logOut'),
+  restart: () => ipcRenderer.invoke('restart'),
+  setWindowBounds: (dimensions) => ipcRenderer.invoke('setWindowBounds', dimensions)
 })

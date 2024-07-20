@@ -1,5 +1,7 @@
 <template>
-  <div style="display: flex; flex-direction: column; gap: 10px; margin: 10px">
+  <ReadNoInternet v-if="!props.socketConnected" />
+  <ReadInstructions v-else-if="!props.deskConnected" />
+  <div v-else style="display: flex; flex-direction: column; gap: 10px; margin: 10px">
     <h3>Desk Controls</h3>
     <div style="display: flex; gap: 10px; align-items: center; width: 100%">
       <span v-for="b in buttons">
@@ -12,101 +14,22 @@
     <h3>Height</h3>
     <div style="color: white; font-size: 50px; line-height: 1">{{ formattedHeight }}</div>
     <!-- <div style="width: 800px; height: 600px"><canvas id="lineChart"></canvas></div> -->
-    <ViewStatistics></ViewStatistics>
   </div>
 </template>
 
 <script setup>
 import { svgs } from './svg'
 import { ref, computed, watch } from 'vue'
-import Chart from 'chart.js/auto'
-import ViewStatistics from './ViewStatistics.vue'
-
-let lineChart = null
+import ReadInstructions from './ReadInstructions.vue'
+import ReadNoInternet from './ReadNoInternet.vue'
 
 const emits = defineEmits(['buttonClicked'])
 const props = defineProps({
   height: String,
-  deskUpdates: Array
+  deskUpdates: Array,
+  deskConnected: Boolean,
+  socketConnected: Boolean
 })
-
-const cutData = (arr, defaultValue) => {
-  const newArray = arr.slice(-60) // Slice the last 10 entries
-  const paddingLength = Math.max(0, 60 - arr.length) // Calculate how many "0"s to pad
-
-  // Fill the beginning of the new array with "0"s if needed
-  if (paddingLength > 0) {
-    const paddingArray = Array(paddingLength).fill(defaultValue)
-    newArray.unshift(...paddingArray)
-  }
-  return newArray
-}
-
-/* watch(
-  () => props.deskUpdates,
-  (newValue) => {
-    if (lineChart == null) {
-      lineChart = new Chart(document.getElementById('lineChart'), {
-        type: 'line',
-        data: {
-          labels: [],
-          datasets: [
-            {
-              label: 'Presence detected',
-              data: [],
-              fill: false,
-              borderColor: '#FFB5C2',
-              tension: 0.1
-            },
-            {
-              label: 'Desk position',
-              data: [],
-              fill: false,
-              borderColor: '#8e6e53',
-              tension: 0.1
-            }
-          ]
-        },
-        options: {
-          animation: {
-            duration: 0
-          },
-          scales: {
-            y: {
-              min: -0.2, // Set minimum value of y-axis
-              max: 1.2 // Set maximum value of y-axis
-            }
-          }
-        }
-      })
-    }
-    lineChart.data.labels = cutData(
-      newValue.map((row) => {
-        const date = new Date(row.timestamp)
-        const hours = date.getHours().toString().padStart(2, '0')
-        const minutes = date.getMinutes().toString().padStart(2, '0')
-        const seconds = date.getSeconds().toString().padStart(2, '0')
-
-        // Format the time
-        return `${hours}:${minutes}:${seconds}`
-      }),
-      '00:00:00'
-    )
-    const presenceDataSet = lineChart.data.datasets.find((ds) => ds.label === 'Presence detected')
-    presenceDataSet.data = cutData(
-      newValue.map((row) => (row.present ? 1 : 0)),
-      0
-    )
-    const deskDataSet = lineChart.data.datasets.find((ds) => ds.label === 'Desk position')
-    deskDataSet.data = cutData(
-      newValue.map((row) => (row.deskUp ? 1 : 0)),
-      0
-    )
-
-    lineChart.update()
-  },
-  { deep: true }
-) */
 
 const formattedHeight = computed(() => {
   if (!props.height) return ''

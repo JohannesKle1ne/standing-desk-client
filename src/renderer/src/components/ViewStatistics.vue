@@ -1,27 +1,29 @@
 <template>
-  <span>
-    <button
-      class="rounded-button mr-2"
-      :style="chartMode !== 'day' && { opacity: 0.8 }"
-      @click="showDay"
+  <div class="mt-6">
+    <span>
+      <button
+        class="rounded-button mr-2"
+        :style="chartMode !== 'day' && { opacity: 0.8 }"
+        @click="showDay"
+      >
+        Day
+      </button>
+      <button
+        class="rounded-button"
+        :style="chartMode !== 'week' && { opacity: 0.8 }"
+        @click="showWeek"
+      >
+        Week
+      </button></span
     >
-      Day
-    </button>
-    <button
-      class="rounded-button"
-      :style="chartMode !== 'week' && { opacity: 0.8 }"
-      @click="showWeek"
-    >
-      Week
-    </button></span
-  >
 
-  <div style="width: 600px"><canvas id="barChart"></canvas></div>
-  <div style="display: flex; gap: 10px; align-items: center; width: 100%">
-    <span @click="goBack()" class="day-button" v-html="svgs.chevronLeft"></span>
-    <span class="w-[100px] text-center">{{ formatDateFromTimestamp(currentDisplayTime) }}</span>
-    <span @click="goForward()" class="day-button" v-html="svgs.chevronRight"></span>
-    <!--   <button @click="updateChart" class="ml-8 text-white">Refresh</button> -->
+    <div style="width: 600px"><canvas id="barChart"></canvas></div>
+    <div style="display: flex; gap: 10px; align-items: center; width: 100%">
+      <span @click="goBack()" class="day-button" v-html="svgs.chevronLeft"></span>
+      <span class="w-[100px] text-center">{{ formatDateFromTimestamp(currentDisplayTime) }}</span>
+      <span @click="goForward()" class="day-button" v-html="svgs.chevronRight"></span>
+      <!--   <button @click="updateChart" class="ml-8 text-white">Refresh</button> -->
+    </div>
   </div>
 </template>
 
