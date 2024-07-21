@@ -1,34 +1,96 @@
 <template>
-  <div class="flex flex-col justify-center items-center w-full text-white p-4">
+  <div class="flex flex-col justify-center items-start w-full text-white p-4">
     <h1 class="text-[40px] mb-4">Settings</h1>
-    <div class="flex">
+    <div class="flex" v-if="props.settings != null">
       <div class="mb-4 flex flex-col m-2">
-        <span class="text-center m-2">Number for moving down:</span>
-        <span class="text-center m-2">Number for moving up:</span>
+        <span class="m-2 min-h-6" v-for="s in settingsList">{{ s.description }}</span>
       </div>
       <div class="mb-4 flex flex-col m-2">
-        <input class="text-black w-[50px] m-2" maxlength="1" v-model="down" />
-        <div class="flex">
-          <input class="text-black w-[50px] m-2" maxlength="1" v-model="up" />
-        </div>
+        <span class="flex" v-for="s in settingsList"
+          ><div
+            v-if="s.type === 'toggle'"
+            @click="emits('save', { [s.key]: !settings[s.key] })"
+            class="w-10 h-10 text-white cursor-pointer"
+            v-html="props.settings[s.key] ? svgs.toggleOn : svgs.toggleOff"
+          ></div>
+          <input
+            v-if="s.type === 'number'"
+            class="text-black w-[50px] m-2"
+            :modelValue="settings[s.key]"
+            @input="handleNumberInput($event, s.key)"
+          />
+          <span v-if="s.type === 'number'">min</span>
+          <span v-if="s.key === 'downAfterMinutes' && settings[s.key]">
+            <input
+              class="text-black w-[50px] m-2"
+              :modelValue="settings.standingMinutesUntilDown"
+              @input="handleNumberInput($event, 'standingMinutesUntilDown')"
+            />
+            <span>min</span>
+          </span>
+        </span>
       </div>
     </div>
-
-    <div><button class="rounded-button" @click="save">Save</button></div>
-    <div class="mt-4 text-[12px]">You can change this later in the settings</div>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+import { svgs } from './svg'
 
-const down = ref(null)
-const up = ref(null)
+const props = defineProps({
+  settings: Object
+})
 
-const emits = defineEmits(['setSettings'])
+const settingsList = ref([
+  {
+    description: 'Disable automatic desk movement',
+    key: 'disable',
+    type: 'toggle'
+  },
+  {
+    description: 'Duration of absence until the desk moves up:',
+    key: 'durationAbsence',
+    type: 'number'
+  },
+  {
+    description: 'Duration of sitting before a standing period is allowed to start:',
+    key: 'durationSitting',
+    type: 'number'
+  },
+  {
+    description: 'Daily standing goal:',
+    key: 'dailyGoal',
+    type: 'number'
+  },
+  {
+    description: 'Move desk up (in absence) even though the standing goals were reached',
+    key: 'upEvenThoughGoalReached',
+    type: 'toggle'
+  },
+  {
+    description: 'Move the desk down (in absence) after the standing goal was reached',
+    key: 'downWhenGoalReached',
+    type: 'toggle'
+  },
+  {
+    description: 'Move the desk down (in absence) after a specific number of standing minutes',
+    key: 'downAfterMinutes',
+    type: 'toggle'
+  },
+  {
+    description: 'Define custom move events:'
+  }
+])
 
-const save = async () => {
-  emits('savePresets', { presetDown: Number(down.value), presetUp: Number(up.value) })
+const emits = defineEmits(['save'])
+
+const handleNumberInput = (event, key) => {
+  const value = event?.target?.value
+  if (value === null || value.length <= 0) return
+  const number = Number(value)
+  if (isNaN(number)) return
+  emits('save', { [key]: number })
 }
 </script>
 

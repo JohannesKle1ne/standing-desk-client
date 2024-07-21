@@ -4,14 +4,14 @@
   <div v-if="apConnected || rebootTimeString" class="overlay">
     <EnterWifiCredentails @saved="startRebootTimer" :rebootTimeString="rebootTimeString" />
   </div>
-  <div v-else-if="!socketIo.hasUserId() && registerFlag" class="overlay">
+  <div v-else-if="!userId && registerFlag" class="overlay">
     <Register @registered="handleNewUserId" @unsetRegisterFlag="registerFlag = false" />
   </div>
-  <div v-else-if="!socketIo.hasUserId()" class="overlay">
+  <div v-else-if="!userId" class="overlay">
     <Login @login="handleNewUserId" @setRegisterFlag="registerFlag = true" />
   </div>
   <div v-else-if="missingPresetDefinitions" class="overlay">
-    <SetPresets @savePresets="savePresets" :settings="settings" />
+    <SetPresets @savePresets="saveSettings" :settings="settings" />
   </div>
 
   <Navbar
@@ -29,7 +29,7 @@
     :socketConnected="socketConnected"
   />
   <ViewStatistics v-if="isStatistics" />
-  <SetSettings v-if="isSettings" />
+  <SetSettings v-if="isSettings" @save="saveSettings" :settings="settings" />
 
   <div
     @click="hideWindow"
@@ -48,13 +48,6 @@
     class="w-7 h-7 absolute right-8 bottom-1 text-white cursor-pointer"
     v-html="svgs.logOut"
     @mouseover="setLogOutToolTip"
-    @mouseleave="hideToolTip"
-  ></div>
-  <div
-    @click="showSettingsPage"
-    class="w-7 h-7 absolute right-[4.4rem] bottom-1 text-white cursor-pointer"
-    v-html="svgs.cogs"
-    @mouseover="setSettingsToolTip"
     @mouseleave="hideToolTip"
   ></div>
   <div
@@ -85,6 +78,7 @@ import { PAGE } from './definitions.js'
 console.log(PAGE)
 
 const currentPage = ref(null)
+const userId = ref(null)
 
 const rebootSecondsPassed = ref(0)
 
@@ -155,9 +149,11 @@ const missingPresetDefinitions = computed(() => {
   return presetDown == null || presetUp == null
 })
 
-const handleNewUserId = () => {
-  socketIo.connect()
-  fetchSettings()
+const handleNewUserId = async () => {
+  const info = await window.electronAPI.getUserInfo()
+  userId.value = info?.id
+  socketIo.connect(userId.value)
+  fetchSettings(userId.value)
 }
 
 const setPage = async (newPage) => {
@@ -220,9 +216,11 @@ const checkStatus = async () => {
 
 onMounted(async () => {
   //hideWindow()
-  showDesk()
-  fetchSettings()
-  await socketIo.connect()
+  const info = await window.electronAPI.getUserInfo()
+  userId.value = info?.id
+  showSettings()
+  fetchSettings(userId.value)
+  await socketIo.connect(userId.value)
   socketIo.onConnected(() => {
     socketConnected.value = true
     socketIo.requestAlive()
@@ -285,30 +283,22 @@ const hideToolTip = () => {
   tooltip.value = null
 }
 
-const fetchSettings = async () => {
-  const userInfo = await window.electronAPI.getUserInfo()
-  if (!userInfo?.id) return
-  const settingsObj = await getSettings(userInfo.id)
+const fetchSettings = async (userId) => {
+  if (userId == null) return
+  const settingsObj = await getSettings(userId)
   settings.value = settingsObj || {}
 }
 
-const savePresets = async ({ presetDown, presetUp }) => {
-  console.log({ presetDown, presetUp })
-  const isValid = (value) => value && value <= 4 && value >= 1
-  if (!isValid(presetDown) || !isValid(presetUp)) return
-  saveSettings({ presetDown, presetUp })
-}
-
 const saveSettings = async (newSettings) => {
-  if (newSettings == null || settings.value == null) return
-  const userInfo = await window.electronAPI.getUserInfo()
-  console.log({ ...settings.value, ...newSettings })
-  const newDBSettings = await setSettings(userInfo.id, { ...settings.value, ...newSettings })
-  console.log(newDBSettings)
+  console.log(newSettings)
+  settings.value = { ...settings.value, ...newSettings }
+  console.log(settings.value)
+  /*  if (newSettings == null || settings.value == null) return
+  const newDBSettings = await setSettings(userId.value, { ...settings.value, ...newSettings })
   if (newDBSettings) {
     settings.value = newDBSettings
     console.log('new', settings.value)
-  }
+  } */
 }
 </script>
 
