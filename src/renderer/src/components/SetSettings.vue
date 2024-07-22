@@ -1,46 +1,67 @@
 <template>
   <div class="flex flex-col justify-center items-start w-full text-white p-4">
     <h1 class="text-[40px] mb-4">Settings</h1>
-    <div class="flex" v-if="props.settings != null">
-      <div class="mb-4 flex flex-col m-2">
-        <span class="m-2 min-h-6" v-for="s in settingsList">{{ s.description }}</span>
-      </div>
-      <div class="mb-4 flex flex-col m-2">
-        <span class="flex" v-for="s in settingsList"
-          ><div
-            v-if="s.type === 'toggle'"
-            @click="emits('save', { [s.key]: !settings[s.key] })"
-            class="w-10 h-10 text-white cursor-pointer"
-            v-html="props.settings[s.key] ? svgs.toggleOn : svgs.toggleOff"
-          ></div>
+    <div v-if="props.settings" class="mb-4 w-full h-[70vh] overflow-auto custom-scrollbar">
+      <span class="flex items-center h-10" v-for="s in settingsList">
+        <span class="w-3/4">{{ s.description }}</span>
+        <div
+          v-if="s.type === 'toggle'"
+          @click="emits('save', { [s.key]: !props.settings[s.key] })"
+          class="w-10 text-white cursor-pointer"
+          :style="{ opacity: props.settings[s.key] ? 1 : 0.5 }"
+          v-html="props.settings[s.key] ? svgs.toggleOn : svgs.toggleOff"
+        ></div>
+        <input
+          v-if="s.type === 'number'"
+          class="text-black w-[50px]"
+          :value="props.settings[s.key]"
+          @input="handleNumberInput($event, s.key)"
+        />
+        <span v-if="s.type === 'number'" class="ml-2">{{ s.timeUnit }}</span>
+        <span v-if="s.key === 'downAfterMinutes' && props.settings[s.key]">
           <input
-            v-if="s.type === 'number'"
-            class="text-black w-[50px] m-2"
-            :modelValue="settings[s.key]"
-            @input="handleNumberInput($event, s.key)"
+            class="text-black w-[50px] ml-2"
+            :value="props.settings.standingMinutesUntilDown"
+            @input="handleNumberInput($event, 'standingMinutesUntilDown')"
           />
-          <span v-if="s.type === 'number'">min</span>
-          <span v-if="s.key === 'downAfterMinutes' && settings[s.key]">
-            <input
-              class="text-black w-[50px] m-2"
-              :modelValue="settings.standingMinutesUntilDown"
-              @input="handleNumberInput($event, 'standingMinutesUntilDown')"
-            />
-            <span>min</span>
-          </span>
+          <span class="ml-2">min</span>
         </span>
-      </div>
+        <span v-if="s.key === 'moveEvents'" class="text-[#2f3241]">
+          <select v-model="selectedTime">
+            <option v-for="time in timeOptions" :key="time" :value="time">{{ time }}</option>
+          </select>
+          <select v-model="selectedDirection" class="ml-2">
+            <option v-for="direction in directionOptions" :key="direction" :value="direction">
+              {{ direction }}
+            </option>
+          </select>
+          <button class="rounded-button ml-2" @click="add">Add</button>
+        </span>
+      </span>
+      <button
+        v-for="(m, index) in props.settings.moveEvents"
+        class="rounded-button w-32 relative mr-2"
+        style="cursor: default"
+      >
+        {{ `${m.time} ${m.direction}` }}
+        <div
+          @click="remove(index)"
+          class="w-4 cursor-pointer absolute right-1 top-1"
+          v-html="svgs.removeTab"
+        ></div>
+      </button>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
 import { svgs } from './svg'
+import { ref, onMounted, computed } from 'vue'
 
 const props = defineProps({
   settings: Object
 })
+const emits = defineEmits(['save'])
 
 const settingsList = ref([
   {
@@ -49,19 +70,32 @@ const settingsList = ref([
     type: 'toggle'
   },
   {
-    description: 'Duration of absence until the desk moves up:',
+    description: 'Preset number for moving down',
+    key: 'presetDown',
+    type: 'number'
+  },
+  {
+    description: 'Preset number for moving up',
+    key: 'presetUp',
+    type: 'number'
+  },
+  {
+    description: 'Duration of absence until the desk moves up',
     key: 'durationAbsence',
-    type: 'number'
+    type: 'number',
+    timeUnit: 'min'
   },
   {
-    description: 'Duration of sitting before a standing period is allowed to start:',
+    description: 'Duration of sitting before a standing period is allowed to start',
     key: 'durationSitting',
-    type: 'number'
+    type: 'number',
+    timeUnit: 'min'
   },
   {
-    description: 'Daily standing goal:',
+    description: 'Daily standing goal',
     key: 'dailyGoal',
-    type: 'number'
+    type: 'number',
+    timeUnit: 'min'
   },
   {
     description: 'Move desk up (in absence) even though the standing goals were reached',
@@ -79,11 +113,31 @@ const settingsList = ref([
     type: 'toggle'
   },
   {
-    description: 'Define custom move events:'
+    description: 'Define custom move events:',
+    key: 'moveEvents'
   }
 ])
 
-const emits = defineEmits(['save'])
+const selectedTime = ref('')
+const selectedDirection = ref('')
+const timeOptions = ref([])
+const directionOptions = ref(['up', 'down'])
+
+const generateTimeOptions = () => {
+  const times = []
+  for (let i = 0; i < 24; i++) {
+    for (let j = 0; j < 60; j += 1) {
+      const hour = i.toString().padStart(2, '0')
+      const minute = j.toString().padStart(2, '0')
+      times.push(`${hour}:${minute}`)
+    }
+  }
+  timeOptions.value = times
+}
+
+onMounted(() => {
+  generateTimeOptions()
+})
 
 const handleNumberInput = (event, key) => {
   const value = event?.target?.value
@@ -92,10 +146,64 @@ const handleNumberInput = (event, key) => {
   if (isNaN(number)) return
   emits('save', { [key]: number })
 }
+const add = () => {
+  if (selectedTime.value === '' || timeOptions.value === '') return
+
+  const newMoveEvents = [
+    ...(props.settings.moveEvents || []),
+    {
+      time: selectedTime.value,
+      timeInMilliseconds: timeToMilliseconds(selectedTime.value),
+      direction: selectedDirection.value
+    }
+  ]
+  emits('save', { moveEvents: newMoveEvents })
+}
+
+const remove = (index) => {
+  // Create a copy of the moveEvents array
+  const newMoveEvents = [...props.settings.moveEvents]
+
+  // Remove the element at the specified index
+  newMoveEvents.splice(index, 1)
+
+  // Emit the updated moveEvents array
+  emits('save', { moveEvents: newMoveEvents })
+}
+
+const timeToMilliseconds = (time) => {
+  console.log(time)
+  // Split the input time into hours and minutes
+  const [hours, minutes] = time.split(':').map(Number)
+
+  // Calculate the milliseconds from hours and minutes
+  const milliseconds = hours * 60 * 60 * 1000 + minutes * 60 * 1000
+
+  return milliseconds
+}
 </script>
 
 <style>
-.text-red-500 {
-  color: #f56565;
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px; /* Width of the scrollbar */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: white; /* Color of the scrollbar */
+  border-radius: 10px; /* Roundness of the scrollbar */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent; /* Background of the scrollbar track */
+}
+
+.custom-scrollbar::-webkit-scrollbar-button {
+  display: none; /* Remove the up and down arrows */
+}
+
+/* Fallback for non-WebKit browsers */
+.custom-scrollbar {
+  scrollbar-width: thin; /* Thinner scrollbar for Firefox */
+  scrollbar-color: white transparent; /* Color for Firefox */
 }
 </style>

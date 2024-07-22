@@ -126,9 +126,8 @@ node ./rest-api/server
 
 
 Meeting:
-- presets (saved and history on server)
-- error on server
-- settings page
-- part list till friday (Plan for 20 controllers?)
-- Did luke have the same micro movements?
+- did order go out?
+- plan for august
+- how will we recrut participants?
+- show the new UI (menu bar and settings)
 
