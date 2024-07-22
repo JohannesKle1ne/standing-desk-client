@@ -2,7 +2,6 @@ import { app, shell, BrowserWindow, Tray, Menu, screen, ipcMain } from 'electron
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import { mouse, keyboard, Key } from '@nut-tree/nut-js'
 
 const dev = true
 

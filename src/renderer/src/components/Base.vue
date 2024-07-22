@@ -291,14 +291,14 @@ const fetchSettings = async (userId) => {
 
 const saveSettings = async (newSettings) => {
   console.log(newSettings)
-  settings.value = { ...settings.value, ...newSettings }
+  /*   settings.value = { ...settings.value, ...newSettings } */
   console.log(settings.value)
-  /*  if (newSettings == null || settings.value == null) return
+  if (newSettings == null || settings.value == null) return
   const newDBSettings = await setSettings(userId.value, { ...settings.value, ...newSettings })
   if (newDBSettings) {
     settings.value = newDBSettings
     console.log('new', settings.value)
-  } */
+  }
 }
 </script>
 
