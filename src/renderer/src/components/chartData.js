@@ -264,7 +264,7 @@ export function getChartDataForDay(initData, timestampStart) {
     const hours = date.getHours()
     return {
       ...g,
-      time: `${hours + 1}:00`
+      time: `${hours}:00`
     }
   })
 
