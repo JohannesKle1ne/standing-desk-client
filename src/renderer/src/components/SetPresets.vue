@@ -28,7 +28,10 @@ const up = ref(null)
 const emits = defineEmits(['setSettings'])
 
 const save = async () => {
-  emits('savePresets', { presetDown: Number(down.value), presetUp: Number(up.value) })
+  const newDown = Number(down.value)
+  const newUp = Number(up.value)
+  if (isNaN(newDown) || isNaN(newUp) || newDown === 0 || newUp === 0) return
+  emits('savePresets', { presetDown: newDown, presetUp: newUp })
 }
 </script>
 

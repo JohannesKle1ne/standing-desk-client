@@ -104,18 +104,12 @@ const goBack = () => {
   go((a, b) => a - b)
 }
 
-const updateChart = async () => {
-  const userInfo = await window.electronAPI.getUserInfo()
-  const piConnects = await getPiConnects(userInfo.id)
-  const states = await getStates(userInfo.id)
-  console.log(piConnects)
-  console.log(states)
-  let responseData = states
+const addPiConnectsToData = (data, piConnects) => {
   const testPiConnects = piConnects.filter((c) => c.connected === false)
-  console.log(responseData)
-  responseData = responseData.reduce((acc, r, index) => {
+  console.log(data)
+  data = data.reduce((acc, r, index) => {
     let piConnects = testPiConnects.filter((c) => c.timestamp > r.timestamp)
-    const next = responseData[index + 1]
+    const next = data[index + 1]
     if (next != null) {
       piConnects = piConnects.filter((c) => c.timestamp < next.timestamp)
     }
@@ -129,12 +123,21 @@ const updateChart = async () => {
       }))
     ]
   }, [])
-  responseData.push({
+  data.push({
     presenceDetected: false,
-    deskHeight: responseData.at(-1),
+    deskHeight: data.at(-1),
     timestamp: Date.now()
   })
-  console.log(responseData)
+  return data
+}
+
+const updateChart = async () => {
+  const userInfo = await window.electronAPI.getUserInfo()
+  const piConnects = await getPiConnects(userInfo.id)
+  const states = await getStates(userInfo.id)
+  console.log(piConnects)
+  console.log(states)
+  let responseData = addPiConnectsToData(states, piConnects)
 
   let chartData
   if (chartMode.value === 'day') {

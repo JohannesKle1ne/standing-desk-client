@@ -35,8 +35,15 @@ const connect = async (userId) => {
   socket.on('height', (height) => {
     heightCallback(height)
   })
+  socket.on('state', (state) => {
+    const stateObj = JSON.parse(state)
+    heightCallback(stateObj.deskHeight)
+  })
   socket.on('requestGoUp', () => {
     socket.emit('confirmGoUp')
+  })
+  socket.on('requestGoDown', () => {
+    socket.emit('confirmGoDown')
   })
 }
 
@@ -66,9 +73,22 @@ const sendCommand = (command) => {
   }
 }
 
+const sendForceHeight = (height) => {
+  if (socket && isConnectedFlag) {
+    console.log('send', height)
+    socket.emit('forceWriteHeight', height)
+  }
+}
+
 const requestAlive = () => {
   if (socket && isConnectedFlag) {
     socket.emit('requestAlive')
+  }
+}
+
+const requestState = () => {
+  if (socket && isConnectedFlag) {
+    socket.emit('requestState')
   }
 }
 
@@ -80,5 +100,7 @@ export default {
   onAliveMessage,
   sendCommand,
   onHeightMessage,
-  requestAlive
+  requestAlive,
+  requestState,
+  sendForceHeight
 }

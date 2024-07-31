@@ -25,7 +25,7 @@ import ReadNoInternet from './ReadNoInternet.vue'
 
 const emits = defineEmits(['buttonClicked'])
 const props = defineProps({
-  height: String,
+  height: Number,
   deskUpdates: Array,
   deskConnected: Boolean,
   socketConnected: Boolean

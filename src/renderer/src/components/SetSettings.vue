@@ -38,7 +38,7 @@
           <button class="rounded-button ml-2" @click="add">Add</button>
         </span>
       </span>
-      <button
+      <!-- <button
         v-for="(m, index) in props.settings.moveEvents"
         class="rounded-button w-32 relative mr-2"
         style="cursor: default"
@@ -49,7 +49,7 @@
           class="w-4 cursor-pointer absolute right-1 top-1"
           v-html="svgs.removeTab"
         ></div>
-      </button>
+      </button> -->
     </div>
   </div>
 </template>
@@ -80,7 +80,7 @@ const settingsList = ref([
     type: 'number'
   },
   {
-    description: 'Duration of absence until the desk moves up',
+    description: 'Duration of absence until the desk moves',
     key: 'durationAbsence',
     type: 'number',
     timeUnit: 'min'
@@ -141,10 +141,14 @@ onMounted(() => {
 
 const handleNumberInput = (event, key) => {
   const value = event?.target?.value
-  if (value === null || value.length <= 0) return
+  if (value === '' || value == null) {
+    emits('save', { [key]: null })
+    return
+  }
   const number = Number(value)
-  if (isNaN(number)) return
-  emits('save', { [key]: number })
+  if (!isNaN(number)) {
+    emits('save', { [key]: number })
+  }
 }
 const add = () => {
   if (selectedTime.value === '' || timeOptions.value === '') return

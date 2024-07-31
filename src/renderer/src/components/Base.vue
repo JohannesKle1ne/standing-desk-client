@@ -57,7 +57,8 @@
   >
     {{ tooltip.text }}
   </div>
-  <!--   <ViewDesk></ViewDesk> -->
+  <input type="text" v-model="forceHeight" />
+  <button @click="forceWriteHeight">set height</button>
 </template>
 <script setup>
 import Login from './Login.vue'
@@ -79,6 +80,13 @@ console.log(PAGE)
 
 const currentPage = ref(null)
 const userId = ref(null)
+
+const forceHeight = ref(null)
+
+const forceWriteHeight = () => {
+  console.log(forceHeight.value)
+  socketIo.sendForceHeight(forceHeight.value)
+}
 
 const rebootSecondsPassed = ref(0)
 
@@ -146,7 +154,7 @@ const missingPresetDefinitions = computed(() => {
   const settingsObj = settings.value
   if (settingsObj == null) return false
   const { presetDown, presetUp } = settingsObj
-  return presetDown == null || presetUp == null
+  return presetDown === 'DEFAULT' || presetUp === 'DEFAULT'
 })
 
 const handleNewUserId = async () => {
@@ -224,6 +232,7 @@ onMounted(async () => {
   socketIo.onConnected(() => {
     socketConnected.value = true
     socketIo.requestAlive()
+    socketIo.requestState()
   })
   socketIo.onDisconnected(() => {
     socketConnected.value = false
@@ -235,7 +244,7 @@ onMounted(async () => {
   })
   socketIo.onHeightMessage((newHeight) => {
     console.log(newHeight)
-    height.value = JSON.parse(newHeight).height
+    height.value = newHeight
   })
 
   checkStatus()
