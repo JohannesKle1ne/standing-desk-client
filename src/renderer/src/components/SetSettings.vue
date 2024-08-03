@@ -1,25 +1,27 @@
 <template>
-  <div class="flex flex-col justify-center items-start w-full text-white p-4">
+  <div class="flex flex-col justify-center items-start w-full text-[#2f3241] p-4">
     <div v-if="props.settings" class="mb-4 w-full h-[90vh] overflow-auto custom-scrollbar">
       <span class="flex items-center h-10" v-for="s in settingsList">
         <span class="w-3/4">{{ s.description }}</span>
+        <div class="grow"></div>
+
         <div
           v-if="s.type === 'toggle'"
           @click="emits('save', { [s.key]: !props.settings[s.key] })"
-          class="w-10 text-white cursor-pointer"
+          class="w-10 text-[#2f3241] cursor-pointer"
           :style="{ opacity: props.settings[s.key] ? 1 : 0.5 }"
           v-html="props.settings[s.key] ? svgs.toggleOn : svgs.toggleOff"
         ></div>
         <input
           v-if="s.type === 'number'"
-          class="text-black w-[50px]"
+          class="text-[#2f3241] w-[50px] border-2 focus:outline-none focus:border-[#2f3241]"
           :value="props.settings[s.key]"
           @input="handleNumberInput($event, s.key)"
         />
         <span v-if="s.type === 'number'" class="ml-2">{{ s.timeUnit }}</span>
         <span v-if="s.key === 'downAfterMinutes' && props.settings[s.key]">
           <input
-            class="text-black w-[50px] ml-2"
+            class="text-[#2f3241] w-[50px] ml-2"
             :value="props.settings.standingMinutesUntilDown"
             @input="handleNumberInput($event, 'standingMinutesUntilDown')"
           />
@@ -192,7 +194,7 @@ const timeToMilliseconds = (time) => {
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: white; /* Color of the scrollbar */
+  background-color: #2f3241; /* Color of the scrollbar */
   border-radius: 10px; /* Roundness of the scrollbar */
 }
 
@@ -207,6 +209,6 @@ const timeToMilliseconds = (time) => {
 /* Fallback for non-WebKit browsers */
 .custom-scrollbar {
   scrollbar-width: thin; /* Thinner scrollbar for Firefox */
-  scrollbar-color: white transparent; /* Color for Firefox */
+  scrollbar-color: #2f3241 transparent; /* Color for Firefox */
 }
 </style>

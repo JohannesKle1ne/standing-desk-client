@@ -5,8 +5,8 @@
     <button
       class="navbar-button"
       :style="{
-        color: isDesk ? 'white' : '#2f3241',
-        'background-color': isDesk ? '#2f3241' : 'white'
+        color: !isDesk ? 'white' : '#2f3241',
+        'background-color': !isDesk ? '#2f3241' : 'white'
       }"
       @click="emits('showDesk')"
     >
@@ -15,8 +15,8 @@
     <button
       class="navbar-button"
       :style="{
-        color: isStatistics ? 'white' : '#2f3241',
-        'background-color': isStatistics ? '#2f3241' : 'white'
+        color: !isStatistics ? 'white' : '#2f3241',
+        'background-color': !isStatistics ? '#2f3241' : 'white'
       }"
       @click="emits('showStatistics')"
     >
@@ -25,8 +25,8 @@
     <button
       class="navbar-button"
       :style="{
-        color: isSettings ? 'white' : '#2f3241',
-        'background-color': isSettings ? '#2f3241' : 'white'
+        color: !isSettings ? 'white' : '#2f3241',
+        'background-color': !isSettings ? '#2f3241' : 'white'
       }"
       @click="emits('showSettings')"
     >

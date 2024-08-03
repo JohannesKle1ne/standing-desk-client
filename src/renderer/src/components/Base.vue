@@ -1,5 +1,5 @@
 <template>
-  <div class="title-bar w-full flex items-end bg-white">
+  <div class="title-bar w-full flex items-end bg-[#2f3241]">
     <Navbar
       @showDesk="showDesk"
       @showStatistics="showStatistics"
@@ -9,7 +9,7 @@
     <div class="grow"></div>
     <div
       @click="hideWindow"
-      class="w-7 h-7 text-[#2f3241] cursor-pointer self-center"
+      class="w-7 h-7 text-white cursor-pointer self-center"
       v-html="svgs.close"
     ></div>
   </div>

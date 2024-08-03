@@ -1,28 +1,58 @@
 <template>
-  <div class="mt-2">
+  <div class="mt-2 w-full p-2">
     <div>
       <button
         class="statistics-button mr-1"
-        :style="chartMode !== 'day' && { opacity: 0.6 }"
+        :style="{
+          opacity: chartMode !== 'day' ? '0.7' : '1',
+          'font-weight': chartMode !== 'day' ? '' : 'bold'
+        }"
         @click="showDay"
       >
         Day
       </button>
       <button
         class="statistics-button"
-        :style="chartMode !== 'week' && { opacity: 0.6 }"
+        :style="{
+          opacity: chartMode !== 'week' ? '0.7' : '1',
+          'font-weight': chartMode !== 'week' ? '' : 'bold'
+        }"
         @click="showWeek"
       >
         Week
       </button>
     </div>
 
-    <div style="width: 600px"><canvas id="barChart"></canvas></div>
-    <div style="display: flex; gap: 10px; align-items: center; width: 100%">
-      <span @click="goBack()" class="day-button" v-html="svgs.chevronLeft"></span>
-      <span class="w-[100px] text-center">{{ formatDateFromTimestamp(currentDisplayTime) }}</span>
-      <span @click="goForward()" class="day-button" v-html="svgs.chevronRight"></span>
-      <!--   <button @click="updateChart" class="ml-8 text-white">Refresh</button> -->
+    <div class="w-[95%]"><canvas id="barChart"></canvas></div>
+    <div class="mt-2 flex gap-2.5 items-center justify-center w-full">
+      <span @click="goBack()" class="day-button no-select" v-html="svgs.chevronLeft"></span>
+      <span class="w-[100px] text-center text-[#2f3241] no-select">{{
+        formatDateFromTimestamp(currentDisplayTime)
+      }}</span>
+      <span @click="goForward()" class="day-button no-select" v-html="svgs.chevronRight"></span>
+      <!--  <div class="flex">
+        <span @click="goForward()" class="back-to-today-button" v-html="svgs.chevronRight"></span>
+        <span @click="goForward()" class="back-to-today-button" v-html="svgs.chevronRight"></span>
+      </div> -->
+    </div>
+
+    <div class="flex gap-2.5 items-center justify-center w-full">
+      <div
+        v-if="chartMode === 'day' && currentDisplayTime !== getStartOfToday()"
+        @click="goBackToToday"
+        class="bg-opacity-20 rounded-xl py-1 px-2 ml-2 text-[#2f3241] flex items-center cursor-pointer opacity-50 no-select"
+      >
+        Back to today
+        <!--  <span class="back-to-today-button ml-1" v-html="svgs.fastForward"></span> -->
+      </div>
+      <div
+        v-if="chartMode === 'week' && currentDisplayTime !== getStartOfWeek()"
+        @click="goBackToThisWeek"
+        class="bg-opacity-20 rounded-xl py-1 px-2 ml-2 text-[#2f3241] flex items-center cursor-pointer opacity-50 no-select"
+      >
+        Back to this week
+        <!--  <span class="back-to-today-button ml-1" v-html="svgs.fastForward"></span> -->
+      </div>
     </div>
   </div>
 </template>
@@ -83,8 +113,6 @@ const go = (operation) => {
       updateChart()
     }
   } else {
-    console.log(weekIntervals)
-    console.log(operation(currentDisplayTime.value, millisecondsPerWeek))
     if (
       weekIntervals?.find(
         (i) => i.week === operation(currentDisplayTime.value, millisecondsPerWeek)
@@ -94,6 +122,20 @@ const go = (operation) => {
       updateChart()
     }
   }
+}
+
+const goBackToToday = () => {
+  const start = getStartOfToday()
+  const delta = start - currentDisplayTime.value
+  const divided = delta / millisecondsPerDay
+  go((a, b) => a + divided * b)
+}
+
+const goBackToThisWeek = () => {
+  const start = getStartOfWeek()
+  const delta = start - currentDisplayTime.value
+  const divided = delta / millisecondsPerWeek
+  go((a, b) => a + divided * b)
 }
 
 const goForward = () => {
@@ -223,9 +265,9 @@ function formatDateFromTimestamp(timestamp) {
 }
 
 function formatDateFromTimestampWeek(timestamp) {
-  /*   if (timestamp === getStartOfWeek()) {
-    return 'This Week'
-  } */
+  if (timestamp === getStartOfWeek()) {
+    return 'This week'
+  }
 
   return `${formatTimestamp(timestamp)} - ${formatTimestamp(timestamp + millisecondsPerWeek - millisecondsPerDay)}`
 }
@@ -297,6 +339,26 @@ function formatDateFromTimestampDay(timestamp) {
   align-items: center;
 }
 
+.back-to-today-button {
+  display: inline-block;
+  border: none;
+  border-radius: 2px; /* Adjust the border-radius for rounded corners */
+  /* Set your desired text color */
+  color: #2f3241;
+  font-weight: bold;
+  font-size: 12px;
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    transform 0.1s ease;
+  background-color: white;
+  width: 15px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .statistics-button {
   display: inline-block;
   padding: 4px 8px; /* Adjust the padding as needed */
@@ -304,13 +366,19 @@ function formatDateFromTimestampDay(timestamp) {
   /*   border-radius: 20px; /* Adjust the border-radius for rounded corners */
   /* Set your desired text color */
   color: #2f3241;
-  font-weight: bold;
-  font-size: 12px;
+  font-size: 16px;
   border-radius: 5px;
   cursor: pointer;
   background-color: white;
   transition:
     background-color 0.3s ease,
     transform 0.1s ease;
+}
+
+.no-select {
+  user-select: none; /* Standard syntax */
+  -webkit-user-select: none; /* For Chrome, Safari, and Opera */
+  -moz-user-select: none; /* For Firefox */
+  -ms-user-select: none; /* For Internet Explorer/Edge */
 }
 </style>

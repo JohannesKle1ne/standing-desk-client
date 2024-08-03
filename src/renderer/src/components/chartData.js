@@ -182,10 +182,18 @@ export function getChartDataForWeek(initData, timestampStart) {
   })
 
   const formattedDays = withEmptyDays.map((g) => {
+    if (getStartOfToday() === g.day) {
+      return {
+        ...g,
+        time: 'Today'
+      }
+    }
     const date = new Date(g.day)
+    const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+    const weekday = weekdays[date.getDay()]
     const day = ('0' + date.getDate()).slice(-2) // Get day and ensure two-digit format
     const month = ('0' + (date.getMonth() + 1)).slice(-2) // Get month and ensure two-digit format
-    const formattedDate = `${day}.${month}`
+    const formattedDate = `${weekday} ${day}.${month}`
 
     return {
       ...g,

@@ -12,7 +12,7 @@
       >
     </div>
     <h3>Height</h3>
-    <div style="color: white; font-size: 50px; line-height: 1">{{ formattedHeight }}</div>
+    <div style="color: #2f3241; font-size: 50px; line-height: 1">{{ formattedHeight }}</div>
     <!-- <div style="width: 800px; height: 600px"><canvas id="lineChart"></canvas></div> -->
   </div>
 </template>
