@@ -1,22 +1,33 @@
 <template>
-  <span>
+  <span class="flex">
+    <!--    <img @click="emits('showDesk')" src="@renderer/assets/icon.ico" alt="Desk Icon" class="icon" /> 
+ -->
     <button
-      class="rounded-button mr-2"
-      :style="{ opacity: isDesk ? 1 : 0.8 }"
+      class="navbar-button"
+      :style="{
+        color: isDesk ? 'white' : '#2f3241',
+        'background-color': isDesk ? '#2f3241' : 'white'
+      }"
       @click="emits('showDesk')"
     >
       Desk
     </button>
     <button
-      class="rounded-button mr-2"
-      :style="{ opacity: isStatistics ? 1 : 0.8 }"
+      class="navbar-button"
+      :style="{
+        color: isStatistics ? 'white' : '#2f3241',
+        'background-color': isStatistics ? '#2f3241' : 'white'
+      }"
       @click="emits('showStatistics')"
     >
       Statistics
     </button>
     <button
-      class="rounded-button"
-      :style="{ opacity: isSettings ? 1 : 0.8 }"
+      class="navbar-button"
+      :style="{
+        color: isSettings ? 'white' : '#2f3241',
+        'background-color': isSettings ? '#2f3241' : 'white'
+      }"
       @click="emits('showSettings')"
     >
       Settings
@@ -45,4 +56,29 @@ const isSettings = computed(() => {
 })
 </script>
 
-<style></style>
+<style>
+.navbar-button {
+  display: inline-block;
+  padding: 6px 10px; /* Adjust the padding as needed */
+  border: none;
+  /*   border-radius: 20px; /* Adjust the border-radius for rounded corners */
+  /* Set your desired text color */
+  color: #2f3241;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: white;
+}
+
+.icon {
+  color: #2f3241;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: white;
+  margin-left: 5px;
+  margin-right: 10px;
+  width: 30px;
+  height: 30px;
+}
+</style>

@@ -1,7 +1,6 @@
 <template>
   <div class="flex flex-col justify-center items-start w-full text-white p-4">
-    <h1 class="text-[40px] mb-4">Settings</h1>
-    <div v-if="props.settings" class="mb-4 w-full h-[70vh] overflow-auto custom-scrollbar">
+    <div v-if="props.settings" class="mb-4 w-full h-[90vh] overflow-auto custom-scrollbar">
       <span class="flex items-center h-10" v-for="s in settingsList">
         <span class="w-3/4">{{ s.description }}</span>
         <div

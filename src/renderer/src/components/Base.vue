@@ -1,5 +1,18 @@
 <template>
-  <div class="title-bar w-[95%] h-6"></div>
+  <div class="title-bar w-full flex items-end bg-white">
+    <Navbar
+      @showDesk="showDesk"
+      @showStatistics="showStatistics"
+      @showSettings="showSettings"
+      :currentPage="currentPage"
+    />
+    <div class="grow"></div>
+    <div
+      @click="hideWindow"
+      class="w-7 h-7 text-[#2f3241] cursor-pointer self-center"
+      v-html="svgs.close"
+    ></div>
+  </div>
 
   <div v-if="apConnected || rebootTimeString" class="overlay">
     <EnterWifiCredentails @saved="startRebootTimer" :rebootTimeString="rebootTimeString" />
@@ -14,13 +27,6 @@
     <SetPresets @savePresets="saveSettings" :settings="settings" />
   </div>
 
-  <Navbar
-    @showDesk="showDesk"
-    @showStatistics="showStatistics"
-    @showSettings="showSettings"
-    :currentPage="currentPage"
-  />
-
   <ViewDesk
     v-if="isDesk"
     @buttonClicked="sendCommand"
@@ -31,11 +37,6 @@
   <ViewStatistics v-if="isStatistics" />
   <SetSettings v-if="isSettings" @save="saveSettings" :settings="settings" />
 
-  <div
-    @click="hideWindow"
-    class="w-7 h-7 absolute right-1 top-1 text-white cursor-pointer"
-    v-html="svgs.close"
-  ></div>
   <div
     @click="quitApp"
     class="w-7 h-7 absolute right-0 bottom-1 text-white cursor-pointer"
@@ -315,6 +316,11 @@ const saveSettings = async (newSettings) => {
 .title-bar {
   -webkit-user-select: none;
   -webkit-app-region: drag;
+}
+
+.title-bar > * {
+  -webkit-user-select: text;
+  -webkit-app-region: no-drag;
 }
 
 .overlay {

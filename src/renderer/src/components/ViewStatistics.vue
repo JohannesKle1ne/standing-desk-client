@@ -1,21 +1,21 @@
 <template>
-  <div class="mt-6">
-    <span>
+  <div class="mt-2">
+    <div>
       <button
-        class="rounded-button mr-2"
-        :style="chartMode !== 'day' && { opacity: 0.8 }"
+        class="statistics-button mr-1"
+        :style="chartMode !== 'day' && { opacity: 0.6 }"
         @click="showDay"
       >
         Day
       </button>
       <button
-        class="rounded-button"
-        :style="chartMode !== 'week' && { opacity: 0.8 }"
+        class="statistics-button"
+        :style="chartMode !== 'week' && { opacity: 0.6 }"
         @click="showWeek"
       >
         Week
-      </button></span
-    >
+      </button>
+    </div>
 
     <div style="width: 600px"><canvas id="barChart"></canvas></div>
     <div style="display: flex; gap: 10px; align-items: center; width: 100%">
@@ -295,5 +295,22 @@ function formatDateFromTimestampDay(timestamp) {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.statistics-button {
+  display: inline-block;
+  padding: 4px 8px; /* Adjust the padding as needed */
+  border: none;
+  /*   border-radius: 20px; /* Adjust the border-radius for rounded corners */
+  /* Set your desired text color */
+  color: #2f3241;
+  font-weight: bold;
+  font-size: 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: white;
+  transition:
+    background-color 0.3s ease,
+    transform 0.1s ease;
 }
 </style>
