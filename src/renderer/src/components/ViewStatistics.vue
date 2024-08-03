@@ -59,7 +59,7 @@ const millisecondsPerWeek = 604800000 // 7 days * 24 hours * 60 minutes * 60 sec
 const chartMode = ref()
 
 onMounted(() => {
-  showWeek()
+  showDay()
 })
 
 const showWeek = () => {

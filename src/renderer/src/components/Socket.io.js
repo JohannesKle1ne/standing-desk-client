@@ -36,6 +36,7 @@ const connect = async (userId) => {
     heightCallback(height)
   })
   socket.on('state', (state) => {
+    console.log('state: ', state)
     const stateObj = JSON.parse(state)
     heightCallback(stateObj.deskHeight)
   })

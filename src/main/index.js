@@ -1,9 +1,9 @@
 import { app, shell, BrowserWindow, Tray, Menu, screen, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import icon from '../../resources/icon.png?asset'
+import icon from '../../resources/icon.ico?asset'
 
-const dev = true
+const dev = false
 
 const runAutoLauncher = () => {
   var AutoLaunch = require('auto-launch')
@@ -152,7 +152,7 @@ function createWindow() {
     y,
     show: true,
     autoHideMenuBar: true,
-    ...(process.platform === 'linux' ? { icon } : {}),
+    icon,
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
@@ -173,7 +173,7 @@ function createWindow() {
     //app.quit()
   })
 
-  tray = new Tray(path.join(__dirname, '../../resources/icon16x16.png'))
+  tray = new Tray(path.join(__dirname, '../../resources/icon.ico'))
 
   const contextMenu = Menu.buildFromTemplate([
     /*     { label: 'Show App', click: () => mainWindow.show() },

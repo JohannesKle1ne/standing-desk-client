@@ -57,8 +57,8 @@
   >
     {{ tooltip.text }}
   </div>
-  <input type="text" v-model="forceHeight" />
-  <button @click="forceWriteHeight">set height</button>
+  <!--   <input type="text" v-model="forceHeight" />
+  <button @click="forceWriteHeight">set height</button> -->
 </template>
 <script setup>
 import Login from './Login.vue'
@@ -226,7 +226,7 @@ onMounted(async () => {
   //hideWindow()
   const info = await window.electronAPI.getUserInfo()
   userId.value = info?.id
-  showSettings()
+  showDesk()
   fetchSettings(userId.value)
   await socketIo.connect(userId.value)
   socketIo.onConnected(() => {

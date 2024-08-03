@@ -134,3 +134,4 @@ Meeting:
 - how will we recrut participants?
 - show the new UI (menu bar and settings)
 
+if LED is not blinking:  SD CARD Read error

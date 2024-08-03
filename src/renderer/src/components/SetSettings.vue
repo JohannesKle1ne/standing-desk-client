@@ -111,11 +111,11 @@ const settingsList = ref([
     description: 'Move the desk down (in absence) after a specific number of standing minutes',
     key: 'downAfterMinutes',
     type: 'toggle'
-  },
-  {
+  }
+  /*  {
     description: 'Define custom move events:',
     key: 'moveEvents'
-  }
+  } */
 ])
 
 const selectedTime = ref('')
