@@ -1,5 +1,6 @@
 <template>
   <div class="mt-2 w-full p-2">
+    <!--  <StandingGoalRing :standingGoal="props.standingGoal" /> -->
     <div>
       <button
         class="statistics-button mr-1"
@@ -62,21 +63,13 @@ import { svgs } from './svg'
 
 import Chart from 'chart.js/auto'
 import { ref, computed, onMounted } from 'vue'
-import { data } from './testData.js'
-import { testPiConnectData } from './testPiConnects'
-import { getStates, getPiConnects } from './api'
-import {
-  getChartDataForDay,
-  getChartDataForWeek,
-  getDayIntervals,
-  getWeekIntervals,
-  getStartOfToday,
-  getStartOfWeek
-} from './chartData.js'
+import { getStatisticsOfDay, getStatisticsOfWeek } from './api'
+import { getDayIntervals, getWeekIntervals, getStartOfToday, getStartOfWeek } from './chartData.js'
+import StandingGoalRing from './StandingGoalRing.vue'
 
 const emits = defineEmits(['buttonClicked'])
 const props = defineProps({
-  height: String
+  standingGoal: Number
 })
 
 const currentDisplayTime = ref()
@@ -87,8 +80,12 @@ const millisecondsPerDay = 86400000
 const millisecondsPerWeek = 604800000 // 7 days * 24 hours * 60 minutes * 60 seconds * 1000 milliseconds
 
 const chartMode = ref()
+const userInfo = ref()
 
-onMounted(() => {
+onMounted(async () => {
+  userInfo.value = await window.electronAPI.getUserInfo()
+  dayIntervals = getDayIntervals()
+  weekIntervals = getWeekIntervals()
   showDay()
 })
 
@@ -146,62 +143,16 @@ const goBack = () => {
   go((a, b) => a - b)
 }
 
-const addPiConnectsToData = (data, piConnects) => {
-  const testPiConnects = piConnects.filter((c) => c.connected === false)
-  console.log(data)
-  data = data.reduce((acc, r, index) => {
-    let piConnects = testPiConnects.filter((c) => c.timestamp > r.timestamp)
-    const next = data[index + 1]
-    if (next != null) {
-      piConnects = piConnects.filter((c) => c.timestamp < next.timestamp)
-    }
-    return [
-      ...acc,
-      r,
-      ...piConnects.map((c) => ({
-        presenceDetected: false,
-        deskHeight: r.deskHeight,
-        timestamp: c.timestamp
-      }))
-    ]
-  }, [])
-  data.push({
-    presenceDetected: false,
-    deskHeight: data.at(-1),
-    timestamp: Date.now()
-  })
-  return data
-}
-
 const updateChart = async () => {
-  const userInfo = await window.electronAPI.getUserInfo()
-  const piConnects = await getPiConnects(userInfo.id)
-  const states = await getStates(userInfo.id)
-  console.log(piConnects)
-  console.log(states)
-  let responseData = addPiConnectsToData(states, piConnects)
-
   let chartData
   if (chartMode.value === 'day') {
-    dayIntervals = getDayIntervals(responseData)
-    chartData = getChartDataForDay(
-      dayIntervals.find((i) => i.day === currentDisplayTime.value).data,
-      currentDisplayTime.value
-    )
+    chartData = await getStatisticsOfDay(userInfo.value.id, currentDisplayTime.value)
   }
   if (chartMode.value === 'week') {
-    weekIntervals = getWeekIntervals(responseData)
-    console.log('weekIntervals: ', weekIntervals)
-    console.log(currentDisplayTime.value)
-    chartData = getChartDataForWeek(
-      weekIntervals.find((i) => i.week === currentDisplayTime.value).data,
-      currentDisplayTime.value
-    )
+    chartData = await getStatisticsOfWeek(userInfo.value.id, currentDisplayTime.value)
   }
 
-  if (barChart?.destroy) {
-    barChart.destroy()
-  }
+  barChart?.destroy?.()
 
   barChart = new Chart(document.getElementById('barChart'), {
     type: 'bar',

@@ -24,7 +24,8 @@
     "chart.js": "^4.4.2",
     "js-sha256": "^0.11.0",
     "mqtt": "^5.3.4",
-    "socket.io-client": "^4.7.5"
+    "socket.io-client": "^4.7.5",
+    "vue3-circle-progress": "^1.0.7"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config": "^1.0.1",

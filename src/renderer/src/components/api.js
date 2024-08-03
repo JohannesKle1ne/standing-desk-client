@@ -62,6 +62,34 @@ export async function getStates(id) {
   }
 }
 
+export async function getStatisticsOfDay(id, startOfDay) {
+  try {
+    const response = await axios({
+      method: 'get',
+      url: urlRestApi + `/statistic/${id}/day`,
+      params: { startOfDay }
+    })
+    return response.data
+  } catch (error) {
+    console.log(error)
+    console.log('Error reaching server')
+  }
+}
+
+export async function getStatisticsOfWeek(id, startOfWeek) {
+  try {
+    const response = await axios({
+      method: 'get',
+      url: urlRestApi + `/statistic/${id}/week`,
+      params: { startOfWeek }
+    })
+    return response.data
+  } catch (error) {
+    console.log(error)
+    console.log('Error reaching server')
+  }
+}
+
 export async function getSettings(id) {
   try {
     const response = await axios({
