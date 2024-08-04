@@ -68,7 +68,7 @@ import Register from './Register.vue'
 import EnterWifiCredentails from './EnterWifiCredentails.vue'
 import ViewDesk from './ViewDesk.vue'
 import SetPresets from './SetPresets.vue'
-import socketIo from './Socket.io'
+import socketIo from './socket.io'
 import { piTest, checkServer, getSettings, setSettings } from './api.js'
 import { ref, onMounted, computed } from 'vue'
 import { svgs } from './svg'
@@ -123,7 +123,6 @@ const socketConnected = ref(false)
 
 const deskConnected = ref(false)
 const apConnected = ref(false)
-const serverConnected = ref(false)
 
 const dateNow = new Date().getTime()
 
@@ -194,32 +193,13 @@ const lookForPi = async (now) => {
   }
 }
 
-const lookForServer = async (now) => {
-  const internetSuccess = await checkServer()
-  if (internetSuccess) {
-    lastServerUpdate.value = now
-    serverConnected.value = true
-  }
-}
-
 const checkStatus = async () => {
   const now = new Date().getTime()
   if (!deskConnected.value) {
     lookForPi(now)
-
-    await lookForServer(now)
-  }
-  if (now - lastDeskUpdate.value > 20000) {
-    socketIo.requestAlive()
-  }
-  if (now - lastDeskUpdate.value > 30000) {
-    deskConnected.value = false
   }
   if (now - lastApUpdate.value > 6000) {
     apConnected.value = false
-  }
-  if (now - lastServerUpdate.value > 6000) {
-    serverConnected.value = false
   }
 }
 
@@ -232,26 +212,23 @@ onMounted(async () => {
   await socketIo.connect(userId.value)
   socketIo.onConnected(() => {
     socketConnected.value = true
-    socketIo.requestAlive()
     socketIo.requestState()
   })
   socketIo.onDisconnected(() => {
     socketConnected.value = false
-  })
-  socketIo.onAliveMessage(() => {
-    console.log('pi alive')
-    lastDeskUpdate.value = new Date().getTime()
-    deskConnected.value = true
+    deskConnected.value = false
   })
   socketIo.onHeightMessage((newHeight) => {
     console.log(newHeight)
     height.value = newHeight
   })
-  socketIo.onPiDisconnect(() => {
-    console.log('onPiDisconnect')
+  socketIo.onPiConnect(() => {
+    console.log('pi has disconnected')
+    deskConnected.value = true
   })
   socketIo.onPiDisconnect(() => {
-    console.log('onPiConnect')
+    console.log('pi has connected')
+    deskConnected.value = false
   })
 
   checkStatus()
