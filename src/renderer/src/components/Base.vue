@@ -247,6 +247,12 @@ onMounted(async () => {
     console.log(newHeight)
     height.value = newHeight
   })
+  socketIo.onPiDisconnect(() => {
+    console.log('onPiDisconnect')
+  })
+  socketIo.onPiDisconnect(() => {
+    console.log('onPiConnect')
+  })
 
   checkStatus()
   setInterval(checkStatus, 3000)

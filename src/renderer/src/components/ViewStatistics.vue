@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-2 w-full p-2 h-[95vh] overflow-auto custom-scrollbar">
+  <div class="mt-2 w-full p-4 h-[95vh] overflow-auto custom-scrollbar">
     <div class="items-center inline-flex">
       <button
         class="statistics-button mr-1"

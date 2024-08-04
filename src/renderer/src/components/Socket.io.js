@@ -2,6 +2,8 @@ import io from 'socket.io-client'
 
 let aliveCallback = () => {}
 let heightCallback = () => {}
+let piDisconnectCallback = () => {}
+let piConnectCallback = () => {}
 let connectedCallback = () => {}
 let disconnectedCallback = () => {}
 
@@ -39,12 +41,16 @@ const connect = async (userId) => {
     console.log('state: ', state)
     const stateObj = JSON.parse(state)
     heightCallback(stateObj.deskHeight)
+    piConnectCallback()
   })
   socket.on('requestGoUp', () => {
     socket.emit('confirmGoUp')
   })
   socket.on('requestGoDown', () => {
     socket.emit('confirmGoDown')
+  })
+  socket.on('piDisconnect', () => {
+    piDisconnectCallback()
   })
 }
 
@@ -54,6 +60,14 @@ const isConnected = () => {
 
 const onAliveMessage = (callback) => {
   aliveCallback = callback
+}
+
+const onPiDisconnect = (callback) => {
+  piDisconnectCallback = callback
+}
+
+const onPiConnect = (callback) => {
+  piConnectCallback = callback
 }
 
 const onHeightMessage = (callback) => {
@@ -101,6 +115,8 @@ export default {
   onAliveMessage,
   sendCommand,
   onHeightMessage,
+  onPiDisconnect,
+  onPiConnect,
   requestAlive,
   requestState,
   sendForceHeight
