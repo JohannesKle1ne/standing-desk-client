@@ -90,6 +90,20 @@ export async function getStatisticsOfWeek(id, startOfWeek) {
   }
 }
 
+export async function getGoalProgress(id, startOfDay) {
+  try {
+    const response = await axios({
+      method: 'get',
+      url: urlRestApi + `/statistic/${id}/goal`,
+      params: { startOfDay }
+    })
+    return response.data
+  } catch (error) {
+    console.log(error)
+    console.log('Error reaching server')
+  }
+}
+
 export async function getSettings(id) {
   try {
     const response = await axios({

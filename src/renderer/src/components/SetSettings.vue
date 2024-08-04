@@ -188,27 +188,4 @@ const timeToMilliseconds = (time) => {
 }
 </script>
 
-<style>
-.custom-scrollbar::-webkit-scrollbar {
-  width: 6px; /* Width of the scrollbar */
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #2f3241; /* Color of the scrollbar */
-  border-radius: 10px; /* Roundness of the scrollbar */
-}
-
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent; /* Background of the scrollbar track */
-}
-
-.custom-scrollbar::-webkit-scrollbar-button {
-  display: none; /* Remove the up and down arrows */
-}
-
-/* Fallback for non-WebKit browsers */
-.custom-scrollbar {
-  scrollbar-width: thin; /* Thinner scrollbar for Firefox */
-  scrollbar-color: #2f3241 transparent; /* Color for Firefox */
-}
-</style>
+<style></style>

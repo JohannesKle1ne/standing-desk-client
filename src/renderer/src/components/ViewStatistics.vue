@@ -1,12 +1,12 @@
 <template>
-  <div class="mt-2 w-full p-2">
-    <!--  <StandingGoalRing :standingGoal="props.standingGoal" /> -->
-    <div>
+  <div class="mt-2 w-full p-2 h-[95vh] overflow-auto custom-scrollbar">
+    <div class="items-center inline-flex">
       <button
         class="statistics-button mr-1"
         :style="{
           opacity: chartMode !== 'day' ? '0.7' : '1',
-          'font-weight': chartMode !== 'day' ? '' : 'bold'
+          'font-weight': chartMode !== 'day' ? '' : 'bold',
+          'border-width': chartMode !== 'day' ? '0px' : '1px'
         }"
         @click="showDay"
       >
@@ -16,54 +16,119 @@
         class="statistics-button"
         :style="{
           opacity: chartMode !== 'week' ? '0.7' : '1',
-          'font-weight': chartMode !== 'week' ? '' : 'bold'
+          'font-weight': chartMode !== 'week' ? '' : 'bold',
+          'border-width': chartMode !== 'week' ? '0px' : '1px'
         }"
         @click="showWeek"
       >
         Week
       </button>
-    </div>
-
-    <div class="w-[95%]"><canvas id="barChart"></canvas></div>
-    <div class="mt-2 flex gap-2.5 items-center justify-center w-full">
-      <span @click="goBack()" class="day-button no-select" v-html="svgs.chevronLeft"></span>
-      <span class="w-[100px] text-center text-[#2f3241] no-select">{{
-        formatDateFromTimestamp(currentDisplayTime)
-      }}</span>
-      <span @click="goForward()" class="day-button no-select" v-html="svgs.chevronRight"></span>
-      <!--  <div class="flex">
+      <div class="ml-2 flex gap-2.5 items-center justify-center w-full">
+        <span @click="goBack()" class="day-button no-select" v-html="svgs.chevronLeft"></span>
+        <span class="w-[100px] text-center text-[#2f3241] text-[16px] no-select font-bold">{{
+          formatDateFromTimestamp(currentDisplayTime)
+        }}</span>
+        <span @click="goForward()" class="day-button no-select" v-html="svgs.chevronRight"></span>
+        <!--  <div class="flex">
         <span @click="goForward()" class="back-to-today-button" v-html="svgs.chevronRight"></span>
         <span @click="goForward()" class="back-to-today-button" v-html="svgs.chevronRight"></span>
       </div> -->
+      </div>
+      <div class="flex gap-2.5 items-center justify-center w-full">
+        <div
+          v-if="chartMode === 'day' && currentDisplayTime !== getStartOfToday()"
+          @click="goBackToToday"
+          class="bg-opacity-20 rounded-xl py-1 px-2 ml-2 text-[#2f3241] flex items-center cursor-pointer opacity-50 no-select"
+        >
+          Back to today
+          <!--  <span class="back-to-today-button ml-1" v-html="svgs.fastForward"></span> -->
+        </div>
+        <div
+          v-if="chartMode === 'week' && currentDisplayTime !== getStartOfWeek()"
+          @click="goBackToThisWeek"
+          class="bg-opacity-20 rounded-xl py-1 px-2 ml-2 text-[#2f3241] flex items-center cursor-pointer opacity-50 no-select"
+        >
+          Back to this week
+          <!--  <span class="back-to-today-button ml-1" v-html="svgs.fastForward"></span> -->
+        </div>
+      </div>
     </div>
 
-    <div class="flex gap-2.5 items-center justify-center w-full">
-      <div
-        v-if="chartMode === 'day' && currentDisplayTime !== getStartOfToday()"
-        @click="goBackToToday"
-        class="bg-opacity-20 rounded-xl py-1 px-2 ml-2 text-[#2f3241] flex items-center cursor-pointer opacity-50 no-select"
-      >
-        Back to today
-        <!--  <span class="back-to-today-button ml-1" v-html="svgs.fastForward"></span> -->
+    <div
+      :class="[
+        `rounded-lg p-4 bg-white mt-2`,
+        chartMode === 'week' ? 'w-[95%]' : 'w-[350px]',
+        chartMode === 'week' ? 'flex' : '',
+        chartMode === 'week' ? '' : 'justify-between'
+      ]"
+      style="box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15)"
+    >
+      <div class="flex justify-between">
+        <div class="text-[#2f3241]">
+          <div
+            v-if="chartMode !== 'week'"
+            :class="[`flex items-end`, chartMode === 'week' ? 'flex-col' : '']"
+          >
+            <div>Daily goal</div>
+            <div class="text-4xl ml-2">{{ goalResponse?.goalOfDay }}</div>
+          </div>
+          <div v-else>Goals</div>
+          <div class="flex items-end">
+            <div v-if="chartMode === 'day'" class="mt-4">Standing minutes</div>
+            <div
+              v-if="chartMode === 'day'"
+              :style="{ color: 'rgba(255, 159, 64, 0.6)' }"
+              class="text-4xl ml-2"
+            >
+              {{ goalResponse?.standingMinutesOfDay }}
+            </div>
+          </div>
+        </div>
+
+        <circle-progress
+          v-if="goalResponse && chartMode === 'day'"
+          :percent="getCirclePercent(goalResponse)"
+          :border-width="18"
+          :border-bg-width="18"
+          :fill-color="'rgba(255, 159, 64, 0.6)'"
+          :empty-color="'rgba(47, 50, 65, 0.05)'"
+          class="mx-1"
+          :size="100"
+        />
       </div>
-      <div
-        v-if="chartMode === 'week' && currentDisplayTime !== getStartOfWeek()"
-        @click="goBackToThisWeek"
-        class="bg-opacity-20 rounded-xl py-1 px-2 ml-2 text-[#2f3241] flex items-center cursor-pointer opacity-50 no-select"
-      >
-        Back to this week
-        <!--  <span class="back-to-today-button ml-1" v-html="svgs.fastForward"></span> -->
+
+      <div class="flex mt-4 justify-between grow" v-if="chartMode === 'week'">
+        <div v-for="(r, index) in weekGoalResponses" class="flex flex-col items-center">
+          <circle-progress
+            :percent="getCirclePercent(r)"
+            :border-width="10"
+            :border-bg-width="10"
+            :fill-color="'rgba(255, 159, 64, 0.6)'"
+            :empty-color="'rgba(47, 50, 65, 0.05)'"
+            class="mx-3"
+            :size="60"
+          />
+          <div :style="{ color: 'rgba(255, 159, 64, 0.6)' }" class="text-2xl mt-2">
+            {{ r?.standingMinutesOfDay }}
+          </div>
+          <div>{{ weekdays[index] }}</div>
+        </div>
       </div>
+    </div>
+    <div class="w-[95%] rounded-lg shadow-lg p-4 bg-white mt-2">
+      <div class="text-[#2f3241]">Progress</div>
+      <canvas id="barChart"></canvas>
     </div>
   </div>
 </template>
 
 <script setup>
 import { svgs } from './svg'
-
+import 'vue3-circle-progress/dist/circle-progress.css'
+import CircleProgress from 'vue3-circle-progress'
 import Chart from 'chart.js/auto'
 import { ref, computed, onMounted } from 'vue'
-import { getStatisticsOfDay, getStatisticsOfWeek } from './api'
+import { getStatisticsOfDay, getStatisticsOfWeek, getGoalProgress } from './api'
 import { getDayIntervals, getWeekIntervals, getStartOfToday, getStartOfWeek } from './chartData.js'
 import StandingGoalRing from './StandingGoalRing.vue'
 
@@ -73,6 +138,14 @@ const props = defineProps({
 })
 
 const currentDisplayTime = ref()
+const goalResponse = ref()
+const weekGoalResponses = ref()
+const weekdays = ref(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'])
+
+const getCirclePercent = (goalResponse) => {
+  return (goalResponse.standingMinutesOfDay / goalResponse.goalOfDay) * 100 || 0.01
+}
+
 let barChart
 let dayIntervals
 let weekIntervals
@@ -92,6 +165,7 @@ onMounted(async () => {
 const showWeek = () => {
   chartMode.value = 'week'
   currentDisplayTime.value = getStartOfWeek()
+  console.log(currentDisplayTime.value)
   updateChart()
 }
 
@@ -143,13 +217,40 @@ const goBack = () => {
   go((a, b) => a - b)
 }
 
+const getWeekGoalResponses = async (userId, startOfWeek) => {
+  // Define the number of milliseconds in a day
+  const millisecondsPerDay = 24 * 60 * 60 * 1000
+
+  // Create an array to hold the start of each weekday as Unix timestamps
+  const percents = []
+
+  // Loop through each day of the week
+  for (let i = 0; i < 7; i++) {
+    const timestamp = startOfWeek + i * millisecondsPerDay
+
+    const date = new Date(timestamp)
+    date.setHours(0, 0, 0, 0)
+
+    const newGoalResponse = await getGoalProgress(userId, date.getTime())
+    percents.push(newGoalResponse)
+  }
+  return percents
+}
+
 const updateChart = async () => {
   let chartData
   if (chartMode.value === 'day') {
     chartData = await getStatisticsOfDay(userInfo.value.id, currentDisplayTime.value)
+    goalResponse.value = await getGoalProgress(userInfo.value.id, currentDisplayTime.value)
+    console.log(goalResponse.value)
   }
   if (chartMode.value === 'week') {
     chartData = await getStatisticsOfWeek(userInfo.value.id, currentDisplayTime.value)
+    weekGoalResponses.value = await getWeekGoalResponses(
+      userInfo.value.id,
+      currentDisplayTime.value
+    )
+    console.log(weekGoalResponses.value)
   }
 
   barChart?.destroy?.()
@@ -168,12 +269,12 @@ const updateChart = async () => {
           data: chartData.map((row) => row.presentCounter)
         },
         {
-          label: 'Standing minutes',
-          data: chartData.map((row) => row.standingCounter)
-        },
-        {
           label: 'Sitting minutes',
           data: chartData.map((row) => row.sittingCounter)
+        },
+        {
+          label: 'Standing minutes',
+          data: chartData.map((row) => row.standingCounter)
         }
       ]
     },
@@ -282,7 +383,6 @@ function formatDateFromTimestampDay(timestamp) {
   transition:
     background-color 0.3s ease,
     transform 0.1s ease;
-  background-color: white;
   width: 20px;
   height: 20px;
   display: flex;
@@ -313,7 +413,7 @@ function formatDateFromTimestampDay(timestamp) {
 .statistics-button {
   display: inline-block;
   padding: 4px 8px; /* Adjust the padding as needed */
-  border: none;
+  border: 1px solid #2f3241;
   /*   border-radius: 20px; /* Adjust the border-radius for rounded corners */
   /* Set your desired text color */
   color: #2f3241;

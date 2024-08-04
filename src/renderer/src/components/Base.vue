@@ -39,14 +39,14 @@
 
   <div
     @click="quitApp"
-    class="w-7 h-7 absolute right-0 bottom-1 text-white cursor-pointer"
+    class="w-7 h-7 absolute right-0 bottom-1 text-[#2f3241] cursor-pointer"
     v-html="svgs.quit"
     @mouseover="setQuitToolTip"
     @mouseleave="hideToolTip"
   ></div>
   <div
     @click="logOut"
-    class="w-7 h-7 absolute right-8 bottom-1 text-white cursor-pointer"
+    class="w-7 h-7 absolute right-8 bottom-1 text-[#2f3241] cursor-pointer"
     v-html="svgs.logOut"
     @mouseover="setLogOutToolTip"
     @mouseleave="hideToolTip"

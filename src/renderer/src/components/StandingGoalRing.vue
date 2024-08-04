@@ -1,21 +1,27 @@
 <template>
-  <circle-progress :percent="40" />
-
-  <!--  // Default Gradient
-  <circle-progress :is-gradient="true" />
-
-  // Customize Gradient
   <circle-progress
+    :percent="props.percent"
+    :border-width="30"
+    :border-bg-width="30"
+    :fill-color="'rgba(255, 159, 64, 0.6)'"
+    :empty-color="'rgba(47, 50, 65, 0.05)'"
+    class="mx-1"
+    :size="80"
+  />
+
+  <!--   // Default Gradient
+  <circle-progress :is-gradient="true" /> -->
+
+  <!--   <circle-progress
     :is-gradient="true"
     :gradient="{
       angle: 90,
       startColor: '#ff0000',
       stopColor: '#ffff00'
     }"
-  />
+  /> -->
 
-  // Default Shadow
-  <circle-progress :is-bg-shadow="true" />
+  <!--   <circle-progress :is-bg-shadow="true" />
 
   // Customize Shadow
   <circle-progress
@@ -38,13 +44,14 @@
 import { ref, computed, onMounted, defineProps } from 'vue'
 import 'vue3-circle-progress/dist/circle-progress.css'
 import CircleProgress from 'vue3-circle-progress'
+import { getGoalProgress } from './api'
+
 const props = defineProps({
-  standingGoal: Number,
-  currentMinutes: Number
+  percent: Number
 })
 
-onMounted(() => {
-  console.log(props.standingGoal, props.currentMinutes)
+onMounted(async () => {
+  console.log('mounted', props.percent)
 })
 </script>
 

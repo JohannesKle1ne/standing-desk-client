@@ -19,6 +19,29 @@
     transform 0.1s ease;
 }
 
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px; /* Width of the scrollbar */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(47, 50, 65, 0.5); /* Color of the scrollbar */
+  border-radius: 10px; /* Roundness of the scrollbar */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent; /* Background of the scrollbar track */
+}
+
+.custom-scrollbar::-webkit-scrollbar-button {
+  display: none; /* Remove the up and down arrows */
+}
+
+/* Fallback for non-WebKit browsers */
+.custom-scrollbar {
+  scrollbar-width: thin; /* Thinner scrollbar for Firefox */
+  scrollbar-color: rgba(47, 50, 65, 0.05) transparent; /* Color for Firefox */
+}
+
 body {
   display: flex;
   flex-direction: column;
@@ -34,7 +57,7 @@ body {
     'Open Sans',
     sans-serif;
   color: #86a5b1;
-  background-color: white;
+  background-color: rgba(47, 50, 65, 0);
   /*   border-radius: 10px; */
   margin: 0;
   overflow: hidden;

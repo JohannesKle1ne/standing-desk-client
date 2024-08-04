@@ -1,8 +1,15 @@
 const roundToWeek = (timestamp) => {
   const now = new Date(timestamp)
-  const dayOfWeek = now.getDay() // Sunday - Saturday : 0 - 6
-  const startOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - dayOfWeek + 1) // Adjust for local time offset
+  const dayOfWeek = now.getDay() // Sunday - Saturday: 0 - 6
+
+  // Calculate how many days to subtract to get to the previous Monday
+  const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1
+
+  // Create a new Date object for the start of the week
+  const startOfWeek = new Date(now)
+  startOfWeek.setDate(now.getDate() - daysToMonday)
   startOfWeek.setHours(0, 0, 0, 0) // Set time to 00:00:00.000
+
   return startOfWeek.getTime()
 }
 
@@ -27,6 +34,7 @@ export function getDayIntervals() {
 
 export function getStartOfWeek() {
   const currentTimestamp = Date.now() // Get the current timestamp in milliseconds
+
   return roundToWeek(currentTimestamp) //
 }
 

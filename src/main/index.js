@@ -3,7 +3,7 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.ico?asset'
 
-const dev = true
+const dev = false
 
 const runAutoLauncher = () => {
   var AutoLaunch = require('auto-launch')
@@ -136,12 +136,12 @@ let mainWindow
 function createWindow() {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize
 
-  const windowWidth = dev ? 1400 : 800
+  const windowWidth = dev ? 1500 : 700
   const windowHeight = 700
 
-  // Calculate the position for the bottom right corner
-  const x = width - windowWidth - 50 // Adjust the value based on your window width
-  const y = height - windowHeight - 50 // Adjust the value based on your window height
+  // Calculate the position to center the window
+  const x = Math.floor((width - windowWidth) / 2)
+  const y = Math.floor((height - windowHeight) / 2)
 
   // Create the browser window.
   mainWindow = new BrowserWindow({
