@@ -136,8 +136,8 @@ let mainWindow
 function createWindow() {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize
 
-  const windowWidth = dev ? 1500 : 700
-  const windowHeight = 700
+  const windowWidth = dev ? 1500 : 750
+  const windowHeight = 750
 
   // Calculate the position to center the window
   const x = Math.floor((width - windowWidth) / 2)

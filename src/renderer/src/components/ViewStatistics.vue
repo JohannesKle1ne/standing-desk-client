@@ -58,7 +58,7 @@
       :class="[
         `rounded-lg p-4 bg-white mt-2`,
         chartMode === 'week' ? 'w-[95%]' : 'w-[350px]',
-        chartMode === 'week' ? 'flex' : '',
+        chartMode === 'week' ? 'flex flex-col' : '',
         chartMode === 'week' ? '' : 'justify-between'
       ]"
       style="box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15)"
@@ -108,7 +108,7 @@
             class="mx-3"
             :size="60"
           />
-          <div :style="{ color: 'rgba(255, 159, 64, 0.6)' }" class="text-2xl mt-2">
+          <div :style="{ color: 'rgba(255, 159, 64, 0.6)' }" class="text-xl mt-2">
             {{ r?.standingMinutesOfDay }}
           </div>
           <div>{{ weekdays[index] }}</div>

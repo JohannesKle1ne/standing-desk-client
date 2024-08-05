@@ -21,7 +21,7 @@
         <span v-if="s.type === 'number'" class="ml-2">{{ s.timeUnit }}</span>
         <span v-if="s.key === 'downAfterMinutes' && props.settings[s.key]">
           <input
-            class="text-[#2f3241] w-[50px] ml-2"
+            class="text-[#2f3241] w-[50px] ml-2 border-2 focus:outline-none focus:border-[#2f3241]"
             :value="props.settings.standingMinutesUntilDown"
             @input="handleNumberInput($event, 'standingMinutesUntilDown')"
           />
