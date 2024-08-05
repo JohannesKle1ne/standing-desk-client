@@ -173,7 +173,7 @@ function createWindow() {
     //app.quit()
   })
 
-  tray = new Tray(path.join(__dirname, '../../resources/icon.ico'))
+  tray = new Tray(path.join(__dirname, '../../resources/kreis_16x16.png'))
 
   const contextMenu = Menu.buildFromTemplate([
     /*     { label: 'Show App', click: () => mainWindow.show() },
