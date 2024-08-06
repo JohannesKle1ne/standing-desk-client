@@ -1,5 +1,6 @@
 <template>
-  <div class="title-bar w-full flex items-end bg-[#2f3241]">
+  <div v-if="isBaseline">{{ `Welcome ${userName}! You are currently in the baseline phase` }}</div>
+  <div v-if="!isBaseline" class="title-bar w-full flex items-end bg-[#2f3241]">
     <Navbar
       @showDesk="showDesk"
       @showStatistics="showStatistics"
@@ -26,16 +27,15 @@
   <div v-else-if="missingPresetDefinitions" class="overlay">
     <SetPresets @savePresets="saveSettings" :settings="settings" />
   </div>
-
   <ViewDesk
-    v-if="isDesk"
+    v-if="isDesk && !isBaseline"
     @buttonClicked="sendCommand"
     :height="height"
     :deskConnected="deskConnected"
     :socketConnected="socketConnected"
   />
-  <ViewStatistics v-if="isStatistics" />
-  <SetSettings v-if="isSettings" @save="saveSettings" :settings="settings" />
+  <ViewStatistics v-if="isStatistics && !isBaseline" />
+  <SetSettings v-if="isSettings && !isBaseline" @save="saveSettings" :settings="settings" />
 
   <div
     @click="quitApp"
@@ -77,10 +77,11 @@ import ViewStatistics from './ViewStatistics.vue'
 import Navbar from './Navbar.vue'
 import { PAGE } from './definitions.js'
 
-console.log(PAGE)
+const isBaseline = ref(false)
 
 const currentPage = ref(null)
 const userId = ref(null)
+const userName = ref(null)
 
 const forceHeight = ref(null)
 
@@ -159,6 +160,7 @@ const missingPresetDefinitions = computed(() => {
 
 const handleNewUserId = async () => {
   const info = await window.electronAPI.getUserInfo()
+  userName.value = info?.userName
   userId.value = info?.id
   socketIo.connect(userId.value)
   fetchSettings(userId.value)
@@ -204,9 +206,11 @@ const checkStatus = async () => {
 }
 
 onMounted(async () => {
-  //hideWindow()
   const info = await window.electronAPI.getUserInfo()
+  userName.value = info?.userName
   userId.value = info?.id
+  if (isBaseline.value) return
+
   showDesk()
   fetchSettings(userId.value)
   await socketIo.connect(userId.value)
