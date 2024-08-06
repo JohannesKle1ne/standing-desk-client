@@ -143,7 +143,10 @@ const weekGoalResponses = ref()
 const weekdays = ref(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'])
 
 const getCirclePercent = (goalResponse) => {
-  return (goalResponse.standingMinutesOfDay / goalResponse.goalOfDay) * 100 || 0.01
+  const percent = (goalResponse.standingMinutesOfDay / goalResponse.goalOfDay) * 100
+  if (percent === 0) return 0.01
+  if (percent > 100) return 100
+  return percent
 }
 
 let barChart
