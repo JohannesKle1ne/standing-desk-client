@@ -291,7 +291,15 @@ const updateChart = async () => {
         }
       },
       barPercentage: 0.9, // Adjust this value to set the width of the bars
-      categoryPercentage: 0.6 // Adjust this value to increase the space between groups
+      categoryPercentage: 0.6, // Adjust this value to increase the space between groups
+      scales: {
+        x: {
+          grid: {
+            display: false // Hide grid lines for x-axis
+          }
+        }
+      }
+
       /* scales: {
         x: {
           ticks: {
