@@ -1,0 +1,4 @@
+SELECT * FROM public."State"
+WHERE "userId" = '99aca265-fa71-4fa5-9f96-9e93084dd5ea'
+  AND "createdAt" BETWEEN '2024-08-05 19:20:00' AND '2024-08-06 09:20:00'
+ORDER BY id ASC;

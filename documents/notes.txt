@@ -129,9 +129,23 @@ node ./rest-api/server
 
 
 Meeting:
-- did order go out?
-- plan for august
-- how will we recrut participants?
-- show the new UI (menu bar and settings)
+- create small monitoring page to check which desk are connected -> I need to know when enough days have passed
+- baseline: Set up a minimal version of the app so it just pairs the pi but no statistics and settings
+- main study: Data collection: 
+        - settings
+        - deskheight
+        - recruting: mailing list?
+        - study consent
+        - should I add logs for button presses?
+        - should I use a pre study questionnaire beginning to check standing desk usage?
+        - post-study questionnaire?
+        - exit interview?
 
-if LED is not blinking:  SD CARD Read error
+
+
+
+
+
+
+
+
