@@ -31,6 +31,16 @@
       @click="emits('showSettings')"
     >
       Settings
+    </button>
+    <button
+      class="navbar-button"
+      :style="{
+        color: !isUser ? 'white' : '#2f3241',
+        'background-color': !isUser ? '#2f3241' : 'white'
+      }"
+      @click="emits('showUser')"
+    >
+      User
     </button></span
   >
 </template>
@@ -40,7 +50,7 @@ import { ref, computed, onMounted } from 'vue'
 
 import { PAGE } from './definitions.js'
 
-const emits = defineEmits(['showDesk', 'showStatistics', 'showSettings'])
+const emits = defineEmits(['showDesk', 'showStatistics', 'showSettings', 'showUser'])
 const props = defineProps({
   currentPage: Number
 })
@@ -53,6 +63,9 @@ const isStatistics = computed(() => {
 })
 const isSettings = computed(() => {
   return props.currentPage === PAGE.SETTINGS
+})
+const isUser = computed(() => {
+  return props.currentPage === PAGE.USER
 })
 </script>
 

@@ -1,12 +1,16 @@
 <template>
-  <div v-if="isBaseline">{{ `Welcome ${userName}! You are currently in the baseline phase` }}</div>
-  <div v-if="!isBaseline" class="title-bar w-full flex items-end bg-[#2f3241]">
+  <div class="title-bar w-full flex items-end bg-[#2f3241]">
     <Navbar
       @showDesk="showDesk"
       @showStatistics="showStatistics"
       @showSettings="showSettings"
+      @showUser="showUser"
       :currentPage="currentPage"
+      v-if="!isBaseline"
     />
+    <div class="text-white" v-if="isBaseline">
+      {{ `Welcome ${userName}! You are currently in baseline mode` }}
+    </div>
     <div class="grow"></div>
     <div
       @click="hideWindow"
@@ -36,6 +40,7 @@
   />
   <ViewStatistics v-if="isStatistics && !isBaseline" />
   <SetSettings v-if="isSettings && !isBaseline" @save="saveSettings" :settings="settings" />
+  <User v-if="isUser && !isBaseline" :userId="userId" :userName="userName" />
 
   <div
     @click="quitApp"
@@ -64,7 +69,7 @@
 <script setup>
 import Login from './Login.vue'
 import Register from './Register.vue'
-
+import User from './User.vue'
 import EnterWifiCredentails from './EnterWifiCredentails.vue'
 import ViewDesk from './ViewDesk.vue'
 import SetPresets from './SetPresets.vue'
@@ -151,6 +156,10 @@ const isSettings = computed(() => {
   return currentPage.value === PAGE.SETTINGS
 })
 
+const isUser = computed(() => {
+  return currentPage.value === PAGE.USER
+})
+
 const missingPresetDefinitions = computed(() => {
   const settingsObj = settings.value
   if (settingsObj == null) return false
@@ -162,24 +171,22 @@ const handleNewUserId = async () => {
   const info = await window.electronAPI.getUserInfo()
   userName.value = info?.userName
   userId.value = info?.id
+  isBaseline.value = info?.isBaseline
   socketIo.connect(userId.value)
   fetchSettings(userId.value)
 }
 
 const setPage = async (newPage) => {
-  const leavePage = (page) => {
-    currentPage.value === page && newPage !== page
-  }
-  const enterPage = (page) => {
+  /*   const enterPage = (page) => {
     currentPage.value !== page && newPage === page
-  }
+  } */
 
-  if (enterPage(PAGE.DESK_CONTROLS)) {
+  /*   if (enterPage(PAGE.DESK_CONTROLS)) {
     await window.electronAPI.setWindowBounds({ width: 500, height: 200 })
   }
   if (enterPage(PAGE.SETTINGS)) {
     await window.electronAPI.setWindowBounds({ width: 500, height: 500 })
-  }
+  } */
   currentPage.value = newPage
 }
 
@@ -209,6 +216,8 @@ onMounted(async () => {
   const info = await window.electronAPI.getUserInfo()
   userName.value = info?.userName
   userId.value = info?.id
+  isBaseline.value = info?.isBaseline
+
   if (isBaseline.value) return
 
   showDesk()
@@ -263,6 +272,9 @@ const showStatistics = async () => {
 }
 const showSettings = async () => {
   setPage(PAGE.SETTINGS)
+}
+const showUser = async () => {
+  setPage(PAGE.USER)
 }
 
 const setQuitToolTip = () => {
