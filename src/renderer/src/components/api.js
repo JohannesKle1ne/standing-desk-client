@@ -144,6 +144,21 @@ export async function getPiConnects(id) {
   }
 }
 
+export async function getBaseline(id) {
+  try {
+    const response = await axios({
+      method: 'get',
+      url: urlRestApi + `/user/${id}/baseline`
+    })
+    return response.data
+  } catch (error) {
+    console.log(error)
+    console.log('Error reaching server')
+  }
+}
+
+getBaseline
+
 export async function registerUser(name, password) {
   try {
     const response = await axios({

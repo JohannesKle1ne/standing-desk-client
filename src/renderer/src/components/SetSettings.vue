@@ -1,8 +1,8 @@
 <template>
   <div class="flex flex-col justify-center items-start w-full text-[#2f3241] p-4">
-    <div v-if="props.settings" class="mb-4 w-full h-[90vh] overflow-auto custom-scrollbar">
-      <span class="" v-for="o in settingsList">
-        <div class="text-2xl mt-3 mb-1">{{ o.heading }}</div>
+    <div v-if="props.settings" class="-mt-4 w-full h-[90vh] overflow-auto custom-scrollbar">
+      <span v-for="o in settingsList">
+        <div class="text-2xl mt-4 mb-1">{{ o.heading }}</div>
         <div class="flex items-center h-8" v-for="s in o.settings">
           <span class="w-[400px]" v-html="s.description"></span>
           <div
@@ -88,7 +88,7 @@ const settingsList = ref([
     heading: 'General',
     settings: [
       {
-        description: 'Disable automatic desk movement',
+        description: 'Disable all desk movements',
         key: 'disable',
         type: 'toggle'
       },
@@ -205,13 +205,10 @@ const add = () => {
 
   const time = `${formattedHour}:${formattedMinutes}`
 
-  const milliseconds = timeToMilliseconds(time)
-
   const newMoveEvents = [
     ...(props.settings.moveEvents || []),
     {
       time,
-      timeInMilliseconds: milliseconds,
       direction: selectedDirection.value
     }
   ]
@@ -227,17 +224,6 @@ const remove = (index) => {
 
   // Emit the updated moveEvents array
   emits('save', { moveEvents: newMoveEvents })
-}
-
-const timeToMilliseconds = (time) => {
-  console.log(time)
-  // Split the input time into hours and minutes
-  const [hours, minutes] = time.split(':').map(Number)
-
-  // Calculate the milliseconds from hours and minutes
-  const milliseconds = hours * 60 * 60 * 1000 + minutes * 60 * 1000
-
-  return milliseconds
 }
 </script>
 

@@ -74,7 +74,7 @@ import EnterWifiCredentails from './EnterWifiCredentails.vue'
 import ViewDesk from './ViewDesk.vue'
 import SetPresets from './SetPresets.vue'
 import socketIo from './socket.io'
-import { piTest, checkServer, getSettings, setSettings } from './api.js'
+import { piTest, checkServer, getSettings, setSettings, getBaseline } from './api.js'
 import { ref, onMounted, computed } from 'vue'
 import { svgs } from './svg'
 import SetSettings from './SetSettings.vue'
@@ -171,7 +171,10 @@ const handleNewUserId = async () => {
   const info = await window.electronAPI.getUserInfo()
   userName.value = info?.userName
   userId.value = info?.id
-  isBaseline.value = info?.isBaseline
+  if (userId.value) {
+    isBaseline.value = await getBaseline(userId.value)
+    console.log(isBaseline.value)
+  }
   socketIo.connect(userId.value)
   fetchSettings(userId.value)
 }
@@ -216,7 +219,10 @@ onMounted(async () => {
   const info = await window.electronAPI.getUserInfo()
   userName.value = info?.userName
   userId.value = info?.id
-  isBaseline.value = info?.isBaseline
+  if (userId.value) {
+    isBaseline.value = await getBaseline(userId.value)
+    console.log(isBaseline.value)
+  }
 
   if (isBaseline.value) return
 

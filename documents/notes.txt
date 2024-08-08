@@ -142,6 +142,7 @@ Meeting:
         - exit interview?
 
 
+
 To check DB size:
 
 df -m /var/lib/postgresql/14/main
@@ -149,10 +150,6 @@ df -m /var/lib/postgresql/14/main
 Donnerstag 14:30:
 Filesystem     1M-blocks  Used Available Use% Mounted on
 /dev/vda1           9741  4928      4797  51% /
-
-
-
-
 
 
 
