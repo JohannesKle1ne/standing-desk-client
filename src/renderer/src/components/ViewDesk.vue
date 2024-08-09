@@ -3,15 +3,15 @@
   <ReadInstructions v-else-if="!props.deskConnected" />
   <div v-else class="rounded-lg shadow-lg p-4 bg-[#2f3241] mt-4 ml-4 w-[350px]">
     <div style="display: flex; flex-direction: column; gap: 10px; margin: 10px">
-      <h3>Desk Controls</h3>
-      <div style="display: flex; gap: 10px; align-items: center; width: 100%">
+      <h3>Desk is Connected</h3>
+      <!-- <div style="display: flex; gap: 10px; align-items: center; width: 100%">
         <span v-for="b in buttons">
           <span v-if="b.svg" @click="b.onClick" class="control-button" v-html="b.svg"></span>
           <span v-else @click="b.onClick" class="control-button" style="font-size: 18px">{{
             b.title
           }}</span></span
         >
-      </div>
+      </div> -->
       <h3>Height</h3>
       <div style="color: white; font-size: 50px; line-height: 1">{{ formattedHeight }}</div>
       <!-- <div style="width: 800px; height: 600px"><canvas id="lineChart"></canvas></div> -->

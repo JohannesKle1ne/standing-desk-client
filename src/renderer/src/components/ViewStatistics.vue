@@ -130,11 +130,10 @@ import Chart from 'chart.js/auto'
 import { ref, computed, onMounted } from 'vue'
 import { getStatisticsOfDay, getStatisticsOfWeek, getGoalProgress } from './api'
 import { getDayIntervals, getWeekIntervals, getStartOfToday, getStartOfWeek } from './chartData.js'
-import StandingGoalRing from './StandingGoalRing.vue'
 
 const emits = defineEmits(['buttonClicked'])
 const props = defineProps({
-  standingGoal: Number
+  user: Object
 })
 
 const currentDisplayTime = ref()
@@ -159,7 +158,8 @@ const chartMode = ref()
 const userInfo = ref()
 
 onMounted(async () => {
-  userInfo.value = await window.electronAPI.getUserInfo()
+  userInfo.value = props.user
+  console.log(props.user)
   dayIntervals = getDayIntervals()
   weekIntervals = getWeekIntervals()
   showDay()
@@ -243,9 +243,12 @@ const getWeekGoalResponses = async (userId, startOfWeek) => {
 const updateChart = async () => {
   let chartData
   if (chartMode.value === 'day') {
+    console.log('send', userInfo.value.id, currentDisplayTime.value)
     chartData = await getStatisticsOfDay(userInfo.value.id, currentDisplayTime.value)
+    console.log('received', chartData)
+    console.log('send goal', userInfo.value.id, currentDisplayTime.value)
     goalResponse.value = await getGoalProgress(userInfo.value.id, currentDisplayTime.value)
-    console.log(goalResponse.value)
+    console.log('received', goalResponse.value)
   }
   if (chartMode.value === 'week') {
     chartData = await getStatisticsOfWeek(userInfo.value.id, currentDisplayTime.value)

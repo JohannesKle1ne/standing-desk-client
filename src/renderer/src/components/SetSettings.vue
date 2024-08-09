@@ -7,7 +7,6 @@
           <span class="w-[400px]" v-html="s.description"></span>
           <div
             v-if="s.type === 'toggle'"
-            @click="emits('save', { [s.key]: !props.settings[s.key] })"
             class="w-10 text-[#2f3241] cursor-pointer"
             :style="{ opacity: props.settings[s.key] ? 1 : 0.5 }"
             v-html="props.settings[s.key] ? svgs.toggleOn : svgs.toggleOff"
@@ -170,12 +169,12 @@ const directionOptions = ref(['up', 'down'])
 const handleNumberInput = (event, key) => {
   const value = event?.target?.value
   if (value === '' || value == null) {
-    emits('save', { [key]: null })
+    // emits('save', { [key]: null })
     return
   }
   const number = Number(value)
   if (!isNaN(number)) {
-    emits('save', { [key]: number })
+    //  emits('save', { [key]: number })
   }
 }
 const add = () => {
@@ -212,7 +211,7 @@ const add = () => {
       direction: selectedDirection.value
     }
   ]
-  emits('save', { moveEvents: newMoveEvents })
+  // emits('save', { moveEvents: newMoveEvents })
 }
 
 const remove = (index) => {
@@ -223,7 +222,7 @@ const remove = (index) => {
   newMoveEvents.splice(index, 1)
 
   // Emit the updated moveEvents array
-  emits('save', { moveEvents: newMoveEvents })
+  // emits('save', { moveEvents: newMoveEvents })
 }
 </script>
 

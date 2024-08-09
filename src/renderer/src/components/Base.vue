@@ -5,12 +5,9 @@
       @showStatistics="showStatistics"
       @showSettings="showSettings"
       @showUser="showUser"
-      :currentPage="currentPage"
-      v-if="!isBaseline"
+      :currentPage="props.currentPage"
     />
-    <div class="text-white" v-if="isBaseline">
-      {{ `Welcome ${userName}! You are currently in baseline mode` }}
-    </div>
+
     <div class="grow"></div>
     <div
       @click="hideWindow"
@@ -19,29 +16,25 @@
     ></div>
   </div>
 
-  <div v-if="apConnected || rebootTimeString" class="overlay">
-    <EnterWifiCredentails @saved="startRebootTimer" :rebootTimeString="rebootTimeString" />
-  </div>
-  <div v-else-if="!userId && registerFlag" class="overlay">
-    <Register @registered="handleNewUserId" @unsetRegisterFlag="registerFlag = false" />
-  </div>
-  <div v-else-if="!userId" class="overlay">
-    <Login @login="handleNewUserId" @setRegisterFlag="registerFlag = true" />
-  </div>
-  <div v-else-if="missingPresetDefinitions" class="overlay">
-    <SetPresets @savePresets="saveSettings" :settings="settings" />
-  </div>
+  <select @change="setUser($event)" :value="props.user.id">
+    <option v-for="user in props.users" :key="user.id" :value="user.id">
+      {{ user.userName }}
+    </option>
+  </select>
+
   <ViewDesk
-    v-if="isDesk && !isBaseline"
+    v-if="isDesk"
     @buttonClicked="sendCommand"
     :height="height"
     :deskConnected="deskConnected"
     :socketConnected="socketConnected"
   />
-  <ViewStatistics v-if="isStatistics && !isBaseline" />
-  <SetSettings v-if="isSettings && !isBaseline" @save="saveSettings" :settings="settings" />
-  <User v-if="isUser && !isBaseline" :userId="userId" :userName="userName" />
-
+  <ViewStatistics v-if="isStatistics" :user="props.user" />
+  <SetSettings v-if="isSettings" @save="saveSettings" :settings="settings" />
+  <User v-if="isUser" :userId="userId" :userName="userName" />
+  <div v-if="isBaseline" class="text-red-500 text-2xl">
+    {{ `Baseline mode` }}
+  </div>
   <div
     @click="quitApp"
     class="w-7 h-7 absolute right-0 bottom-1 text-[#2f3241] cursor-pointer"
@@ -84,7 +77,21 @@ import { PAGE } from './definitions.js'
 
 const isBaseline = ref(false)
 
-const currentPage = ref(null)
+const emits = defineEmits(['setUser', 'currentPage'])
+
+const props = defineProps({
+  user: Object,
+  users: Array,
+  currentPage: Number
+})
+
+const setUser = (event) => {
+  const userId = event.target.value
+  console.log('Selected User ID:', userId)
+  emits('setUser', userId)
+  // Additional logic can be added here, such as updating state or making an API call
+}
+
 const userId = ref(null)
 const userName = ref(null)
 
@@ -145,19 +152,19 @@ const registerFlag = ref(false)
 const settings = ref(null)
 
 const isDesk = computed(() => {
-  return currentPage.value === PAGE.DESK_CONTROLS
+  return props.currentPage === PAGE.DESK_CONTROLS
 })
 
 const isStatistics = computed(() => {
-  return currentPage.value === PAGE.STATISTICS
+  return props.currentPage === PAGE.STATISTICS
 })
 
 const isSettings = computed(() => {
-  return currentPage.value === PAGE.SETTINGS
+  return props.currentPage === PAGE.SETTINGS
 })
 
 const isUser = computed(() => {
-  return currentPage.value === PAGE.USER
+  return props.currentPage === PAGE.USER
 })
 
 const missingPresetDefinitions = computed(() => {
@@ -167,7 +174,7 @@ const missingPresetDefinitions = computed(() => {
   return presetDown === 'DEFAULT' || presetUp === 'DEFAULT'
 })
 
-const handleNewUserId = async () => {
+/* const handleNewUserId = async () => {
   const info = await window.electronAPI.getUserInfo()
   userName.value = info?.userName
   userId.value = info?.id
@@ -177,7 +184,7 @@ const handleNewUserId = async () => {
   }
   socketIo.connect(userId.value)
   fetchSettings(userId.value)
-}
+} */
 
 const setPage = async (newPage) => {
   /*   const enterPage = (page) => {
@@ -190,7 +197,7 @@ const setPage = async (newPage) => {
   if (enterPage(PAGE.SETTINGS)) {
     await window.electronAPI.setWindowBounds({ width: 500, height: 500 })
   } */
-  currentPage.value = newPage
+  emits('currentPage', newPage)
 }
 
 const sendCommand = (command) => {
@@ -216,7 +223,7 @@ const checkStatus = async () => {
 }
 
 onMounted(async () => {
-  const info = await window.electronAPI.getUserInfo()
+  const info = props.user
   userName.value = info?.userName
   userId.value = info?.id
   if (userId.value) {
@@ -224,9 +231,6 @@ onMounted(async () => {
     console.log(isBaseline.value)
   }
 
-  if (isBaseline.value) return
-
-  showDesk()
   fetchSettings(userId.value)
   await socketIo.connect(userId.value)
   socketIo.onConnected(() => {
