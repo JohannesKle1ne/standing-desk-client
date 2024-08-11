@@ -29,6 +29,16 @@
           formatDateFromTimestamp(currentDisplayTime)
         }}</span>
         <span @click="goForward()" class="day-button no-select" v-html="svgs.chevronRight"></span>
+        <div class="no-select w-6 h-6 text-[#2f3241] cursor-pointer">
+          <div v-if="!loading" @click="refresh" v-html="svgs.refresh"></div>
+          <img
+            v-else
+            src="../assets/Spinner-1s-200px.gif"
+            alt="Round Image"
+            class="no-select w-6 h-6 text-[#2f3241] cursor-pointer"
+          />
+        </div>
+
         <!--  <div class="flex">
         <span @click="goForward()" class="back-to-today-button" v-html="svgs.chevronRight"></span>
         <span @click="goForward()" class="back-to-today-button" v-html="svgs.chevronRight"></span>
@@ -142,6 +152,7 @@ const currentDisplayTime = ref()
 const goalResponse = ref()
 const weekGoalResponses = ref()
 const weekdays = ref(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'])
+const loading = ref(false)
 
 const getCirclePercent = (goalResponse) => {
   const percent = (goalResponse.standingMinutesOfDay / goalResponse.goalOfDay) * 100
@@ -233,6 +244,13 @@ const handleDayClick = () => {
 const handleWeekClick = () => {
   addLog(userInfo.value.id, 'showWeek')
   showWeek()
+}
+
+const refresh = async () => {
+  loading.value = true
+  addLog(userInfo.value.id, 'refresh')
+  await updateChart()
+  loading.value = false
 }
 
 const getWeekGoalResponses = async (userId, startOfWeek) => {
