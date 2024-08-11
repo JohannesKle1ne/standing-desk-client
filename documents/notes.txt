@@ -153,3 +153,7 @@ Filesystem     1M-blocks  Used Available Use% Mounted on
 
 
 
+Freitag: 10:05:
+Filesystem     1M-blocks  Used Available Use% Mounted on
+/dev/vda1           9741  4959      4766  51% /
+States: 2741
