@@ -24,13 +24,15 @@ import { svgs } from './svg'
 import { ref, computed, watch } from 'vue'
 import ReadInstructions from './ReadInstructions.vue'
 import ReadNoInternet from './ReadNoInternet.vue'
+import { addLog } from './api.js'
 
 const emits = defineEmits(['buttonClicked'])
 const props = defineProps({
   height: Number,
   deskUpdates: Array,
   deskConnected: Boolean,
-  socketConnected: Boolean
+  socketConnected: Boolean,
+  userId: String
 })
 
 const formattedHeight = computed(() => {
@@ -43,12 +45,48 @@ const formattedHeight = computed(() => {
 })
 
 const buttons = ref([
-  { svg: svgs.chevronUp, onClick: () => emits('buttonClicked', 'up') },
-  { svg: svgs.chevronDown, onClick: () => emits('buttonClicked', 'down') },
-  { title: '1', onClick: () => emits('buttonClicked', 'preset1') },
-  { title: '2', onClick: () => emits('buttonClicked', 'preset2') },
-  { title: '3', onClick: () => emits('buttonClicked', 'preset3') },
-  { title: '4', onClick: () => emits('buttonClicked', 'preset4') }
+  {
+    svg: svgs.chevronUp,
+    onClick: () => {
+      emits('buttonClicked', 'up')
+      addLog(props.userId, 'up')
+    }
+  },
+  {
+    svg: svgs.chevronDown,
+    onClick: () => {
+      emits('buttonClicked', 'down')
+      addLog(props.userId, 'down')
+    }
+  },
+  {
+    title: '1',
+    onClick: () => {
+      emits('buttonClicked', 'preset1')
+      addLog(props.userId, 'preset1')
+    }
+  },
+  {
+    title: '2',
+    onClick: () => {
+      emits('buttonClicked', 'preset2')
+      addLog(props.userId, 'preset2')
+    }
+  },
+  {
+    title: '3',
+    onClick: () => {
+      emits('buttonClicked', 'preset3')
+      addLog(props.userId, 'preset3')
+    }
+  },
+  {
+    title: '4',
+    onClick: () => {
+      emits('buttonClicked', 'preset4')
+      addLog(props.userId, 'preset4')
+    }
+  }
 ])
 </script>
 

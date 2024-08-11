@@ -131,6 +131,20 @@ export async function setSettings(id, settings) {
   }
 }
 
+export async function addLog(id, type) {
+  try {
+    const response = await axios({
+      method: 'post',
+      url: urlRestApi + `/log/${id}`,
+      data: { type }
+    })
+    return response.data
+  } catch (error) {
+    console.log(error)
+    console.log('Error reaching server')
+  }
+}
+
 export async function getPiConnects(id) {
   try {
     const response = await axios({

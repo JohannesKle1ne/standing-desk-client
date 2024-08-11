@@ -8,7 +8,7 @@
         color: !isDesk ? 'white' : '#2f3241',
         'background-color': !isDesk ? '#2f3241' : 'white'
       }"
-      @click="emits('showDesk')"
+      @click="handleDeskClick"
     >
       Desk
     </button>
@@ -18,7 +18,7 @@
         color: !isStatistics ? 'white' : '#2f3241',
         'background-color': !isStatistics ? '#2f3241' : 'white'
       }"
-      @click="emits('showStatistics')"
+      @click="handleStatsClick"
     >
       Statistics
     </button>
@@ -28,7 +28,7 @@
         color: !isSettings ? 'white' : '#2f3241',
         'background-color': !isSettings ? '#2f3241' : 'white'
       }"
-      @click="emits('showSettings')"
+      @click="handleSettingsClick"
     >
       Settings
     </button>
@@ -38,7 +38,7 @@
         color: !isUser ? 'white' : '#2f3241',
         'background-color': !isUser ? '#2f3241' : 'white'
       }"
-      @click="emits('showUser')"
+      @click="handleUserClick"
     >
       User
     </button></span
@@ -47,12 +47,13 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-
+import { addLog } from './api.js'
 import { PAGE } from './definitions.js'
 
 const emits = defineEmits(['showDesk', 'showStatistics', 'showSettings', 'showUser'])
 const props = defineProps({
-  currentPage: Number
+  currentPage: Number,
+  userId: String
 })
 
 const isDesk = computed(() => {
@@ -67,6 +68,23 @@ const isSettings = computed(() => {
 const isUser = computed(() => {
   return props.currentPage === PAGE.USER
 })
+
+const handleDeskClick = () => {
+  emits('showDesk')
+  addLog(props.userId, 'showDesk')
+}
+const handleStatsClick = () => {
+  emits('showStatistics')
+  addLog(props.userId, 'showStatistics')
+}
+const handleSettingsClick = () => {
+  emits('showSettings')
+  addLog(props.userId, 'showSettings')
+}
+const handleUserClick = () => {
+  emits('showUser')
+  addLog(props.userId, 'showUser')
+}
 </script>
 
 <style>

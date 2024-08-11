@@ -6,6 +6,7 @@
       @showSettings="showSettings"
       @showUser="showUser"
       :currentPage="currentPage"
+      :userId="userId"
       v-if="!isBaseline"
     />
     <div class="text-white" v-if="isBaseline">
@@ -37,6 +38,7 @@
     :height="height"
     :deskConnected="deskConnected"
     :socketConnected="socketConnected"
+    :userId="userId"
   />
   <ViewStatistics v-if="isStatistics && !isBaseline" />
   <SetSettings v-if="isSettings && !isBaseline" @save="saveSettings" :settings="settings" />
@@ -81,6 +83,7 @@ import SetSettings from './SetSettings.vue'
 import ViewStatistics from './ViewStatistics.vue'
 import Navbar from './Navbar.vue'
 import { PAGE } from './definitions.js'
+import { addLog } from './api.js'
 
 const isBaseline = ref(false)
 
@@ -255,6 +258,7 @@ onMounted(async () => {
 })
 
 const logOut = async () => {
+  addLog(userId.value, 'logOut')
   await window.electronAPI.logOut()
 }
 
@@ -263,10 +267,12 @@ const restartApp = async () => {
 }
 
 const hideWindow = async () => {
+  addLog(userId.value, 'hideWindow')
   await window.electronAPI.hideWindow()
 }
 
 const quitApp = async () => {
+  addLog(userId.value, 'quitApp')
   await window.electronAPI.quitApp()
 }
 

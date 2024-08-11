@@ -8,7 +8,7 @@
           'font-weight': chartMode !== 'day' ? '' : 'bold',
           'border-width': chartMode !== 'day' ? '0px' : '1px'
         }"
-        @click="showDay"
+        @click="handleDayClick"
       >
         Day
       </button>
@@ -19,7 +19,7 @@
           'font-weight': chartMode !== 'week' ? '' : 'bold',
           'border-width': chartMode !== 'week' ? '0px' : '1px'
         }"
-        @click="showWeek"
+        @click="handleWeekClick"
       >
         Week
       </button>
@@ -131,6 +131,7 @@ import { ref, computed, onMounted } from 'vue'
 import { getStatisticsOfDay, getStatisticsOfWeek, getGoalProgress } from './api'
 import { getDayIntervals, getWeekIntervals, getStartOfToday, getStartOfWeek } from './chartData.js'
 import StandingGoalRing from './StandingGoalRing.vue'
+import { addLog } from './api.js'
 
 const emits = defineEmits(['buttonClicked'])
 const props = defineProps({
@@ -199,6 +200,7 @@ const go = (operation) => {
 }
 
 const goBackToToday = () => {
+  addLog(userInfo.value.id, 'goBackToToday')
   const start = getStartOfToday()
   const delta = start - currentDisplayTime.value
   const divided = delta / millisecondsPerDay
@@ -206,6 +208,7 @@ const goBackToToday = () => {
 }
 
 const goBackToThisWeek = () => {
+  addLog(userInfo.value.id, 'goBackToThisWeek')
   const start = getStartOfWeek()
   const delta = start - currentDisplayTime.value
   const divided = delta / millisecondsPerWeek
@@ -213,11 +216,23 @@ const goBackToThisWeek = () => {
 }
 
 const goForward = () => {
+  addLog(userInfo.value.id, 'goForward')
   go((a, b) => a + b)
 }
 
 const goBack = () => {
+  addLog(userInfo.value.id, 'goBack')
   go((a, b) => a - b)
+}
+
+const handleDayClick = () => {
+  addLog(userInfo.value.id, 'showDay')
+  showDay()
+}
+
+const handleWeekClick = () => {
+  addLog(userInfo.value.id, 'showWeek')
+  showWeek()
 }
 
 const getWeekGoalResponses = async (userId, startOfWeek) => {
