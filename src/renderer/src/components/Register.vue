@@ -3,7 +3,7 @@
     <h1 class="text-[40px] mb-4">Registration</h1>
     <div class="flex">
       <div class="mb-4 flex flex-col m-2">
-        <span class="text-center m-2">Enter your full name</span>
+        <span class="text-center m-2">Enter a user name</span>
         <span class="text-center m-2">Choose a password</span>
       </div>
       <div class="mb-4 flex flex-col m-2">

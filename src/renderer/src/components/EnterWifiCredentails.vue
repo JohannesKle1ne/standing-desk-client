@@ -22,7 +22,17 @@
 
       <div style="display: flex" class="mt-2">
         <div style="width: 100px">password:</div>
-        <input class="text-black" style="width: 200px" v-model="psk" />
+        <input
+          :type="showPassword ? 'text' : 'password'"
+          class="text-black"
+          style="width: 200px"
+          v-model="psk"
+        />
+        <span
+          class="ml-3 text-[10px] w-5 h-5 text-white cursor-pointer"
+          @click="togglePasswordVisibility"
+          v-html="showPassword ? svgs.show : svgs.hide"
+        ></span>
       </div>
     </div>
     <div style="display: flex; align-items: center; width: 100%">
@@ -34,6 +44,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { pairWithPi } from './api'
+import { svgs } from './svg'
 
 const props = defineProps({
   rebootTimeString: String
@@ -45,6 +56,10 @@ const emits = defineEmits(['saved'])
         psk="12121212" */
 const ssid = ref('')
 const psk = ref('')
+const showPassword = ref(false)
+const togglePasswordVisibility = () => {
+  showPassword.value = !showPassword.value
+}
 
 const instructions = ref([
   'Enter your WiFi credentials below',

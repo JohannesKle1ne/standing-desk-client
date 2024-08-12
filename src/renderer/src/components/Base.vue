@@ -227,11 +227,10 @@ onMounted(async () => {
     console.log(isBaseline.value)
   }
 
-  if (isBaseline.value) return
-
   showDesk()
   fetchSettings(userId.value)
   await socketIo.connect(userId.value)
+
   socketIo.onConnected(() => {
     socketConnected.value = true
     socketIo.requestState()
