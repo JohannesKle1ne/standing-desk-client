@@ -118,11 +118,6 @@ node ./rest-api/server
 
 
 
-1. Pfeil nach unten drücken bis AST erscheint
-2. 1 drücken bis 10.1 erscheint
-3. Wieder lange Pfeil drücken
-
-
 
 3d hubs for (or hubs) for making the CAD boxes
 
@@ -153,3 +148,20 @@ Filesystem     1M-blocks  Used Available Use% Mounted on
 
 
 
+1. Pfeil nach unten drücken bis AST erscheint
+2. 1 drücken bis 10.1 erscheint
+3. Wieder lange Pfeil drücken
+
+
+Ablauf:
+
+- Consent: Währenddessen befestige ich den Controller am Tisch und stecke den Raspberry Pi ein.
+- Download und Installation der Software.
+- Benutzernamen erstellen.
+- Presets einstellen und testen, ob der Tisch automatisch verstellt wird (siehe oben).
+- WLAN-Zugangsdaten eingeben.
+- Fragebogen vor dem Test ausfüllen: Währenddessen den Raspberry Pi ins Gehäuse schrauben.
+- Wenn alles grün ist -> Quit App (Pi macht alles alleine)
+
+An den Teilnehmer:
+Bitte verhalten Sie sich mit dem Stehtisch wie immer. Nach fünf Arbeitstagen komme ich wieder vorbei.
