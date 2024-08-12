@@ -13,7 +13,7 @@
       {{ `Welcome ${userName}! You are currently in baseline mode. Your desk is ` }}
       <span v-if="deskConnected" class="bg-lime-600">connected. </span>
       <span v-else class="bg-red-500">not connected. </span>
-      <span v-if="height == null" class="bg-red-500">Unknown height. Please move the desk</span>
+      <span v-if="!height" class="bg-red-500">Unknown height. Please move the desk</span>
     </div>
     <div class="grow"></div>
     <div
