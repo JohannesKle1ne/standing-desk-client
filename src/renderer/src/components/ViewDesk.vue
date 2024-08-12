@@ -28,7 +28,7 @@ import { addLog } from './api.js'
 
 const emits = defineEmits(['buttonClicked'])
 const props = defineProps({
-  height: Number,
+  height: String,
   deskUpdates: Array,
   deskConnected: Boolean,
   socketConnected: Boolean,
