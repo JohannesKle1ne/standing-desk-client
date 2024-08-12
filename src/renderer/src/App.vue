@@ -15,7 +15,8 @@ import { ref, onMounted, computed } from 'vue'
 const users = ref([
   { userName: 'jo', id: '86e945c0-e395-4cf6-a8ec-892e904e6940' },
   { userName: 'Luke Haliburton', id: 'b7244bbe-1d28-4417-91a2-522964a6554f' },
-  { userName: 'Teodora Mitrevska', id: '99aca265-fa71-4fa5-9f96-9e93084dd5ea' }
+  { userName: 'Teodora Mitrevska', id: '99aca265-fa71-4fa5-9f96-9e93084dd5ea' },
+  { userName: 'Frank', id: 'e085e834-5970-4c44-a34b-84ccc73f354b' }
 ])
 
 const key = ref(1)
