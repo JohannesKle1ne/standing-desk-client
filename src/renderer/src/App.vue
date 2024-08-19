@@ -20,7 +20,8 @@ const users = ref([
   { userName: 'Luke Haliburton', id: 'b7244bbe-1d28-4417-91a2-522964a6554f' },
   { userName: 'Yannick (Yannick)', id: '0cc3946b-6f53-4feb-9048-1b3a1dd6db59' },
   { userName: 'Francesco (Francesco)', id: 'bb678323-1be4-40ea-b95b-748e54649c34' },
-  { userName: 'xuedong (Xuedong)', id: '6dd5af42-29b0-48f3-bbb1-3bfcfee1ae10' }
+  { userName: 'xuedong (Xuedong)', id: '6dd5af42-29b0-48f3-bbb1-3bfcfee1ae10' },
+  { userName: 'anbeju (Julian Rasch)', id: '7a339782-c376-4bf2-ae48-a66516105a58' }
 ])
 
 const key = ref(1)
