@@ -23,7 +23,7 @@ export function getDayIntervals() {
   const millisecondsPerDay = 86400000
   const today = getStartOfToday()
 
-  for (let i = 10; i >= 0; i--) {
+  for (let i = 50; i >= 0; i--) {
     const intervalStart = today - i * millisecondsPerDay
     intervals.push({
       day: intervalStart

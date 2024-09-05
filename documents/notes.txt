@@ -153,3 +153,16 @@ Freitag: 10:05:
 Filesystem     1M-blocks  Used Available Use% Mounted on
 /dev/vda1           9741  4959      4766  51% /
 States: 2741
+
+
+
+
+For the active weeks, we told the participants to stand as long as they were comfortable and to lower their desks as often as they preferred and to use the app when ev
+
+
+
+ stand as long as they were comfortable
+
+ lower their desks as often as they preferred
+
+ use the app to change to adjut the desks behaviour according to their needs
