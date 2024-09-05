@@ -247,11 +247,13 @@ onMounted(async () => {
     height.value = newHeight
   })
   socketIo.onPiConnect(() => {
-    console.log('pi has disconnected')
+    console.log('pi has connected')
+
     deskConnected.value = true
   })
   socketIo.onPiDisconnect(() => {
-    console.log('pi has connected')
+    console.log('pi has disconnected')
+
     deskConnected.value = false
   })
 
