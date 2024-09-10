@@ -3,7 +3,7 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.ico?asset'
 
-const dev = false
+const dev = true
 
 const runAutoLauncher = () => {
   var AutoLaunch = require('auto-launch')
