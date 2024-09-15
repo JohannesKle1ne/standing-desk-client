@@ -7,6 +7,10 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+src/renderer/src/components/state
+src/renderer/src/components/piConnect
+src/renderer/src/components/profile
+
 
 node_modules
 dist

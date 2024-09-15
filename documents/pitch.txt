@@ -20,6 +20,8 @@ autonomous standing desks are one potential solution to this problem as they can
 -> I plan to implement such a system that is able to move the user's desk autonomously and can decide for the user to move or up.
 RQ: How should an autonomous standing desk be designed to support the user in reaching the desired amount of standing time?
 
+How can a non-interrupting automonous standing desk can support the user in reaching the desired amount of standing time?
+
 
 -- Design Goals --
 

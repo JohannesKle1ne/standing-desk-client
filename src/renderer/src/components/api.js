@@ -2,6 +2,8 @@ import axios from 'axios'
 const urlAP = 'http://10.0.0.5'
 const urlRestApi = 'https://standing-desk.org/api'
 
+import { readDay, readWeek, readGoal } from './statisticsApi'
+
 export async function pairWithPi(ssid, psk, userName, id) {
   try {
     const response = await axios({
@@ -63,12 +65,17 @@ export async function getStates(id) {
 }
 
 export async function getStatisticsOfDay(id, startOfDay) {
+  const data = await readDay(id, startOfDay)
+  console.log('data: ', data)
+  if (data) return data
+
   try {
     const response = await axios({
       method: 'get',
       url: urlRestApi + `/statistic/${id}/day`,
       params: { startOfDay }
     })
+    console.log('response', response)
     return response.data
   } catch (error) {
     console.log(error)
@@ -77,6 +84,8 @@ export async function getStatisticsOfDay(id, startOfDay) {
 }
 
 export async function getStatisticsOfWeek(id, startOfWeek) {
+  const data = await readWeek(id, startOfWeek)
+  if (data) return data
   try {
     const response = await axios({
       method: 'get',
@@ -91,6 +100,8 @@ export async function getStatisticsOfWeek(id, startOfWeek) {
 }
 
 export async function getGoalProgress(id, startOfDay) {
+  const data = await readGoal(id, startOfDay)
+  if (data) return data
   try {
     const response = await axios({
       method: 'get',

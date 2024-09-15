@@ -166,3 +166,29 @@ For the active weeks, we told the participants to stand as long as they were com
  lower their desks as often as they preferred
 
  use the app to change to adjut the desks behaviour according to their needs
+
+
+
+11.09:
+Filesystem     1M-blocks  Used Available Use% Mounted on
+/dev/vda1           9741  6988      2738  72% /
+
+
+
+Luke meeting:
+- 14 running
+- 3 baseline
+- 11 main
+
+- By today done: Francesco, Yannick, ...
+
+- Exit interview, Final questionnaire
+- Microphone
+
+- how was the paper called that we found and you said you talked to this guy at the conference?
+
+- how do you want to deal with thesis corrections? E.g. can I send you 2 pages for correction before the submission?
+
+
+- yanick: 6+ 1 + 3 (05.09 no good data)
+- 
