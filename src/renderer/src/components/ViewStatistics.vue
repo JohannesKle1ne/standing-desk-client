@@ -82,6 +82,14 @@
             >
               {{ goalResponse?.standingMinutesOfDay }}
             </div>
+            <div v-if="chartMode === 'day'" class="mt-4">Working hours:</div>
+            <div
+              v-if="chartMode === 'day'"
+              :style="{ color: 'rgba(255, 159, 64, 0.6)' }"
+              class="text-6xl ml-2"
+            >
+              {{ Math.round((goalResponse?.workingMinutesOfDay / 60) * 10) / 10 }}
+            </div>
           </div>
         </div>
 

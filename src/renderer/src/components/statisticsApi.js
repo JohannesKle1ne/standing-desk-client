@@ -239,6 +239,7 @@ export async function readGoal(userId, startOfDay) {
   const minutes = getMinuteObjects(newStates)
   console.log('minutes', minutes)
   const standingMinutes = minutes.filter((m) => m.deskUp && m.present).length
+  const workingMinutes = minutes.filter((m) => m.present).length
   console.log(minutes.filter((m) => m.deskUp && m.present))
   console.log({
     standingMinutesOfDay: standingMinutes,
@@ -246,6 +247,7 @@ export async function readGoal(userId, startOfDay) {
   })
   return {
     standingMinutesOfDay: standingMinutes,
+    workingMinutesOfDay: workingMinutes,
     goalOfDay: lastProfile.dailyGoal
   }
 }

@@ -1,13 +1,16 @@
-SELECT * FROM public."State"
-WHERE "userId" = '99aca265-fa71-4fa5-9f96-9e93084dd5ea'
-  AND "createdAt" BETWEEN '2024-08-05 19:20:00' AND '2024-08-06 09:20:00'
-ORDER BY id ASC;
+SELECT * FROM public."PiConnect"
+WHERE "userId" = '6dd5af42-29b0-48f3-bbb1-3bfcfee1ae10'
+  AND "createdAt" BETWEEN '2024-09-13 00:00:00' AND '2024-09-13 23:59:59'
+ORDER BY "createdAt" ASC;
 
+
+3469	"6dd5af42-29b0-48f3-bbb1-3bfcfee1ae10"	1726233006007	false	"2024-09-13 13:10:06.007+00"	"2024-09-13 13:10:06.007+00"
+18976	"6dd5af42-29b0-48f3-bbb1-3bfcfee1ae10"	true	782	1726231905864	"10.163.181.91"	"2024-09-13 12:51:45.877+00"
 
 
 SELECT * 
-FROM public."State"
-WHERE "userId" = '7a339782-c376-4bf2-ae48-a66516105a58'
+FROM public."Profile"
+WHERE "userId" = 'b7244bbe-1d28-4417-91a2-522964a6554f'
 ORDER BY id ASC;
 
 SELECT COUNT(*) 

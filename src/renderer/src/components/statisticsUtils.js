@@ -47,7 +47,7 @@ export function addPiConnectsToData(data, piConnects) {
     } else {
       piConnects = []
     }
-    console.log('new piconnects that are added: ', piConnects)
+    // console.log('new piconnects that are added: ', piConnects)
     return [
       ...acc,
       r,
