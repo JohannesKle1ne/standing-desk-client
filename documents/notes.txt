@@ -194,13 +194,13 @@ Luke meeting:
 
 - Yanick: 9 (sadly 05.09 not much data) (beginn 26.08) (Wenn heute noch 4h  dann DONE)
 - Francesco: (beginn 26.08) 09.09 fertig aber danch teilweise bessere daten (4 bessere Tage danach) --> DONE
-- xuedong: start 14.08 -> 30.08 basline done (beginn 02.09) | Insgesammt 9 tage main (ein tag ungültig weil zu wenig)
-- julian: () -> (beginn 03.09) Fertig mit genau 10 (aber Daten Fehler 06.09 data) --> DONE
+- xuedong: start 14.08 -> 30.08 basline done (beginn 02.09) | Insgesammt 9 tage main (ein tag ungültig weil zu wenig) --> DONE
+- julian: () -> (beginn 03.09) Fertig mit genau 10 (aber Daten Fehler 06.09 data) 
 - clara: 6 tage main (beginn 27.08)
 - Steeven: 8 tage main (beginn 02.09)                   fragen heute abend ob er den ganzen tag gestanden ist
-- Maxi: 11 tage main (beginn 02.12) -> DONE
+- Maxi: 11 tage main (beginn 02.09) -> DONE
 - Ramin: 5 baseline days --> START MAIN WEEK
-- Jan: 10 tage main (beginn 30.08) --> DONE (29.08 löschen)
+- Jan: 10 tage main (beginn 30.08)  (29.08 löschen)
 - henrike: ca. 4 Tage main. fehlt noch einiges
 - Kathrin: 4 tage main study
 - Bettina: 3 tage main (beginn 03.09)
@@ -214,3 +214,72 @@ Minimun hour in baseline:
 - steeven: 1.5 hours (but we could shift one day)
 
 
+Francesco is the number "1" in the last survey
+
+24.09.2024:
+
+Steeven: 9 tage main (>4) (beginn 02.09)   
+Julian: 7 tage main (>4) (beginn 03.09)
+Clara: 4 tage main (>4) (beginn 27.08)
+Henrike: 3 tage main (>4) (beginn 04.09)
+Kathrin: 6 tage main (>4) (beginn 04.09)
+bettina: 4 tage main (>4) (beginn 03.09)
+jesse: 5 tage main (>4) (beginn 16.09)
+Jan: ?
+
+04.10.2024 (10:30) (>4)
+
+Clara: 3 tage main  (beginn 29.08)
+Steeven: 9 tage main (beginn 02.09)  
+Rifat: Starting main today?
+Jan: 8 tage main (beginn 30.08)
+Henrike: 6 tage main (beginn 30.08)
+Kathrin: 9 tage main (beginn 04.09)
+Bettina: 5 +-1 tage main (beginn 03.09)
+Sophia: 2 tage main (beginn 26.09)
+Jesse: 8 +-1 tage main (>4) (beginn 16.09)
+Nada: 2 Tage Baseline (Baseline beginn 01.10)
+Thomas: 1 tag Basline (Baseline beginn 01.10)
+
+13.10.2024 (11:50)
+Sophia: 6 tage main (beginn 26.09)
+Jesse: 10 tage main --> DONE
+
+15.10.2024
+Steeven -> DONE
+Jan --> DONE
+
+23.10.2024
+Clara: 6 tage main  (beginn 29.08)
+Rifat: 1 tage main (beginn 16.10)
+Henrike: 8 tage main (beginn 30.08)
+Kathrin: 10 tage main (beginn 04.09) -> DONE
+Bettina: 8 +-1 tage main (beginn 03.09)
+Sophia: 9 tage main (beginn 26.09)
+Nada: 5 Tage Baseline (Baseline beginn 01.10) -> Ready for MAIN
+Thomas: Ready for Main
+
+28.10.2024 (10:53)
+Clara: 8 tage main  (beginn 29.08)
+Rifat: 1 tage main (beginn 16.10)
+Henrike: 8 tage main (beginn 30.08)
+Bettina: 9 tage main (beginn 03.09)
+Sophia: 9 tage main (beginn 26.09)
+
+29.10.2024 (13:45)
+Clara: 9 tage main  (beginn 29.08)
+Rifat: 2 tage main (beginn 16.10)
+Henrike: 9 tage main (beginn 30.08)
+Bettina: 9 tage main (beginn 03.09)
+Sophia: 9 tage main (beginn 26.09)
+
+30.10.2024 (09:08) new counted
+Clara: 9 tage main  (beginn 29.08)
+Rifat: 2 tage main (beginn 16.10)
+Henrike: 10 tage main (beginn 05.09) --> DONE
+Bettina: 9 tage main (beginn 03.09)
+Sophia: 9 tage main (beginn 26.09)
+
+Clara --> DONE
+
+Montag Bettina bitten controller neu einzustecken!!

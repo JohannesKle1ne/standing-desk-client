@@ -90,6 +90,7 @@
             >
               {{ Math.round((goalResponse?.workingMinutesOfDay / 60) * 10) / 10 }}
             </div>
+            <div>{{ goalResponse?.workingMinutesOfDay }}</div>
           </div>
         </div>
 
