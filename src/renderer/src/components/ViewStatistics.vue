@@ -187,6 +187,7 @@ const showWeek = () => {
 const showDay = () => {
   chartMode.value = 'day'
   currentDisplayTime.value = getStartOfToday()
+  currentDisplayTime.value = 1725404400000
   updateChart()
 }
 
@@ -296,10 +297,6 @@ const updateChart = async () => {
     data: {
       labels: chartData.map((row) => row.time),
       datasets: [
-        /*    {
-          label: 'Desk Up minutes',
-          data: chartData.map((row) => row.deskUpCounter)
-        }, */
         {
           label: 'Total work minutes',
           data: chartData.map((row) => row.presentCounter)
@@ -335,19 +332,6 @@ const updateChart = async () => {
           }
         }
       }
-
-      /* scales: {
-        x: {
-          ticks: {
-            padding: 20 // Adjust this value to add space between the bars and the x-axis labels
-          }
-        },
-        y: {
-          ticks: {
-            padding: 20 // Adjust this value to add space between the bars and the y-axis labels
-          }
-        }
-      } */
     }
   })
 }
